@@ -1,0 +1,498 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Kestrel RF — RF simulation and automated test software</title>
+<meta name="description" content="Kestrel RF builds physics-accurate RF simulation and automated test software for radar, EW, and wireless teams — model the channel, generate the scenario, and run the same test suite on hardware.">
+<meta name="theme-color" content="#06080c">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%2306080c'/%3E%3Cpath d='M5 20c3 0 3-9 6-9s3 12 6 12 2.5-11 5.5-11S25 20 27 20' stroke='%232ee6c5' stroke-width='2' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
+<link rel="stylesheet" href="assets/css/styles.css">
+</head>
+<body>
+
+<header class="site-header">
+  <div class="wrap">
+    <nav class="nav" aria-label="Primary">
+      <a class="brand" href="index.html">
+        <svg class="brand__mark" width="28" height="28" viewBox="0 0 32 32" aria-hidden="true">
+          <rect width="32" height="32" rx="8" fill="#0e131c" stroke="#1d2635"></rect>
+          <path d="M5 20c3 0 3-9 6-9s3 12 6 12 2.5-11 5.5-11S25 20 27 20" stroke="#2ee6c5" stroke-width="1.9" fill="none" stroke-linecap="round" stroke-linejoin="round"></path>
+        </svg>
+        Kestrel RF<span class="brand__sub">Test &amp; Simulation</span>
+      </a>
+
+      <button class="nav__toggle" type="button" aria-expanded="false" aria-label="Toggle navigation">
+        <span></span>
+      </button>
+
+      <ul class="nav__links">
+        <li><a href="products.html">Products</a></li>
+        <li><a href="solutions.html">Solutions</a></li>
+        <li><a href="products.html#compare">Pricing</a></li>
+        <li><a href="company.html">Company</a></li>
+      </ul>
+
+      <div class="nav__cta">
+        <a class="btn btn--ghost btn--sm" href="contact.html#trial">Start trial</a>
+        <a class="btn btn--sm" href="contact.html">Request a demo</a>
+      </div>
+    </nav>
+  </div>
+</header>
+
+<main>
+
+  <!-- ============================================================ hero -- -->
+  <section class="hero">
+    <div class="wrap">
+      <div class="hero__grid">
+        <div>
+          <span class="pill"><b>v9.2</b> Phased-array beam synthesis is here</span>
+          <h1>Prove the RF link<br><span class="grad">before you build it.</span></h1>
+          <p class="lede">
+            Kestrel RF is a simulation and automated-test platform for radar, electronic warfare,
+            and wireless teams. Model propagation down to the multipath tap, generate the RF
+            environment, and run the identical test suite against your hardware — from one
+            scriptable toolchain.
+          </p>
+          <div class="btn-row" style="margin-top:26px">
+            <a class="btn" href="contact.html">Request a demo</a>
+            <a class="btn btn--ghost" href="products.html">Explore the platform</a>
+          </div>
+          <div class="hero__meta">
+            <span><i class="dot"></i> DC – 110 GHz modelling</span>
+            <span><i class="dot"></i> Python &amp; C++ APIs</span>
+            <span><i class="dot"></i> On-prem or air-gapped</span>
+          </div>
+        </div>
+
+        <div class="scope reveal">
+          <div class="scope__bar">
+            <div class="scope__dots"><i></i><i></i><i></i></div>
+            kestrel-studio · scenario: urban_canyon_v4
+            <span class="scope__tag">● LIVE</span>
+          </div>
+          <canvas class="scope__canvas" data-spectrum role="img"
+                  aria-label="Animated spectrum analyser trace with waterfall display showing six simulated carriers"></canvas>
+          <dl class="scope__readout">
+            <div><dt>Center</dt><dd data-readout="cf">3.842 GHz</dd></div>
+            <div><dt>Span</dt><dd>1.200 GHz</dd></div>
+            <div><dt>Peak</dt><dd data-readout="peak">−21.4 dBm</dd></div>
+            <div><dt>RBW</dt><dd>30 kHz</dd></div>
+          </dl>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========================================================== ribbon -- -->
+  <section class="ribbon">
+    <div class="wrap">
+      <p>Trusted by engineering teams in defense, aerospace, and wireless</p>
+      <div class="ribbon__row">
+        <span>NORTHRIDGE AEROSPACE</span>
+        <span>Halden Defence</span>
+        <span>ORBITEL</span>
+        <span>Vantage Semiconductor</span>
+        <span>MERIDIAN LABS</span>
+        <span>Solstice Radar</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ======================================================== problem -- -->
+  <section class="section">
+    <div class="wrap">
+      <div class="section-head center reveal">
+        <span class="eyebrow">The gap</span>
+        <h2>Your simulation and your test bench disagree</h2>
+        <p class="lede">
+          Channel models live in one tool, waveform generation in another, and the test rack runs a
+          decade of accumulated scripts. Every disagreement costs a chamber booking to resolve.
+        </p>
+      </div>
+
+      <div class="grid grid--3">
+        <article class="card reveal">
+          <div class="icon" aria-hidden="true">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M3 12h3l3-8 4 16 3-8h5"/>
+            </svg>
+          </div>
+          <h3>One physics engine</h3>
+          <p>
+            Ray-traced propagation, atmospheric loss, Doppler, and antenna patterns resolve in a
+            single solver — so the channel your model predicts is the channel your generator plays out.
+          </p>
+        </article>
+
+        <article class="card reveal" data-delay="80">
+          <div class="icon icon--violet" aria-hidden="true">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="3" y="4" width="18" height="7" rx="2"/><rect x="3" y="13" width="18" height="7" rx="2"/>
+              <path d="M7 7.5h.01M7 16.5h.01"/>
+            </svg>
+          </div>
+          <h3>One test definition</h3>
+          <p>
+            Write a test case once. Run it against the simulator in CI, then against the rack in the
+            chamber, with the same limits, the same sweeps, and a diff you can actually read.
+          </p>
+        </article>
+
+        <article class="card reveal" data-delay="160">
+          <div class="icon icon--amber" aria-hidden="true">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 3v3M12 18v3M3 12h3M18 12h3M5.6 5.6l2.1 2.1M16.3 16.3l2.1 2.1M18.4 5.6l-2.1 2.1M7.7 16.3l-2.1 2.1"/>
+              <circle cx="12" cy="12" r="3.2"/>
+            </svg>
+          </div>
+          <h3>One record of truth</h3>
+          <p>
+            Every run is versioned with its scenario, calibration state, and instrument firmware —
+            signed, reproducible, and exportable straight into your qualification package.
+          </p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- ======================================================= products -- -->
+  <section class="section section--alt" id="products">
+    <div class="wrap">
+      <div class="section-head reveal">
+        <span class="eyebrow">Platform</span>
+        <h2>Four tools, one signal chain</h2>
+        <p class="lede">
+          Adopt any piece on its own. Together they close the loop from a propagation model to a
+          signed test report.
+        </p>
+      </div>
+
+      <div class="grid grid--2">
+        <article class="card product reveal">
+          <div class="product__top">
+            <div class="product__kicker">Simulation</div>
+            <h3>Kestrel Studio</h3>
+            <p>
+              Physics-based RF channel and scenario modelling. Build terrain, platforms, emitters,
+              and antenna arrays, then solve the link budget over time.
+            </p>
+          </div>
+          <div class="product__body">
+            <ul class="ticks">
+              <li>GPU ray-tracing with diffraction and rough-surface scatter</li>
+              <li>ITU-R and 3GPP TR 38.901 channel models built in</li>
+              <li>Phased-array beam synthesis and mutual-coupling effects</li>
+              <li>Monte-Carlo sweeps across thousands of scenario seeds</li>
+            </ul>
+            <a class="arrow-link" href="products.html#studio">Studio details
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+            </a>
+          </div>
+        </article>
+
+        <article class="card product reveal" data-delay="80">
+          <div class="product__top">
+            <div class="product__kicker">Automated test</div>
+            <h3>Kestrel Bench</h3>
+            <p>
+              Instrument orchestration and test sequencing. Drive VNAs, signal generators, spectrum
+              analyzers, and SDRs from one declarative test definition.
+            </p>
+          </div>
+          <div class="product__body">
+            <ul class="ticks">
+              <li>400+ validated instrument drivers, SCPI and IVI</li>
+              <li>De-embedding, fixture removal, and calibration tracking</li>
+              <li>Pass/fail limit lines with automatic uncertainty budgets</li>
+              <li>Headless runner for CI — GitHub Actions, GitLab, Jenkins</li>
+            </ul>
+            <a class="arrow-link" href="products.html#bench">Bench details
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+            </a>
+          </div>
+        </article>
+
+        <article class="card product reveal">
+          <div class="product__top">
+            <div class="product__kicker">Hardware in the loop</div>
+            <h3>Kestrel Range</h3>
+            <p>
+              Real-time RF environment generation. Replay a Studio scenario into your receiver at
+              full rate, with sub-microsecond latency on supported FPGA targets.
+            </p>
+          </div>
+          <div class="product__body">
+            <ul class="ticks">
+              <li>Up to 2 GHz instantaneous bandwidth per channel</li>
+              <li>Multi-emitter pulse density above 4 M pulses/second</li>
+              <li>Dynamic delay, Doppler, and AoA per emitter track</li>
+              <li>Deterministic timing against IEEE 1588 or GPSDO</li>
+            </ul>
+            <a class="arrow-link" href="products.html#range">Range details
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+            </a>
+          </div>
+        </article>
+
+        <article class="card product reveal" data-delay="80">
+          <div class="product__top">
+            <div class="product__kicker">Developer platform</div>
+            <h3>Kestrel Core SDK</h3>
+            <p>
+              The libraries everything else is built on. Model, measure, and post-process from
+              Python, C++, or MATLAB without leaving your editor.
+            </p>
+          </div>
+          <div class="product__body">
+            <ul class="ticks">
+              <li>NumPy-native I/Q pipelines with zero-copy buffers</li>
+              <li>Deterministic seeding for reproducible regression runs</li>
+              <li>SigMF and HDF5 capture formats out of the box</li>
+              <li>Permissive redistribution for embedded deployments</li>
+            </ul>
+            <a class="arrow-link" href="products.html#sdk">SDK details
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+            </a>
+          </div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- =========================================================== code -- -->
+  <section class="section">
+    <div class="wrap">
+      <div class="split">
+        <div class="reveal">
+          <span class="eyebrow">Scriptable by default</span>
+          <h2>If you can write it down, you can automate it</h2>
+          <p class="lede">
+            Nothing in Kestrel hides behind a GUI. Every scenario, sweep, and limit line is an
+            object in the SDK, so your test plan lives in version control next to the firmware
+            it qualifies.
+          </p>
+          <ul class="ticks" style="margin-top:22px">
+            <li>Same API in the simulator and on the bench — swap one line to move to hardware</li>
+            <li>Results stream as pandas frames, SigMF captures, or Arrow tables</li>
+            <li>Runs headless in containers; no license dongle on the build agent</li>
+          </ul>
+          <div class="btn-row" style="margin-top:24px">
+            <a class="btn btn--ghost" href="products.html#sdk">Read the SDK overview</a>
+          </div>
+        </div>
+
+        <div class="code reveal" data-delay="80">
+          <div class="code__bar">
+            <div class="scope__dots"><i></i><i></i><i></i></div>
+            adjacent_channel_rejection.py
+          </div>
+<pre><code><span class="c-kw">from</span> kestrel <span class="c-kw">import</span> studio, bench, limits
+
+<span class="c-com"># 1. Model the channel once.</span>
+<span class="c-var">scene</span> = studio.<span class="c-fn">Scene</span>(terrain=<span class="c-str">"urban_canyon_v4"</span>)
+<span class="c-var">scene</span>.<span class="c-fn">add_emitter</span>(<span class="c-str">"interferer"</span>, f0=<span class="c-num">3.86e9</span>, power=<span class="c-num">-30</span>)
+<span class="c-var">link</span>  = <span class="c-var">scene</span>.<span class="c-fn">link</span>(<span class="c-str">"gnb"</span>, <span class="c-str">"ue"</span>, bandwidth=<span class="c-num">100e6</span>)
+
+<span class="c-com"># 2. Define the measurement once.</span>
+<span class="c-var">test</span> = bench.<span class="c-fn">Sweep</span>(
+    stimulus=<span class="c-var">link</span>.<span class="c-fn">waveform</span>(<span class="c-str">"nr_ul_64qam"</span>),
+    sweep=<span class="c-fn">range</span>(<span class="c-num">-95</span>, <span class="c-num">-55</span>, <span class="c-num">5</span>),          <span class="c-com"># dBm</span>
+    measure=[<span class="c-str">"evm"</span>, <span class="c-str">"aclr"</span>, <span class="c-str">"sensitivity"</span>],
+    limit=limits.<span class="c-fn">from_spec</span>(<span class="c-str">"3GPP-38.101-1"</span>),
+)
+
+<span class="c-com"># 3. Run it in CI, then on the rack. Same call.</span>
+<span class="c-var">sim</span> = <span class="c-var">test</span>.<span class="c-fn">run</span>(target=studio.<span class="c-fn">simulator</span>())
+<span class="c-var">hw</span>  = <span class="c-var">test</span>.<span class="c-fn">run</span>(target=bench.<span class="c-fn">rack</span>(<span class="c-str">"chamber-2"</span>))
+
+<span class="c-fn">print</span>(<span class="c-var">sim</span>.<span class="c-fn">diff</span>(<span class="c-var">hw</span>, tolerance=<span class="c-str">"1.5 dB"</span>))
+<span class="c-com"># → 18/18 points agree · max delta 0.72 dB @ -75 dBm</span></code></pre>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========================================================== stats -- -->
+  <section class="section--tight">
+    <div class="wrap">
+      <div class="stats reveal">
+        <div><b>62%</b><span>less chamber time per program</span></div>
+        <div><b>400+</b><span>validated instrument drivers</span></div>
+        <div><b>110 GHz</b><span>upper modelling frequency</span></div>
+        <div><b>4.1M</b><span>pulses/sec in Range HIL</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ======================================================= workflow -- -->
+  <section class="section section--alt">
+    <div class="wrap">
+      <div class="split" style="align-items:start">
+        <div class="reveal">
+          <span class="eyebrow">How teams use it</span>
+          <h2>From a whiteboard scenario to a signed report</h2>
+          <p class="lede">
+            The loop most of our customers settle into within their first quarter — simulation
+            catches the design errors, hardware confirms the ones that matter.
+          </p>
+          <figure class="quote" style="margin:28px 0 0">
+            <blockquote>
+              “We stopped arguing about whether the model or the chamber was wrong. Kestrel made
+              them the same artifact, and the disagreements became a diff we could triage in an
+              afternoon.”
+            </blockquote>
+            <figcaption>
+              <span class="avatar" aria-hidden="true">DA</span>
+              <span>
+                <b>Dr. Amara Osei</b>
+                <span>Principal RF Architect, Northridge Aerospace</span>
+              </span>
+            </figcaption>
+          </figure>
+        </div>
+
+        <div class="steps reveal" data-delay="80">
+          <div class="step">
+            <div class="step__n">STEP 01</div>
+            <div>
+              <h3>Build the scenario</h3>
+              <p>Import terrain and platform trajectories, place emitters and antennas, and solve propagation across the mission timeline.</p>
+            </div>
+          </div>
+          <div class="step">
+            <div class="step__n">STEP 02</div>
+            <div>
+              <h3>Sweep it in CI</h3>
+              <p>Every commit runs the regression suite against the simulator. Broken link budgets fail the build, not the schedule.</p>
+            </div>
+          </div>
+          <div class="step">
+            <div class="step__n">STEP 03</div>
+            <div>
+              <h3>Play it into hardware</h3>
+              <p>Range streams the same scenario through your front end at full rate, with calibrated delay, Doppler, and angle of arrival.</p>
+            </div>
+          </div>
+          <div class="step">
+            <div class="step__n">STEP 04</div>
+            <div>
+              <h3>Diff and sign off</h3>
+              <p>Compare simulated and measured results point by point, then export a versioned report with the full calibration chain attached.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==================================================== reliability -- -->
+  <section class="section">
+    <div class="wrap">
+      <div class="section-head center reveal">
+        <span class="eyebrow">Built for regulated programs</span>
+        <h2>Deploys where your data has to stay</h2>
+      </div>
+
+      <div class="grid grid--4">
+        <article class="card reveal">
+          <h3>Air-gapped install</h3>
+          <p>Offline license server, no telemetry, and a signed offline package feed for updates.</p>
+        </article>
+        <article class="card reveal" data-delay="60">
+          <h3>ITAR-aware support</h3>
+          <p>US-person support tier available, with escalation paths that never leave the boundary.</p>
+        </article>
+        <article class="card reveal" data-delay="120">
+          <h3>Reproducible builds</h3>
+          <p>Pinned solver versions and deterministic seeds so a 2023 result reruns bit-identical today.</p>
+        </article>
+        <article class="card reveal" data-delay="180">
+          <h3>Audit trail</h3>
+          <p>Every measurement carries operator, firmware, cal date, and scenario hash in the record.</p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================ CTA -- -->
+  <section class="section--tight" style="padding-bottom:clamp(64px,9vw,116px)">
+    <div class="wrap">
+      <div class="cta reveal">
+        <span class="eyebrow" style="justify-content:center;display:inline-flex">Get started</span>
+        <h2>See it against your own scenario</h2>
+        <p class="lede">
+          Send us a link budget you already argue about internally. We will model it in Studio and
+          walk you through the result — usually within a week, always with your engineers in the room.
+        </p>
+        <div class="btn-row">
+          <a class="btn" href="contact.html">Request a demo</a>
+          <a class="btn btn--ghost" href="contact.html#trial">Start a 30-day trial</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer class="site-footer footer">
+  <div class="wrap">
+    <div class="footer__grid">
+      <div class="footer__brand">
+        <a class="brand" href="index.html">
+          <svg class="brand__mark" width="28" height="28" viewBox="0 0 32 32" aria-hidden="true">
+            <rect width="32" height="32" rx="8" fill="#0e131c" stroke="#1d2635"></rect>
+            <path d="M5 20c3 0 3-9 6-9s3 12 6 12 2.5-11 5.5-11S25 20 27 20" stroke="#2ee6c5" stroke-width="1.9" fill="none" stroke-linecap="round" stroke-linejoin="round"></path>
+          </svg>
+          Kestrel RF
+        </a>
+        <p>RF simulation and automated test software for teams that have to be right the first time.</p>
+      </div>
+
+      <div>
+        <h4>Product</h4>
+        <ul>
+          <li><a href="products.html#studio">Kestrel Studio</a></li>
+          <li><a href="products.html#bench">Kestrel Bench</a></li>
+          <li><a href="products.html#range">Kestrel Range</a></li>
+          <li><a href="products.html#sdk">Core SDK</a></li>
+          <li><a href="products.html#compare">Pricing</a></li>
+        </ul>
+      </div>
+
+      <div>
+        <h4>Solutions</h4>
+        <ul>
+          <li><a href="solutions.html#radar">Radar &amp; EW</a></li>
+          <li><a href="solutions.html#wireless">5G &amp; NTN</a></li>
+          <li><a href="solutions.html#satcom">Satcom</a></li>
+          <li><a href="solutions.html#semiconductor">Semiconductor</a></li>
+        </ul>
+      </div>
+
+      <div>
+        <h4>Company</h4>
+        <ul>
+          <li><a href="company.html">About</a></li>
+          <li><a href="company.html#careers">Careers</a></li>
+          <li><a href="contact.html">Contact</a></li>
+          <li><a href="contact.html#support">Support</a></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="footer__bar">
+      <span>© <span data-year>2026</span> Kestrel RF Systems, Inc.</span>
+      <span class="spacer"></span>
+      <a href="#">Privacy</a>
+      <a href="#">Terms</a>
+      <a href="#">Export compliance</a>
+    </div>
+  </div>
+</footer>
+
+<script src="assets/js/main.js"></script>
+</body>
+</html>

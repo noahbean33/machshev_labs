@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Solutions — Kestrel RF</title>
+<meta name="description" content="How radar and EW, 5G and non-terrestrial network, satcom, and semiconductor teams use Kestrel RF to model the channel, automate the bench, and shorten qualification.">
+<meta name="theme-color" content="#06080c">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%2306080c'/%3E%3Cpath d='M5 20c3 0 3-9 6-9s3 12 6 12 2.5-11 5.5-11S25 20 27 20' stroke='%232ee6c5' stroke-width='2' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
+<link rel="stylesheet" href="assets/css/styles.css">
+</head>
+<body>
+
+<header class="site-header">
+  <div class="wrap">
+    <nav class="nav" aria-label="Primary">
+      <a class="brand" href="index.html">
+        <svg class="brand__mark" width="28" height="28" viewBox="0 0 32 32" aria-hidden="true">
+          <rect width="32" height="32" rx="8" fill="#0e131c" stroke="#1d2635"></rect>
+          <path d="M5 20c3 0 3-9 6-9s3 12 6 12 2.5-11 5.5-11S25 20 27 20" stroke="#2ee6c5" stroke-width="1.9" fill="none" stroke-linecap="round" stroke-linejoin="round"></path>
+        </svg>
+        Kestrel RF<span class="brand__sub">Test &amp; Simulation</span>
+      </a>
+      <button class="nav__toggle" type="button" aria-expanded="false" aria-label="Toggle navigation"><span></span></button>
+      <ul class="nav__links">
+        <li><a href="products.html">Products</a></li>
+        <li><a href="solutions.html" aria-current="page">Solutions</a></li>
+        <li><a href="products.html#compare">Pricing</a></li>
+        <li><a href="company.html">Company</a></li>
+      </ul>
+      <div class="nav__cta">
+        <a class="btn btn--ghost btn--sm" href="contact.html#trial">Start trial</a>
+        <a class="btn btn--sm" href="contact.html">Request a demo</a>
+      </div>
+    </nav>
+  </div>
+</header>
+
+<main>
+
+  <section class="page-head">
+    <div class="wrap">
+      <span class="eyebrow">Solutions</span>
+      <h1 style="max-width:18ch">Different missions, the same broken loop</h1>
+      <p class="lede">
+        Whatever the band or the standard, the pattern repeats: models that cannot be tested and
+        tests that cannot be modelled. Here is how four kinds of teams close it.
+      </p>
+    </div>
+  </section>
+
+  <!-- =========================================================== radar -- -->
+  <section class="section" id="radar">
+    <div class="wrap">
+      <div class="split">
+        <div class="reveal">
+          <span class="eyebrow">Radar &amp; electronic warfare</span>
+          <h2>Fly the threat scenario before the aircraft does</h2>
+          <p class="lede">
+            Build a dense, dynamic emitter environment in Studio, then play it straight into the
+            receiver with Range. Your ESM library gets exercised against the same scene every night
+            instead of twice a year on the range.
+          </p>
+          <ul class="ticks" style="margin-top:22px">
+            <li>Pulse-agile emitters with realistic PRI stagger, hopping, and scan patterns</li>
+            <li>Terrain-masked line of sight and multipath against a moving platform</li>
+            <li>Jamming and counter-jamming loops with closed-loop technique response</li>
+            <li>Repeat a field anomaly on the bench from the recorded scenario hash</li>
+          </ul>
+        </div>
+        <div class="reveal" data-delay="80">
+          <figure class="quote">
+            <blockquote>
+              “We used to get four range days a year and lose one of them to setup. Now we arrive
+              having already run the scenario nine hundred times, and range days are for the
+              surprises we could not model.”
+            </blockquote>
+            <figcaption>
+              <span class="avatar" aria-hidden="true">MR</span>
+              <span><b>Marcus Reyes</b><span>EW Systems Lead, Solstice Radar</span></span>
+            </figcaption>
+          </figure>
+          <div class="stats" style="margin-top:22px;grid-template-columns:repeat(2,1fr)">
+            <div><b>9×</b><span>more scenario runs per program</span></div>
+            <div><b>3 wks</b><span>cut from integration schedule</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ======================================================== wireless -- -->
+  <section class="section section--alt" id="wireless">
+    <div class="wrap">
+      <div class="split">
+        <div class="reveal" data-delay="80" style="order:2">
+          <figure class="quote">
+            <blockquote>
+              “Conformance used to be a two-month sprint at the end. It is now a job that runs on
+              every merge, and the end-of-program sprint is a formality.”
+            </blockquote>
+            <figcaption>
+              <span class="avatar" aria-hidden="true">LK</span>
+              <span><b>Lena Kowalczyk</b><span>Head of Validation, Orbitel</span></span>
+            </figcaption>
+          </figure>
+          <div class="stats" style="margin-top:22px;grid-template-columns:repeat(2,1fr)">
+            <div><b>62%</b><span>less chamber time</span></div>
+            <div><b>11 min</b><span>full regression in CI</span></div>
+          </div>
+        </div>
+        <div class="reveal">
+          <span class="eyebrow">5G, 6G &amp; non-terrestrial networks</span>
+          <h2>Conformance as a build step, not a phase</h2>
+          <p class="lede">
+            Encode the 3GPP limit lines once and let CI enforce them. Bench runs the same sweeps on
+            the simulator for every merge and on the chamber rack before every release candidate.
+          </p>
+          <ul class="ticks" style="margin-top:22px">
+            <li>TR 38.901 UMa, UMi, RMa, and InH channel models with correlated fading</li>
+            <li>FR1 and FR2 measurement suites: EVM, ACLR, spurious, sensitivity, blocking</li>
+            <li>NTN Doppler and delay profiles from real LEO and GEO ephemerides</li>
+            <li>Beam-management sweeps across codebooks without touching the positioner</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========================================================== satcom -- -->
+  <section class="section" id="satcom">
+    <div class="wrap">
+      <div class="split">
+        <div class="reveal">
+          <span class="eyebrow">Satcom &amp; ground segment</span>
+          <h2>Model the pass, not just the link</h2>
+          <p class="lede">
+            Propagate real orbits, apply rain fade and scintillation from ITU-R models, and see what
+            the terminal actually experiences across a whole pass — including handover between
+            spacecraft.
+          </p>
+          <ul class="ticks" style="margin-top:22px">
+            <li>TLE and SP3 ephemeris import with full geometry over time</li>
+            <li>ITU-R P.618 rain fade, gaseous absorption, and tropospheric scintillation</li>
+            <li>Ka- and V-band link budgets with adaptive coding and modulation loops</li>
+            <li>Terminal tracking error injection to bound pointing-loss margin</li>
+          </ul>
+        </div>
+        <div class="reveal" data-delay="80">
+          <div class="scope">
+            <div class="scope__bar">
+              <div class="scope__dots"><i></i><i></i><i></i></div>
+              studio · leo_pass · Ka-band
+            </div>
+            <div style="padding:20px 22px">
+              <svg viewBox="0 0 420 210" width="100%" height="auto" role="img" aria-label="Chart of carrier-to-noise ratio across a satellite pass, with a rain fade event dipping toward the link margin threshold">
+                <g stroke="#141c28" stroke-width="1">
+                  <path d="M40 30h360M40 70h360M40 110h360M40 150h360"/>
+                  <path d="M110 20v150M180 20v150M250 20v150M320 20v150"/>
+                </g>
+                <path d="M40 170V20" stroke="#2b374a"/><path d="M40 170h360" stroke="#2b374a"/>
+                <!-- margin threshold -->
+                <path d="M40 132h308" stroke="#ffb454" stroke-dasharray="5 4" stroke-width="1.2"/>
+                <text x="354" y="135" font-family="ui-monospace, monospace" font-size="8" fill="#ffb454">margin</text>
+                <!-- C/N curve -->
+                <path d="M40 158 C 90 120, 120 62, 170 48 C 200 40, 210 44, 226 74 C 238 96, 244 100, 258 70 C 290 40, 330 96, 400 156"
+                      fill="none" stroke="#2ee6c5" stroke-width="2" stroke-linecap="round"/>
+                <path d="M40 158 C 90 120, 120 62, 170 48 C 200 40, 210 44, 226 74 C 238 96, 244 100, 258 70 C 290 40, 330 96, 400 156 L400 170 L40 170Z"
+                      fill="rgba(46,230,197,0.10)" stroke="none"/>
+                <circle cx="236" cy="94" r="3" fill="#ffb454"/>
+                <text x="196" y="112" font-family="ui-monospace, monospace" font-size="8" fill="#ffb454">rain fade −6.4 dB</text>
+                <g font-family="ui-monospace, monospace" font-size="8" fill="#6f7c93">
+                  <text x="10" y="34">28</text><text x="10" y="74">22</text><text x="10" y="114">16</text><text x="10" y="154">10</text>
+                  <text x="16" y="192">C/N dB</text>
+                  <text x="96" y="186">T+04</text><text x="166" y="186">T+08</text><text x="236" y="186">T+12</text><text x="306" y="186">T+16</text>
+                </g>
+              </svg>
+            </div>
+            <dl class="scope__readout">
+              <div><dt>Elevation</dt><dd>62.4°</dd></div>
+              <div><dt>Slant range</dt><dd>1 184 km</dd></div>
+              <div><dt>Doppler</dt><dd>−41.2 kHz</dd></div>
+              <div><dt>Avail.</dt><dd>99.62%</dd></div>
+            </dl>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- =================================================== semiconductor -- -->
+  <section class="section section--alt" id="semiconductor">
+    <div class="wrap">
+      <div class="split">
+        <div class="reveal" data-delay="80" style="order:2">
+          <div class="code">
+            <div class="code__bar">
+              <div class="scope__dots"><i></i><i></i><i></i></div>
+              pa_characterisation.py
+            </div>
+<pre><code><span class="c-kw">from</span> kestrel <span class="c-kw">import</span> bench, dut
+
+<span class="c-var">pa</span> = dut.<span class="c-fn">Amplifier</span>(<span class="c-str">"KX-2740"</span>, band=(<span class="c-num">3.3e9</span>, <span class="c-num">4.2e9</span>))
+
+<span class="c-var">corners</span> = bench.<span class="c-fn">Matrix</span>(
+    temp_c   = [<span class="c-num">-40</span>, <span class="c-num">25</span>, <span class="c-num">85</span>, <span class="c-num">125</span>],
+    vdd      = [<span class="c-num">4.6</span>, <span class="c-num">5.0</span>, <span class="c-num">5.4</span>],
+    tone     = [<span class="c-str">"cw"</span>, <span class="c-str">"nr_100mhz"</span>, <span class="c-str">"two_tone"</span>],
+)
+
+<span class="c-var">result</span> = <span class="c-var">corners</span>.<span class="c-fn">characterise</span>(
+    <span class="c-var">pa</span>, measure=[<span class="c-str">"gain"</span>, <span class="c-str">"p1db"</span>, <span class="c-str">"pae"</span>, <span class="c-str">"am_pm"</span>],
+    chamber=<span class="c-str">"thermal-3"</span>, settle_s=<span class="c-num">90</span>,
+)
+
+<span class="c-var">result</span>.<span class="c-fn">to_datasheet</span>(<span class="c-str">"KX-2740_rev_c.pdf"</span>)
+<span class="c-com"># 36 corners · 4h 12m unattended · 0 operator touches</span></code></pre>
+          </div>
+        </div>
+        <div class="reveal">
+          <span class="eyebrow">Semiconductor &amp; component</span>
+          <h2>Characterise every corner without an operator</h2>
+          <p class="lede">
+            Device characterisation is a combinatorial problem that people should not be running by
+            hand. Bench drives the chamber, the supplies, and the analyzers overnight, and produces
+            the datasheet plots as an artifact.
+          </p>
+          <ul class="ticks" style="margin-top:22px">
+            <li>Temperature, bias, and waveform corner matrices with automatic settling</li>
+            <li>Load-pull integration and X-parameter capture on supported VNAs</li>
+            <li>Golden-unit comparison to catch process drift between wafer lots</li>
+            <li>Datasheet-ready plots and tables generated straight from the run record</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ====================================================== migration -- -->
+  <section class="section">
+    <div class="wrap">
+      <div class="section-head center reveal">
+        <span class="eyebrow">Adoption</span>
+        <h2>You do not have to throw anything away</h2>
+        <p class="lede">
+          Most teams start by wrapping the scripts they already trust, then move the physics over
+          once the results agree.
+        </p>
+      </div>
+      <div class="grid grid--3">
+        <article class="card reveal">
+          <h3>Keep your instruments</h3>
+          <p>If it speaks SCPI or VISA, Bench can drive it today. If it does not, we write the driver — usually inside two weeks, at no charge on Program and above.</p>
+        </article>
+        <article class="card reveal" data-delay="60">
+          <h3>Keep your scripts</h3>
+          <p>Existing Python and MATLAB routines run inside a Kestrel test step unchanged, so migration is incremental instead of a rewrite.</p>
+        </article>
+        <article class="card reveal" data-delay="120">
+          <h3>Keep your data</h3>
+          <p>Import historical Touchstone, SigMF, and CSV archives to validate the model against measurements you already believe.</p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section class="section--tight" style="padding-bottom:clamp(64px,9vw,116px)">
+    <div class="wrap">
+      <div class="cta reveal">
+        <h2>Which of these looks like your program?</h2>
+        <p class="lede">
+          Tell us the band, the standard, and what currently takes too long. We will show you the
+          shortest path through it.
+        </p>
+        <div class="btn-row">
+          <a class="btn" href="contact.html">Book a technical call</a>
+          <a class="btn btn--ghost" href="products.html">Compare products</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer class="site-footer footer">
+  <div class="wrap">
+    <div class="footer__grid">
+      <div class="footer__brand">
+        <a class="brand" href="index.html">
+          <svg class="brand__mark" width="28" height="28" viewBox="0 0 32 32" aria-hidden="true">
+            <rect width="32" height="32" rx="8" fill="#0e131c" stroke="#1d2635"></rect>
+            <path d="M5 20c3 0 3-9 6-9s3 12 6 12 2.5-11 5.5-11S25 20 27 20" stroke="#2ee6c5" stroke-width="1.9" fill="none" stroke-linecap="round" stroke-linejoin="round"></path>
+          </svg>
+          Kestrel RF
+        </a>
+        <p>RF simulation and automated test software for teams that have to be right the first time.</p>
+      </div>
+      <div>
+        <h4>Product</h4>
+        <ul>
+          <li><a href="products.html#studio">Kestrel Studio</a></li>
+          <li><a href="products.html#bench">Kestrel Bench</a></li>
+          <li><a href="products.html#range">Kestrel Range</a></li>
+          <li><a href="products.html#sdk">Core SDK</a></li>
+          <li><a href="products.html#compare">Pricing</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Solutions</h4>
+        <ul>
+          <li><a href="solutions.html#radar">Radar &amp; EW</a></li>
+          <li><a href="solutions.html#wireless">5G &amp; NTN</a></li>
+          <li><a href="solutions.html#satcom">Satcom</a></li>
+          <li><a href="solutions.html#semiconductor">Semiconductor</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Company</h4>
+        <ul>
+          <li><a href="company.html">About</a></li>
+          <li><a href="company.html#careers">Careers</a></li>
+          <li><a href="contact.html">Contact</a></li>
+          <li><a href="contact.html#support">Support</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer__bar">
+      <span>© <span data-year>2026</span> Kestrel RF Systems, Inc.</span>
+      <span class="spacer"></span>
+      <a href="#">Privacy</a>
+      <a href="#">Terms</a>
+      <a href="#">Export compliance</a>
+    </div>
+  </div>
+</footer>
+
+<script src="assets/js/main.js"></script>
+</body>
+</html>

@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Products — Kestrel RF</title>
+<meta name="description" content="Kestrel Studio, Bench, Range, and the Core SDK: RF channel simulation, automated instrument test, hardware-in-the-loop environment generation, and a scriptable developer platform.">
+<meta name="theme-color" content="#06080c">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%2306080c'/%3E%3Cpath d='M5 20c3 0 3-9 6-9s3 12 6 12 2.5-11 5.5-11S25 20 27 20' stroke='%232ee6c5' stroke-width='2' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
+<link rel="stylesheet" href="assets/css/styles.css">
+</head>
+<body>
+
+<header class="site-header">
+  <div class="wrap">
+    <nav class="nav" aria-label="Primary">
+      <a class="brand" href="index.html">
+        <svg class="brand__mark" width="28" height="28" viewBox="0 0 32 32" aria-hidden="true">
+          <rect width="32" height="32" rx="8" fill="#0e131c" stroke="#1d2635"></rect>
+          <path d="M5 20c3 0 3-9 6-9s3 12 6 12 2.5-11 5.5-11S25 20 27 20" stroke="#2ee6c5" stroke-width="1.9" fill="none" stroke-linecap="round" stroke-linejoin="round"></path>
+        </svg>
+        Kestrel RF<span class="brand__sub">Test &amp; Simulation</span>
+      </a>
+      <button class="nav__toggle" type="button" aria-expanded="false" aria-label="Toggle navigation"><span></span></button>
+      <ul class="nav__links">
+        <li><a href="products.html" aria-current="page">Products</a></li>
+        <li><a href="solutions.html">Solutions</a></li>
+        <li><a href="#compare">Pricing</a></li>
+        <li><a href="company.html">Company</a></li>
+      </ul>
+      <div class="nav__cta">
+        <a class="btn btn--ghost btn--sm" href="contact.html#trial">Start trial</a>
+        <a class="btn btn--sm" href="contact.html">Request a demo</a>
+      </div>
+    </nav>
+  </div>
+</header>
+
+<main>
+
+  <section class="page-head">
+    <div class="wrap">
+      <span class="eyebrow">Products</span>
+      <h1 style="max-width:16ch">The full signal chain, in software</h1>
+      <p class="lede">
+        Four products that share one physics engine, one data model, and one API. Buy the piece you
+        need today; the rest snaps on without a migration.
+      </p>
+    </div>
+  </section>
+
+  <!-- ========================================================== studio -- -->
+  <section class="section" id="studio">
+    <div class="wrap">
+      <div class="split">
+        <div class="reveal">
+          <span class="eyebrow">01 — Simulation</span>
+          <h2>Kestrel Studio</h2>
+          <p class="lede">
+            A physics-based environment for modelling how a signal actually travels. Terrain,
+            weather, platform motion, antenna patterns, and interference all resolve in one solver
+            so a result is defensible rather than indicative.
+          </p>
+          <ul class="ticks" style="margin-top:22px">
+            <li>GPU ray-tracing with UTD diffraction and rough-surface scattering</li>
+            <li>ITU-R P.676/P.838 atmospheric and rain models; 3GPP TR 38.901 statistical channels</li>
+            <li>Imported antenna patterns from HFSS, CST, FEKO, or measured cuts</li>
+            <li>Phased-array synthesis including mutual coupling and element failure studies</li>
+            <li>Monte-Carlo campaigns distributed across a cluster, resumable mid-run</li>
+          </ul>
+          <div class="btn-row" style="margin-top:24px">
+            <a class="btn btn--ghost" href="contact.html">Talk to an engineer</a>
+          </div>
+        </div>
+
+        <div class="reveal" data-delay="80">
+          <div class="scope">
+            <div class="scope__bar">
+              <div class="scope__dots"><i></i><i></i><i></i></div>
+              studio · link_budget.solve()
+            </div>
+            <div style="padding:22px">
+              <svg viewBox="0 0 420 240" width="100%" height="auto" role="img" aria-label="Diagram of a link budget across terrain with direct, reflected, and diffracted rays">
+                <defs>
+                  <linearGradient id="terr" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" stop-color="#1d2635"/><stop offset="100%" stop-color="#0b1017"/>
+                  </linearGradient>
+                </defs>
+                <g stroke="#141c28" stroke-width="1">
+                  <path d="M0 40h420M0 80h420M0 120h420M0 160h420"/>
+                </g>
+                <path d="M0 200 L70 196 L120 168 L165 176 L215 130 L268 158 L320 150 L370 186 L420 190 L420 240 L0 240Z" fill="url(#terr)" stroke="#2b374a" stroke-width="1.2"/>
+                <!-- tx -->
+                <g stroke="#2ee6c5" stroke-width="1.6" fill="none">
+                  <path d="M64 196 L64 150"/><path d="M56 150 L64 138 L72 150"/>
+                </g>
+                <!-- rx -->
+                <g stroke="#7d6bff" stroke-width="1.6" fill="none">
+                  <path d="M356 186 L356 148"/><circle cx="356" cy="142" r="6"/>
+                </g>
+                <!-- direct ray -->
+                <path d="M64 140 L356 144" stroke="#2ee6c5" stroke-width="1.6" fill="none"/>
+                <!-- reflected -->
+                <path d="M64 140 L214 196 L356 146" stroke="#ffb454" stroke-width="1.2" stroke-dasharray="4 4" fill="none" opacity="0.85"/>
+                <!-- diffracted -->
+                <path d="M64 140 Q 216 96 356 142" stroke="#7d6bff" stroke-width="1.2" stroke-dasharray="2 5" fill="none" opacity="0.9"/>
+                <g font-family="ui-monospace, monospace" font-size="9" fill="#6f7c93">
+                  <text x="88" y="126">LOS · −94.2 dB</text>
+                  <text x="150" y="214" fill="#ffb454">ground reflection</text>
+                  <text x="176" y="94" fill="#7d6bff">edge diffraction</text>
+                  <text x="262" y="172">Rx −101.8 dBm</text>
+                </g>
+              </svg>
+            </div>
+            <dl class="scope__readout">
+              <div><dt>Rays</dt><dd>1.2 M</dd></div>
+              <div><dt>Solve</dt><dd>3.4 s</dd></div>
+              <div><dt>Δ Measured</dt><dd>0.6 dB</dd></div>
+              <div><dt>Seeds</dt><dd>512</dd></div>
+            </dl>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- =========================================================== bench -- -->
+  <section class="section section--alt" id="bench">
+    <div class="wrap">
+      <div class="split">
+        <div class="code reveal" data-delay="80" style="order:2">
+          <div class="code__bar">
+            <div class="scope__dots"><i></i><i></i><i></i></div>
+            bench · run log
+          </div>
+<pre><code><span class="c-com">$ kestrel bench run acp_suite.py --rack chamber-2</span>
+
+<span class="c-fn">✓</span> <span class="c-var">connect</span>   R&amp;S FSW43        fw 5.20.1   cal 12d
+<span class="c-fn">✓</span> <span class="c-var">connect</span>   Keysight N5182B   fw 4.11.0   cal  9d
+<span class="c-fn">✓</span> <span class="c-var">connect</span>   Kestrel Range-8   fw 9.2.4
+<span class="c-fn">✓</span> <span class="c-var">de-embed</span>  fixture_b7.s2p    <span class="c-num">0.31</span> dB @ <span class="c-num">3.9</span> GHz
+
+  <span class="c-var">sweep</span> power −95 → −55 dBm   <span class="c-str">[18 points]</span>
+  ├─ evm         <span class="c-fn">PASS</span>   max <span class="c-num">2.71</span>%   limit <span class="c-num">3.50</span>%
+  ├─ aclr_lo     <span class="c-fn">PASS</span>   min <span class="c-num">33.8</span> dB  limit <span class="c-num">30.0</span> dB
+  ├─ aclr_hi     <span class="c-fn">PASS</span>   min <span class="c-num">34.2</span> dB  limit <span class="c-num">30.0</span> dB
+  └─ sensitivity <span class="c-str">WARN</span>   <span class="c-num">-92.4</span> dBm  limit <span class="c-num">-93.0</span> dBm
+                 <span class="c-com">└ within 0.6 dB uncertainty budget</span>
+
+<span class="c-var">report</span> → runs/2026-08-05T0914Z/acp_suite.pdf  <span class="c-com">(signed)</span>
+<span class="c-var">elapsed</span> 4m 11s   <span class="c-var">operator</span> a.osei   <span class="c-var">scenario</span> 8f3c91d</code></pre>
+        </div>
+
+        <div class="reveal">
+          <span class="eyebrow">02 — Automated test</span>
+          <h2>Kestrel Bench</h2>
+          <p class="lede">
+            Instrument orchestration that treats a test plan as code. Bench owns the rack — discovery,
+            calibration state, sequencing, limits, and the report — so your engineers stop maintaining
+            a decade of one-off scripts.
+          </p>
+          <ul class="ticks" style="margin-top:22px">
+            <li>400+ validated drivers across SCPI, IVI-C, VISA, and vendor SDKs</li>
+            <li>Automatic de-embedding from Touchstone fixtures and cal kits</li>
+            <li>Uncertainty budgets computed per measurement, not bolted on afterwards</li>
+            <li>Headless runner with JUnit output for GitHub Actions, GitLab CI, and Jenkins</li>
+            <li>Signed PDF and JSON reports carrying the full traceability chain</li>
+          </ul>
+          <div class="btn-row" style="margin-top:24px">
+            <a class="btn btn--ghost" href="contact.html">See the driver list</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- =========================================================== range -- -->
+  <section class="section" id="range">
+    <div class="wrap">
+      <div class="section-head reveal">
+        <span class="eyebrow">03 — Hardware in the loop</span>
+        <h2>Kestrel Range</h2>
+        <p class="lede">
+          Real-time RF environment generation. Take a Studio scenario and play it into a live
+          receiver at full rate — dynamic delay, Doppler, angle of arrival, and pulse-dense emitter
+          traffic, all deterministic enough to repeat a failure exactly.
+        </p>
+      </div>
+
+      <div class="grid grid--3">
+        <article class="card reveal">
+          <div class="icon" aria-hidden="true">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M4 12a8 8 0 0 1 8-8M7.5 12A4.5 4.5 0 0 1 12 7.5"/><circle cx="12" cy="12" r="1.6"/><path d="M12 12l7 7"/>
+            </svg>
+          </div>
+          <h3>Dense emitter scenes</h3>
+          <p>Above 4.1 M pulses/second across 64 simultaneous emitter tracks, with agile PRI, frequency hopping, and realistic scan patterns.</p>
+        </article>
+        <article class="card reveal" data-delay="60">
+          <div class="icon icon--violet" aria-hidden="true">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M3 17V7M8 17V4M13 17v-8M18 17V6M21 20H3"/>
+            </svg>
+          </div>
+          <h3>2 GHz per channel</h3>
+          <p>Instantaneous bandwidth to 2 GHz on supported RFSoC and PXIe targets, with phase-coherent multi-channel arrays.</p>
+        </article>
+        <article class="card reveal" data-delay="120">
+          <div class="icon icon--amber" aria-hidden="true">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 2"/>
+            </svg>
+          </div>
+          <h3>Deterministic timing</h3>
+          <p>Sub-microsecond scenario latency, disciplined to IEEE 1588 or a GPSDO, so a captured anomaly replays on the same sample.</p>
+        </article>
+      </div>
+
+      <div class="table-wrap reveal" style="margin-top:26px">
+        <table>
+          <thead>
+            <tr><th scope="col">Target</th><th scope="col">Channels</th><th scope="col">Bandwidth</th><th scope="col">Latency</th><th scope="col">Typical use</th></tr>
+          </thead>
+          <tbody>
+            <tr><th scope="row">Range-2 (desktop)</th><td>2 Tx / 2 Rx</td><td>200 MHz</td><td>&lt; 12 µs</td><td>Bench bring-up, training</td></tr>
+            <tr><th scope="row">Range-8 (PXIe)</th><td>8 Tx / 8 Rx</td><td>1 GHz</td><td>&lt; 3 µs</td><td>Radar and EW integration labs</td></tr>
+            <tr><th scope="row">Range-32 (rack)</th><td>32 Tx / 32 Rx</td><td>2 GHz</td><td>&lt; 900 ns</td><td>Array HIL, anechoic chambers</td></tr>
+            <tr><th scope="row">Range Cloud</th><td>Virtual</td><td>Scenario-limited</td><td>Non-real-time</td><td>Regression sweeps in CI</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================= sdk -- -->
+  <section class="section section--alt" id="sdk">
+    <div class="wrap">
+      <div class="split">
+        <div class="reveal">
+          <span class="eyebrow">04 — Developer platform</span>
+          <h2>Kestrel Core SDK</h2>
+          <p class="lede">
+            Every capability in the platform is a library call first and a UI second. Core is what
+            Studio, Bench, and Range are built on — and it ships with the same support contract.
+          </p>
+          <ul class="ticks" style="margin-top:22px">
+            <li>Python 3.10+, C++20, and a MATLAB toolbox against one ABI</li>
+            <li>Zero-copy NumPy I/Q buffers; Arrow and pandas result frames</li>
+            <li>SigMF, HDF5, and Touchstone readers and writers</li>
+            <li>Deterministic seeding — a run from three years ago reproduces bit-identical</li>
+            <li>Redistributable runtime for embedding in your own tooling</li>
+          </ul>
+        </div>
+
+        <div class="code reveal" data-delay="80">
+          <div class="code__bar">
+            <div class="scope__dots"><i></i><i></i><i></i></div>
+            quickstart.py
+          </div>
+<pre><code><span class="c-kw">import</span> numpy <span class="c-kw">as</span> np
+<span class="c-kw">from</span> kestrel.core <span class="c-kw">import</span> IQ, channel, metrics
+
+<span class="c-var">tx</span> = IQ.<span class="c-fn">from_sigmf</span>(<span class="c-str">"captures/nr_ul_64qam.sigmf"</span>)
+
+<span class="c-var">ch</span> = channel.<span class="c-fn">TappedDelayLine</span>(
+    taps_ns=[<span class="c-num">0</span>, <span class="c-num">31</span>, <span class="c-num">72</span>, <span class="c-num">190</span>],
+    gains_db=[<span class="c-num">0</span>, <span class="c-num">-3.2</span>, <span class="c-num">-7.9</span>, <span class="c-num">-14.1</span>],
+    doppler_hz=<span class="c-num">210</span>,
+    seed=<span class="c-num">1337</span>,
+)
+
+<span class="c-var">rx</span> = <span class="c-var">ch</span>(<span class="c-var">tx</span>) + IQ.<span class="c-fn">awgn</span>(snr_db=<span class="c-num">14</span>, seed=<span class="c-num">1337</span>)
+
+<span class="c-fn">print</span>(metrics.<span class="c-fn">evm</span>(<span class="c-var">rx</span>, reference=<span class="c-var">tx</span>))   <span class="c-com"># 2.71 %</span>
+<span class="c-fn">print</span>(metrics.<span class="c-fn">aclr</span>(<span class="c-var">rx</span>, bw=<span class="c-num">100e6</span>))       <span class="c-com"># 33.8 dB</span>
+
+np.<span class="c-fn">save</span>(<span class="c-str">"rx.npy"</span>, <span class="c-var">rx</span>.<span class="c-fn">asarray</span>())     <span class="c-com"># zero-copy</span></code></pre>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========================================================= compare -- -->
+  <section class="section" id="compare">
+    <div class="wrap">
+      <div class="section-head center reveal">
+        <span class="eyebrow">Editions</span>
+        <h2>Licensing that matches how you work</h2>
+        <p class="lede">
+          Node-locked, floating, or site-wide. All editions include the Core SDK and unlimited
+          headless CI runners — we do not charge per build agent.
+        </p>
+      </div>
+
+      <div class="grid grid--3">
+        <article class="card reveal">
+          <div class="product__kicker">Lab</div>
+          <h3 style="font-size:1.7rem;letter-spacing:-0.03em">$14,800<span style="font-size:0.9rem;color:var(--muted);font-weight:400"> /seat·yr</span></h3>
+          <p style="margin:10px 0 18px">For a single team validating designs on a bench they own.</p>
+          <ul class="ticks">
+            <li>Studio + Bench, node-locked</li>
+            <li>Up to 8 instruments per rack</li>
+            <li>Business-hours support</li>
+            <li>Cloud regression runners</li>
+          </ul>
+          <div class="card__foot"><a class="btn btn--ghost btn--wide btn--sm" href="contact.html#trial">Start 30-day trial</a></div>
+        </article>
+
+        <article class="card reveal" data-delay="60" style="border-color:rgba(46,230,197,0.35); box-shadow:var(--shadow-accent)">
+          <div class="product__kicker" style="color:var(--accent)">Program · most common</div>
+          <h3 style="font-size:1.7rem;letter-spacing:-0.03em">$62,000<span style="font-size:0.9rem;color:var(--muted);font-weight:400"> /yr</span></h3>
+          <p style="margin:10px 0 18px">Floating licenses for a program office running several labs at once.</p>
+          <ul class="ticks">
+            <li>Everything in Lab, floating across 10 seats</li>
+            <li>Range HIL targets included</li>
+            <li>Unlimited instruments and racks</li>
+            <li>Named applications engineer</li>
+            <li>Air-gapped license server</li>
+          </ul>
+          <div class="card__foot"><a class="btn btn--wide btn--sm" href="contact.html">Request a quote</a></div>
+        </article>
+
+        <article class="card reveal" data-delay="120">
+          <div class="product__kicker">Enterprise</div>
+          <h3 style="font-size:1.7rem;letter-spacing:-0.03em">Custom</h3>
+          <p style="margin:10px 0 18px">Site-wide deployment for primes and multi-site organisations.</p>
+          <ul class="ticks">
+            <li>Unlimited seats and sites</li>
+            <li>ITAR-aware US-person support tier</li>
+            <li>Solver source escrow</li>
+            <li>Custom driver and model development</li>
+            <li>24/7 escalation with an SLA</li>
+          </ul>
+          <div class="card__foot"><a class="btn btn--ghost btn--wide btn--sm" href="contact.html">Talk to sales</a></div>
+        </article>
+      </div>
+
+      <div class="table-wrap reveal" style="margin-top:30px">
+        <table>
+          <thead>
+            <tr>
+              <th scope="col">Capability</th><th scope="col">Lab</th><th scope="col">Program</th><th scope="col">Enterprise</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><th scope="row">Studio channel &amp; propagation solver</th><td><span class="yes">✓</span></td><td><span class="yes">✓</span></td><td><span class="yes">✓</span></td></tr>
+            <tr><th scope="row">Bench instrument orchestration</th><td><span class="yes">✓</span></td><td><span class="yes">✓</span></td><td><span class="yes">✓</span></td></tr>
+            <tr><th scope="row">Core SDK &amp; CI runners</th><td><span class="yes">✓</span></td><td><span class="yes">✓</span></td><td><span class="yes">✓</span></td></tr>
+            <tr><th scope="row">Range hardware-in-the-loop</th><td><span class="no">—</span></td><td><span class="yes">✓</span></td><td><span class="yes">✓</span></td></tr>
+            <tr><th scope="row">Distributed Monte-Carlo cluster</th><td><span class="no">—</span></td><td><span class="yes">✓</span></td><td><span class="yes">✓</span></td></tr>
+            <tr><th scope="row">Air-gapped / offline licensing</th><td><span class="no">—</span></td><td><span class="yes">✓</span></td><td><span class="yes">✓</span></td></tr>
+            <tr><th scope="row">Source escrow</th><td><span class="no">—</span></td><td><span class="no">—</span></td><td><span class="yes">✓</span></td></tr>
+            <tr><th scope="row">Support response</th><td>Next business day</td><td>4 hours</td><td>1 hour, 24/7</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <p class="form__note reveal" style="margin-top:16px">
+        Academic and non-profit research pricing is available at 80% off list. Ask about it in your
+        first conversation — we will not make you fill in a form twice.
+      </p>
+    </div>
+  </section>
+
+  <section class="section--tight" style="padding-bottom:clamp(64px,9vw,116px)">
+    <div class="wrap">
+      <div class="cta reveal">
+        <h2>Try it on your hardware</h2>
+        <p class="lede">Thirty days, your rack, your scenarios, a real applications engineer on the call.</p>
+        <div class="btn-row">
+          <a class="btn" href="contact.html#trial">Start a trial</a>
+          <a class="btn btn--ghost" href="solutions.html">See it by industry</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer class="site-footer footer">
+  <div class="wrap">
+    <div class="footer__grid">
+      <div class="footer__brand">
+        <a class="brand" href="index.html">
+          <svg class="brand__mark" width="28" height="28" viewBox="0 0 32 32" aria-hidden="true">
+            <rect width="32" height="32" rx="8" fill="#0e131c" stroke="#1d2635"></rect>
+            <path d="M5 20c3 0 3-9 6-9s3 12 6 12 2.5-11 5.5-11S25 20 27 20" stroke="#2ee6c5" stroke-width="1.9" fill="none" stroke-linecap="round" stroke-linejoin="round"></path>
+          </svg>
+          Kestrel RF
+        </a>
+        <p>RF simulation and automated test software for teams that have to be right the first time.</p>
+      </div>
+      <div>
+        <h4>Product</h4>
+        <ul>
+          <li><a href="products.html#studio">Kestrel Studio</a></li>
+          <li><a href="products.html#bench">Kestrel Bench</a></li>
+          <li><a href="products.html#range">Kestrel Range</a></li>
+          <li><a href="products.html#sdk">Core SDK</a></li>
+          <li><a href="products.html#compare">Pricing</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Solutions</h4>
+        <ul>
+          <li><a href="solutions.html#radar">Radar &amp; EW</a></li>
+          <li><a href="solutions.html#wireless">5G &amp; NTN</a></li>
+          <li><a href="solutions.html#satcom">Satcom</a></li>
+          <li><a href="solutions.html#semiconductor">Semiconductor</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Company</h4>
+        <ul>
+          <li><a href="company.html">About</a></li>
+          <li><a href="company.html#careers">Careers</a></li>
+          <li><a href="contact.html">Contact</a></li>
+          <li><a href="contact.html#support">Support</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer__bar">
+      <span>© <span data-year>2026</span> Kestrel RF Systems, Inc.</span>
+      <span class="spacer"></span>
+      <a href="#">Privacy</a>
+      <a href="#">Terms</a>
+      <a href="#">Export compliance</a>
+    </div>
+  </div>
+</footer>
+
+<script src="assets/js/main.js"></script>
+</body>
+</html>
