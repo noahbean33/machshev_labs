@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Free tools &amp; EMI autopsies — CEM LLC</title>
+<meta name="description" content="Free browser-based PCB tools: trace impedance, power-plane resonance, and an FCC Part 15 radiated limit converter. Plus simulation-backed teardowns of real compliance failures.">
+<meta name="theme-color" content="#06080c">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%2306080c'/%3E%3Crect x='6' y='11' width='11' height='11' rx='2' fill='none' stroke='%232ee6c5' stroke-width='2'/%3E%3Cpath d='M20 12.5a7 7 0 0 1 0 8M24 9.5a12 12 0 0 1 0 14' fill='none' stroke='%232ee6c5' stroke-width='2' stroke-linecap='round'/%3E%3C/svg%3E">
+<link rel="stylesheet" href="assets/css/styles.css">
+</head>
+<body>
+
+<header class="site-header">
+  <div class="wrap">
+    <nav class="nav" aria-label="Primary">
+      <a class="brand" href="index.html">
+        <svg class="brand__mark" width="28" height="28" viewBox="0 0 32 32" aria-hidden="true">
+          <rect width="32" height="32" rx="8" fill="#0e131c" stroke="#1d2635"></rect>
+          <rect x="6" y="11" width="11" height="11" rx="2" fill="none" stroke="#2ee6c5" stroke-width="1.7"></rect>
+          <path d="M20 12.5a7 7 0 0 1 0 8M24 9.5a12 12 0 0 1 0 14" fill="none" stroke="#2ee6c5" stroke-width="1.7" stroke-linecap="round"></path>
+        </svg>
+        CEM LLC<span class="brand__sub">EMI · SI/PI · FCC</span>
+      </a>
+      <button class="nav__toggle" type="button" aria-expanded="false" aria-label="Toggle navigation"><span></span></button>
+      <ul class="nav__links">
+        <li><a href="services.html">Services</a></li>
+        <li><a href="services.html#pricing">Pricing</a></li>
+        <li><a href="resources.html" aria-current="page">Free tools</a></li>
+        <li><a href="about.html">About</a></li>
+      </ul>
+      <div class="nav__cta">
+        <a class="btn btn--sm" href="contact.html">Get a fixed-price quote</a>
+      </div>
+    </nav>
+  </div>
+</header>
+
+<main>
+
+  <section class="page-head">
+    <div class="wrap">
+      <span class="eyebrow">Free tools</span>
+      <h1 style="max-width:16ch">No signup, no email gate</h1>
+      <p class="lede">
+        Three calculators that run entirely in your browser — we never see your numbers — plus
+        write-ups of real compliance failures and how they were fixed. Use them and never talk to
+        us; that is fine.
+      </p>
+    </div>
+  </section>
+
+  <!-- ====================================================== impedance -- -->
+  <section class="section" id="impedance">
+    <div class="wrap">
+      <div class="split">
+        <div class="reveal">
+          <span class="eyebrow">Calculator 01</span>
+          <h2>Trace impedance</h2>
+          <p class="lede">
+            Characteristic impedance and propagation delay for a microstrip or symmetric stripline,
+            straight from your stackup numbers.
+          </p>
+          <p style="color:var(--text-dim)">
+            Useful for a sanity check before you send the stackup to your fab, or when the
+            impedance-controlled quote comes back and you want to know whether the geometry they
+            proposed actually lands where you asked.
+          </p>
+          <ul class="ticks" style="margin-top:20px">
+            <li>Copper thickness matters more than people expect — 0.5 oz is 0.7 mil, 1 oz is 1.4 mil</li>
+            <li>For microstrip, solder mask typically pulls Z₀ down by 1–2 Ω</li>
+            <li>A real field solver will disagree by a few percent; this is a first pass</li>
+          </ul>
+        </div>
+
+        <div class="card calc reveal" data-calc="impedance" data-delay="80">
+          <div class="calc__head">
+            <h3>Microstrip / stripline Z₀</h3>
+            <p>Closed-form estimate, IPC-2141A.</p>
+          </div>
+          <div class="calc__body">
+            <div class="field">
+              <label for="imp-type">Geometry</label>
+              <select id="imp-type" name="type">
+                <option value="microstrip">Microstrip (outer layer)</option>
+                <option value="stripline">Symmetric stripline (inner layer)</option>
+              </select>
+            </div>
+            <div class="grid grid--2" style="gap:14px">
+              <div class="field">
+                <label for="imp-w">Trace width w (mil)</label>
+                <input id="imp-w" name="w" type="number" value="8" min="0.1" step="0.5" inputmode="decimal">
+              </div>
+              <div class="field">
+                <label for="imp-h">Dielectric height h (mil)</label>
+                <input id="imp-h" name="h" type="number" value="4" min="0.1" step="0.5" inputmode="decimal">
+              </div>
+              <div class="field">
+                <label for="imp-t">Copper thickness t (mil)</label>
+                <input id="imp-t" name="t" type="number" value="1.4" min="0.1" step="0.1" inputmode="decimal">
+              </div>
+              <div class="field">
+                <label for="imp-er">Dielectric constant εr</label>
+                <input id="imp-er" name="er" type="number" value="4.3" min="1" step="0.1" inputmode="decimal">
+              </div>
+            </div>
+          </div>
+          <dl class="calc__out">
+            <div><dt>Characteristic impedance</dt><dd><span data-out="z0">—</span><small>Ω</small></dd></div>
+            <div><dt>Propagation delay</dt><dd><span data-out="tpd">—</span><small>ps/inch</small></dd></div>
+          </dl>
+          <p class="calc__note">
+            <span class="calc__warn" data-warn style="display:none"></span>
+            Microstrip: <code>Z₀ = 87/√(εr+1.41) · ln(5.98h / (0.8w+t))</code>. Stripline uses the
+            plane-to-plane spacing for h. Valid for 0.1 &lt; w/h &lt; 3.0 and εr between 1 and 15.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ====================================================== resonance -- -->
+  <section class="section section--alt" id="resonance">
+    <div class="wrap">
+      <div class="split">
+        <div class="card calc reveal" data-calc="resonance" data-delay="80" style="order:2">
+          <div class="calc__head">
+            <h3>Power plane cavity resonance</h3>
+            <p>Parallel-plate modes for a power/ground plane pair.</p>
+          </div>
+          <div class="calc__body">
+            <div class="grid grid--2" style="gap:14px">
+              <div class="field">
+                <label for="res-a">Plane length a (mm)</label>
+                <input id="res-a" name="a" type="number" value="80" min="1" step="1" inputmode="decimal">
+              </div>
+              <div class="field">
+                <label for="res-b">Plane width b (mm)</label>
+                <input id="res-b" name="b" type="number" value="50" min="1" step="1" inputmode="decimal">
+              </div>
+              <div class="field">
+                <label for="res-h">Plane separation (mm)</label>
+                <input id="res-h" name="h" type="number" value="0.1" min="0.005" step="0.01" inputmode="decimal">
+              </div>
+              <div class="field">
+                <label for="res-er">Dielectric constant εr</label>
+                <input id="res-er" name="er" type="number" value="4.3" min="1" step="0.1" inputmode="decimal">
+              </div>
+            </div>
+          </div>
+          <dl class="calc__out">
+            <div><dt>Mode (1,0)</dt><dd data-out="f10">—</dd></div>
+            <div><dt>Mode (0,1)</dt><dd data-out="f01">—</dd></div>
+            <div><dt>Mode (1,1)</dt><dd data-out="f11">—</dd></div>
+            <div><dt>Plate capacitance</dt><dd data-out="cplane">—</dd></div>
+          </dl>
+          <p class="calc__note">
+            <code>f(m,n) = c/(2√εr) · √((m/a)² + (n/b)²)</code>. Ideal rectangular cavity with open
+            edges — real boards shift these down a little from via stitching and component loading.
+          </p>
+        </div>
+
+        <div class="reveal">
+          <span class="eyebrow">Calculator 02</span>
+          <h2>Plane resonance</h2>
+          <p class="lede">
+            Where your power and ground planes will resonate as a cavity — and therefore where PDN
+            impedance spikes and edge radiation get worse.
+          </p>
+          <p style="color:var(--text-dim)">
+            If a clock harmonic or a switching frequency lands near one of these modes, you have a
+            plausible suspect for both a PDN anti-resonance and a radiated emissions peak. It is one
+            of the first things worth checking when a scan fails at a frequency nobody expected.
+          </p>
+          <ul class="ticks" style="margin-top:20px">
+            <li>Compare the modes against your clock harmonics and SMPS switching frequency</li>
+            <li>Thinner plane separation raises capacitance without moving the resonances</li>
+            <li>Stitching vias around the board edge push the effective modes up and cut edge radiation</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================ fcc -- -->
+  <section class="section" id="fcc">
+    <div class="wrap">
+      <div class="split">
+        <div class="reveal">
+          <span class="eyebrow">Calculator 03</span>
+          <h2>FCC Part 15 limit converter</h2>
+          <p class="lede">
+            The radiated emissions limit that applies at your frequency, extrapolated to whatever
+            distance you actually measured at — plus your margin and a Pass / Risk / Fail read.
+          </p>
+          <p style="color:var(--text-dim)">
+            Bench pre-compliance almost never happens at the standard's reference distance. This
+            does the 20 dB/decade correction so you can compare your 1 m chamber-free measurement
+            against a 3 m Class B limit without doing it on a napkin.
+          </p>
+          <div class="note-box" style="margin-top:22px">
+            <p>
+              We treat anything under <b>6 dB of margin</b> as RISK rather than PASS. Pre-compliance
+              setups routinely differ from an accredited chamber by more than that, and a 2 dB pass
+              on your bench is not a pass at the lab.
+            </p>
+          </div>
+        </div>
+
+        <div class="card calc reveal" data-calc="fcc" data-delay="80">
+          <div class="calc__head">
+            <h3>Radiated emissions margin</h3>
+            <p>FCC Part 15 Subpart B, quasi-peak limits.</p>
+          </div>
+          <div class="calc__body">
+            <div class="grid grid--2" style="gap:14px">
+              <div class="field">
+                <label for="fcc-class">Device class</label>
+                <select id="fcc-class" name="class">
+                  <option value="B">Class B — residential (3 m ref)</option>
+                  <option value="A">Class A — commercial (10 m ref)</option>
+                </select>
+              </div>
+              <div class="field">
+                <label for="fcc-freq">Frequency (MHz)</label>
+                <input id="fcc-freq" name="freq" type="number" value="240" min="30" step="1" inputmode="decimal">
+              </div>
+              <div class="field">
+                <label for="fcc-dist">Your measurement distance (m)</label>
+                <input id="fcc-dist" name="dist" type="number" value="3" min="0.1" step="0.5" inputmode="decimal">
+              </div>
+              <div class="field">
+                <label for="fcc-meas">Your measured level (dBµV/m)</label>
+                <input id="fcc-meas" name="meas" type="number" value="52.1" step="0.1" inputmode="decimal">
+              </div>
+            </div>
+          </div>
+          <dl class="calc__out">
+            <div><dt>Limit at your distance</dt><dd data-out="limit">—</dd></div>
+            <div><dt>Same limit, linear</dt><dd data-out="uvm">—</dd></div>
+            <div><dt>Margin</dt><dd data-out="margin">—</dd></div>
+            <div><dt>Verdict</dt><dd data-out="verdict">—</dd></div>
+          </dl>
+          <p class="calc__note">
+            <span class="calc__warn" data-warn style="display:none"></span>
+            Far-field extrapolation at 20 dB/decade: <code>limit(d) = limit(d_ref) + 20·log₁₀(d_ref/d)</code>.
+            Quasi-peak limits only; average limits for frequencies above 1 GHz are not covered here.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ====================================================== autopsies -- -->
+  <section class="section section--alt" id="autopsies">
+    <div class="wrap">
+      <div class="section-head reveal">
+        <span class="eyebrow">EMI autopsies</span>
+        <h2>Real failures, taken apart</h2>
+        <p class="lede">
+          Simulation-backed teardowns of compliance failures — what failed, why it failed there
+          specifically, and what the fix actually cost. Written for the engineer who has to fix it,
+          not for a search engine.
+        </p>
+      </div>
+
+      <div class="grid grid--3">
+        <article class="card autopsy reveal">
+          <div class="autopsy__body">
+            <span class="badge badge--fail">Radiated · 240 MHz</span>
+            <h3 style="margin-top:14px">Why this IoT device failed radiated emissions at 240 MHz — and how a $0.05 capacitor fixed it</h3>
+            <p>
+              A 48 MHz crystal, a USB cable acting as a quarter-wave antenna, and a fifth harmonic
+              landing exactly on the resonance. The trace peak was nowhere near the actual coupling
+              path.
+            </p>
+            <div class="autopsy__meta"><span>FCC 15B</span><span>+6.1 dB over</span><span>Fix: $0.05</span></div>
+          </div>
+        </article>
+
+        <article class="card autopsy reveal" data-delay="60">
+          <div class="autopsy__body">
+            <span class="badge badge--risk">PDN · 90 MHz</span>
+            <h3 style="margin-top:14px">The decoupling capacitor that did nothing because it was 9 mm away</h3>
+            <p>
+              Textbook decoupling on the schematic, useless in practice: mounting inductance put the
+              part's series resonance an order of magnitude below where the rail actually needed
+              help.
+            </p>
+            <div class="autopsy__meta"><span>0.9 V core</span><span>1.9 Ω peak</span><span>Fix: layout</span></div>
+          </div>
+        </article>
+
+        <article class="card autopsy reveal" data-delay="120">
+          <div class="autopsy__body">
+            <span class="badge badge--fail">SI · DDR4</span>
+            <h3 style="margin-top:14px">A plane split under a DDR4 byte lane, and the 180 ps of skew nobody budgeted</h3>
+            <p>
+              Twelve nets crossing an analog/digital plane split. It cost margin on the interface and
+              produced a radiating loop at the same time — one layout error, two different failures.
+            </p>
+            <div class="autopsy__meta"><span>DDR4-3200</span><span>180 ps skew</span><span>Fix: reroute</span></div>
+          </div>
+        </article>
+      </div>
+
+      <div class="note-box reveal" style="margin-top:26px">
+        <p>
+          <b>Coming as full write-ups.</b> These three are queued to be published in full, with the
+          simulation files and the measured scans alongside. Ask and we will send you the draft of
+          whichever one matches your problem.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========================================================= plugins -- -->
+  <section class="section">
+    <div class="wrap">
+      <div class="section-head center reveal">
+        <span class="eyebrow">In development</span>
+        <h2>Straight from the tool you already have open</h2>
+        <p class="lede">
+          Lightweight KiCad and Altium plugins to send a net, a net class, or a board region to us
+          without exporting anything by hand.
+        </p>
+      </div>
+      <div class="grid grid--2">
+        <article class="card reveal">
+          <div class="tier__head">
+            <span class="tier__num">KiCad plugin</span>
+            <span class="badge badge--soon">In development</span>
+          </div>
+          <p>Select nets in pcbnew, hit send, and get the scope and price back in the same window. Targeting KiCad 8 and 9.</p>
+        </article>
+        <article class="card reveal" data-delay="60">
+          <div class="tier__head">
+            <span class="tier__num">Altium plugin</span>
+            <span class="badge badge--soon">In development</span>
+          </div>
+          <p>Same flow inside Altium Designer, with stackup and net-class data carried across automatically.</p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section class="section--tight" style="padding-bottom:clamp(64px,9vw,116px)">
+    <div class="wrap">
+      <div class="cta reveal">
+        <h2>The calculators say you have a problem?</h2>
+        <p class="lede">
+          That is what the sprints are for. Send the board and the deadline and you will have a
+          fixed price inside a business day.
+        </p>
+        <div class="btn-row">
+          <a class="btn" href="contact.html">Get a fixed-price quote</a>
+          <a class="btn btn--ghost" href="services.html">See what a sprint covers</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer class="site-footer footer">
+  <div class="wrap">
+    <div class="footer__grid">
+      <div class="footer__brand">
+        <a class="brand" href="index.html">
+          <svg class="brand__mark" width="28" height="28" viewBox="0 0 32 32" aria-hidden="true">
+            <rect width="32" height="32" rx="8" fill="#0e131c" stroke="#1d2635"></rect>
+            <rect x="6" y="11" width="11" height="11" rx="2" fill="none" stroke="#2ee6c5" stroke-width="1.7"></rect>
+            <path d="M20 12.5a7 7 0 0 1 0 8M24 9.5a12 12 0 0 1 0 14" fill="none" stroke="#2ee6c5" stroke-width="1.7" stroke-linecap="round"></path>
+          </svg>
+          CEM LLC
+        </a>
+        <p>Computational electromagnetics for hardware startups. EMI/EMC, signal and power integrity, and FCC pre-compliance without the enterprise license.</p>
+      </div>
+      <div>
+        <h4>Services</h4>
+        <ul>
+          <li><a href="services.html#tier2">SI/PI &amp; EMI sprints</a></li>
+          <li><a href="services.html#tier3">FCC pre-compliance</a></li>
+          <li><a href="services.html#tier1">Pre-flight check (roadmap)</a></li>
+          <li><a href="services.html#pricing">Pricing</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Free tools</h4>
+        <ul>
+          <li><a href="resources.html#impedance">Trace impedance</a></li>
+          <li><a href="resources.html#resonance">Plane resonance</a></li>
+          <li><a href="resources.html#fcc">FCC limit converter</a></li>
+          <li><a href="resources.html#autopsies">EMI autopsies</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Company</h4>
+        <ul>
+          <li><a href="about.html">About</a></li>
+          <li><a href="about.html#approach">How we work</a></li>
+          <li><a href="contact.html">Contact</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer__bar">
+      <span>© <span data-year>2026</span> CEM LLC</span>
+      <span class="spacer"></span>
+      <span>Not an accredited test laboratory</span>
+      <a href="#">Privacy</a>
+      <a href="#">Terms</a>
+    </div>
+  </div>
+</footer>
+
+<script src="assets/js/main.js"></script>
+</body>
+</html>

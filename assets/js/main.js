@@ -1,4 +1,4 @@
-/* Kestrel RF — site behaviour: nav, scroll reveal, hero spectrum, contact form */
+/* CEM LLC — site behaviour: nav, scroll reveal, emissions scan, calculators, form */
 (function () {
   "use strict";
 
@@ -53,32 +53,72 @@
     }
   }
 
-  /* ------------------------------------------------- hero spectrum ------ */
+  /* ================================================== FCC emissions ===== */
+  /* A radiated-emissions pre-scan against the FCC Part 15 Class B limit.
+     The 5th harmonic of a 48 MHz clock lands at 240 MHz on a cable resonance
+     and busts the 216–960 MHz limit — the case study on the resources page. */
 
-  var canvas = document.querySelector("[data-spectrum]");
-  if (canvas && canvas.getContext) {
-    initSpectrum(canvas);
+  var F_MIN = 30e6, F_MAX = 1e9;
+  var CLASS_B_3M = [
+    { upto: 88e6,  dbuv: 40.0 },
+    { upto: 216e6, dbuv: 43.5 },
+    { upto: 960e6, dbuv: 46.0 },
+    { upto: Infinity, dbuv: 54.0 }
+  ];
+
+  function limitAt(hz) {
+    for (var i = 0; i < CLASS_B_3M.length; i++) {
+      if (hz < CLASS_B_3M[i].upto) return CLASS_B_3M[i].dbuv;
+    }
+    return 54.0;
   }
 
-  function initSpectrum(cv) {
+  var scanCanvas = document.querySelector("[data-emissions]");
+  if (scanCanvas && scanCanvas.getContext) initEmissions(scanCanvas);
+
+  function initEmissions(cv) {
     var ctx = cv.getContext("2d");
     var W = 0, H = 0, dpr = 1;
+    var PAD_L = 34, PAD_R = 10, PAD_T = 12, PAD_B = 22;
 
-    // Carriers rendered on the trace: [centre 0..1, amplitude, width, drift]
-    var carriers = [
-      { f: 0.155, a: 0.80, w: 0.011, drift: 0.00013, phase: 0.0 },
-      { f: 0.300, a: 0.52, w: 0.030, drift: -0.00009, phase: 1.7 },
-      { f: 0.470, a: 0.94, w: 0.008, drift: 0.00006, phase: 3.1 },
-      { f: 0.505, a: 0.36, w: 0.014, drift: 0.00006, phase: 0.6 },
-      { f: 0.690, a: 0.63, w: 0.021, drift: -0.00015, phase: 2.4 },
-      { f: 0.855, a: 0.44, w: 0.016, drift: 0.00011, phase: 4.2 }
-    ];
-
-    var BINS = 220;
-    var peaks = new Float32Array(BINS);
-    var history = [];      // waterfall rows, newest last
-    var HIST_ROWS = 26;
+    var BINS = 260;
+    var CLOCK = 48e6;
+    var sweep = 0;          // 0..1 leading edge of the scan
     var t = 0;
+    var peakHold = new Float32Array(BINS);
+
+    var logMin = Math.log10(F_MIN), logMax = Math.log10(F_MAX);
+    var freqOf = function (i) {
+      return Math.pow(10, logMin + (i / (BINS - 1)) * (logMax - logMin));
+    };
+
+    // Peak level of the nth clock harmonic. Tuned so the 5th (240 MHz) lands
+    // at 52.1 dBµV/m — 6.1 dB over the 46.0 Class B limit — which is the case
+    // study quoted across the site.
+    function harmonicPeak(fh) {
+      var n = fh / CLOCK;
+      var resonance = 25.8 * Math.exp(-Math.pow((fh - 240e6) / 62e6, 2));
+      return 34 - 11 * Math.log10(n) + resonance;
+    }
+
+    function emission(hz, time) {
+      // Broadband floor that rolls off with frequency.
+      var floor = 20 - 8 * (Math.log10(hz) - logMin) / (logMax - logMin);
+      var v = floor + Math.sin(hz / 7e6 + time) * 0.9 + (Math.random() - 0.5) * 1.4;
+
+      var n = Math.round(hz / CLOCK);
+      if (n < 1) return v;
+
+      var fh = n * CLOCK;
+      var binHz = hz * (Math.pow(10, (logMax - logMin) / (BINS - 1)) - 1);
+
+      // A bin containing a harmonic reports its full peak — otherwise the
+      // log-spaced bins sample the skirt and the comb reads far too low.
+      if (Math.abs(hz - fh) <= binHz * 0.5) return Math.max(v, harmonicPeak(fh));
+
+      var df = Math.abs(hz - fh) / Math.max(fh * 0.006 + 1.2e6, binHz);
+      return Math.max(v, floor + (harmonicPeak(fh) - floor) * Math.exp(-df * df * 0.5));
+    }
 
     function resize() {
       dpr = Math.min(window.devicePixelRatio || 1, 2);
@@ -90,192 +130,357 @@
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
     }
 
-    function level(x, time) {
-      // Sum of gaussian-shaped carriers plus a shaped noise floor.
-      var v = 0.045 + 0.028 * Math.sin(x * 9 + time * 0.4);
-      for (var i = 0; i < carriers.length; i++) {
-        var c = carriers[i];
-        var d = (x - c.f) / c.w;
-        var breathe = 0.82 + 0.18 * Math.sin(time * 1.3 + c.phase);
-        v += c.a * breathe * Math.exp(-d * d * 0.5);
+    function draw() {
+      var x0 = PAD_L, x1 = W - PAD_R, y0 = PAD_T, y1 = H - PAD_B;
+      var plotW = x1 - x0, plotH = y1 - y0;
+      var yMin = 10, yMax = 66;
+
+      var xOf = function (hz) {
+        return x0 + ((Math.log10(hz) - logMin) / (logMax - logMin)) * plotW;
+      };
+      var yOf = function (db) {
+        return y1 - ((db - yMin) / (yMax - yMin)) * plotH;
+      };
+
+      ctx.clearRect(0, 0, W, H);
+
+      // --- decade + step gridlines ---------------------------------------
+      ctx.strokeStyle = "rgba(255,255,255,0.05)";
+      ctx.lineWidth = 1;
+      ctx.beginPath();
+      [30e6, 50e6, 88e6, 100e6, 216e6, 300e6, 500e6, 960e6].forEach(function (f) {
+        var gx = Math.round(xOf(f)) + 0.5;
+        ctx.moveTo(gx, y0); ctx.lineTo(gx, y1);
+      });
+      [20, 30, 40, 50, 60].forEach(function (d) {
+        var gy = Math.round(yOf(d)) + 0.5;
+        ctx.moveTo(x0, gy); ctx.lineTo(x1, gy);
+      });
+      ctx.stroke();
+
+      // --- axis labels -----------------------------------------------------
+      ctx.font = "9px ui-monospace, SFMono-Regular, Menlo, monospace";
+      ctx.fillStyle = "#6f7c93";
+      ctx.textAlign = "right";
+      [20, 40, 60].forEach(function (d) { ctx.fillText(String(d), x0 - 6, yOf(d) + 3); });
+      ctx.textAlign = "center";
+      [[30e6, "30M"], [88e6, "88M"], [216e6, "216M"], [500e6, "500M"], [1e9, "1G"]]
+        .forEach(function (pair) {
+          ctx.fillText(pair[1], Math.min(xOf(pair[0]), x1 - 10), y1 + 14);
+        });
+      ctx.textAlign = "left";
+
+      // --- FCC Class B limit line -----------------------------------------
+      // Horizontal runs joined by vertical risers at each step boundary.
+      ctx.beginPath();
+      var fStart = F_MIN;
+      for (var s = 0; s < CLASS_B_3M.length && fStart < F_MAX; s++) {
+        var fEnd = Math.min(CLASS_B_3M[s].upto, F_MAX);
+        var ly = yOf(CLASS_B_3M[s].dbuv);
+        if (s === 0) ctx.moveTo(xOf(fStart), ly);
+        else ctx.lineTo(xOf(fStart), ly);
+        ctx.lineTo(xOf(fEnd), ly);
+        fStart = fEnd;
       }
-      v += (Math.random() - 0.5) * 0.055;
-      return Math.max(0, Math.min(1, v));
+      ctx.strokeStyle = "rgba(255,180,84,0.85)";
+      ctx.lineWidth = 1.3;
+      ctx.setLineDash([5, 4]);
+      ctx.stroke();
+      ctx.setLineDash([]);
+
+      ctx.fillStyle = "rgba(255,180,84,0.8)";
+      ctx.fillText("FCC 15B · 3 m", x0 + 6, yOf(40) - 6);
+
+      // --- swept trace ------------------------------------------------------
+      var visible = Math.max(2, Math.floor(BINS * sweep));
+      var pts = [];
+      for (var i = 0; i < visible; i++) {
+        var hz = freqOf(i);
+        var db = emission(hz, t);
+        peakHold[i] = Math.max(peakHold[i] || 0, db);
+        pts.push([xOf(hz), yOf(db), db, hz]);
+      }
+
+      if (pts.length > 1) {
+        var grad = ctx.createLinearGradient(0, y0, 0, y1);
+        grad.addColorStop(0, "rgba(46,230,197,0.26)");
+        grad.addColorStop(1, "rgba(46,230,197,0.01)");
+        ctx.beginPath();
+        ctx.moveTo(pts[0][0], y1);
+        pts.forEach(function (p) { ctx.lineTo(p[0], p[1]); });
+        ctx.lineTo(pts[pts.length - 1][0], y1);
+        ctx.closePath();
+        ctx.fillStyle = grad;
+        ctx.fill();
+
+        // Trace, recoloured red wherever it exceeds the limit.
+        for (var k = 1; k < pts.length; k++) {
+          var a = pts[k - 1], b = pts[k];
+          var over = b[2] > limitAt(b[3]);
+          ctx.beginPath();
+          ctx.moveTo(a[0], a[1]);
+          ctx.lineTo(b[0], b[1]);
+          ctx.strokeStyle = over ? "#ff6b81" : "#2ee6c5";
+          ctx.lineWidth = over ? 2 : 1.3;
+          ctx.shadowColor = over ? "rgba(255,107,129,0.7)" : "rgba(46,230,197,0.45)";
+          ctx.shadowBlur = over ? 9 : 5;
+          ctx.stroke();
+        }
+        ctx.shadowBlur = 0;
+
+        // Leading edge of the sweep.
+        var head = pts[pts.length - 1];
+        if (sweep < 1) {
+          ctx.strokeStyle = "rgba(46,230,197,0.35)";
+          ctx.lineWidth = 1;
+          ctx.beginPath();
+          ctx.moveTo(head[0], y0); ctx.lineTo(head[0], y1);
+          ctx.stroke();
+        }
+      }
+
+      // --- worst-case marker ------------------------------------------------
+      var worst = null;
+      for (var m = 0; m < visible; m++) {
+        var f = freqOf(m);
+        var margin = peakHold[m] - limitAt(f);
+        if (!worst || margin > worst.margin) worst = { margin: margin, db: peakHold[m], hz: f };
+      }
+      if (worst && worst.margin > 0) {
+        var wx = xOf(worst.hz), wy = yOf(worst.db);
+        ctx.fillStyle = "#ff6b81";
+        ctx.beginPath();
+        ctx.arc(wx, wy, 3.2, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.font = "10px ui-monospace, SFMono-Regular, Menlo, monospace";
+        // Report the harmonic's true frequency, not the log-bin centre.
+        var markHz = Math.round(worst.hz / CLOCK) * CLOCK;
+        var label = "+" + worst.margin.toFixed(1) + " dB over @ " + Math.round(markHz / 1e6) + " MHz";
+        ctx.textAlign = wx > W * 0.6 ? "right" : "left";
+        ctx.fillText(label, wx + (wx > W * 0.6 ? -8 : 8), wy - 7);
+        ctx.textAlign = "left";
+
+        var verdict = document.querySelector("[data-readout='verdict']");
+        var margEl = document.querySelector("[data-readout='margin']");
+        if (margEl) margEl.textContent = "+" + worst.margin.toFixed(1) + " dB";
+        if (verdict && !verdict.dataset.locked) {
+          verdict.textContent = "FAIL";
+          verdict.style.color = "var(--fail)";
+        }
+      }
     }
 
     function frame() {
       t += 0.016;
-
-      for (var i = 0; i < carriers.length; i++) {
-        var c = carriers[i];
-        c.f += c.drift;
-        if (c.f < 0.06 || c.f > 0.94) c.drift *= -1;
-      }
-
-      var row = new Float32Array(BINS);
-      for (var b = 0; b < BINS; b++) {
-        row[b] = level(b / (BINS - 1), t);
-      }
-      history.push(row);
-      if (history.length > HIST_ROWS) history.shift();
-
-      for (var p = 0; p < BINS; p++) {
-        peaks[p] = Math.max(peaks[p] - 0.0032, row[p]);
-      }
-
-      draw(row);
+      sweep += 0.006;
+      if (sweep > 1.28) { sweep = 0; peakHold = new Float32Array(BINS); }
+      draw();
       raf = requestAnimationFrame(frame);
-    }
-
-    function draw(row) {
-      var waterfallH = Math.round(H * 0.3);
-      var traceH = H - waterfallH;
-
-      ctx.clearRect(0, 0, W, H);
-
-      // --- graticule -----------------------------------------------------
-      ctx.strokeStyle = "rgba(255,255,255,0.045)";
-      ctx.lineWidth = 1;
-      ctx.beginPath();
-      for (var gx = 1; gx < 10; gx++) {
-        var x = Math.round((W / 10) * gx) + 0.5;
-        ctx.moveTo(x, 0); ctx.lineTo(x, traceH);
-      }
-      for (var gy = 1; gy < 5; gy++) {
-        var y = Math.round((traceH / 5) * gy) + 0.5;
-        ctx.moveTo(0, y); ctx.lineTo(W, y);
-      }
-      ctx.stroke();
-
-      var xOf = function (i) { return (i / (BINS - 1)) * W; };
-      var yOf = function (v) { return traceH - v * (traceH - 12) - 4; };
-
-      // --- filled live trace ---------------------------------------------
-      var fill = ctx.createLinearGradient(0, 0, 0, traceH);
-      fill.addColorStop(0, "rgba(46,230,197,0.30)");
-      fill.addColorStop(1, "rgba(46,230,197,0.01)");
-
-      ctx.beginPath();
-      ctx.moveTo(0, traceH);
-      for (var i = 0; i < BINS; i++) ctx.lineTo(xOf(i), yOf(row[i]));
-      ctx.lineTo(W, traceH);
-      ctx.closePath();
-      ctx.fillStyle = fill;
-      ctx.fill();
-
-      ctx.beginPath();
-      for (var j = 0; j < BINS; j++) {
-        var px = xOf(j), py = yOf(row[j]);
-        if (j === 0) ctx.moveTo(px, py); else ctx.lineTo(px, py);
-      }
-      ctx.strokeStyle = "#2ee6c5";
-      ctx.lineWidth = 1.4;
-      ctx.lineJoin = "round";
-      ctx.shadowColor = "rgba(46,230,197,0.55)";
-      ctx.shadowBlur = 8;
-      ctx.stroke();
-      ctx.shadowBlur = 0;
-
-      // --- max-hold ------------------------------------------------------
-      ctx.beginPath();
-      for (var k = 0; k < BINS; k++) {
-        var qx = xOf(k), qy = yOf(peaks[k]);
-        if (k === 0) ctx.moveTo(qx, qy); else ctx.lineTo(qx, qy);
-      }
-      ctx.strokeStyle = "rgba(125,107,255,0.65)";
-      ctx.lineWidth = 1;
-      ctx.stroke();
-
-      // --- marker on the strongest carrier -------------------------------
-      var best = 0;
-      for (var m = 0; m < BINS; m++) if (row[m] > row[best]) best = m;
-      var mx = xOf(best), my = yOf(row[best]);
-      ctx.strokeStyle = "rgba(255,180,84,0.55)";
-      ctx.setLineDash([3, 4]);
-      ctx.beginPath();
-      ctx.moveTo(mx, my); ctx.lineTo(mx, traceH);
-      ctx.stroke();
-      ctx.setLineDash([]);
-      ctx.fillStyle = "#ffb454";
-      ctx.beginPath();
-      ctx.arc(mx, my, 2.8, 0, Math.PI * 2);
-      ctx.fill();
-
-      // --- waterfall ------------------------------------------------------
-      var rowH = waterfallH / HIST_ROWS;
-      var cellW = W / BINS;
-      for (var r = 0; r < history.length; r++) {
-        var data = history[history.length - 1 - r];
-        var ry = traceH + r * rowH;
-        for (var c2 = 0; c2 < BINS; c2++) {
-          var v = data[c2];
-          if (v < 0.06) continue;
-          ctx.fillStyle = heat(v);
-          ctx.fillRect(c2 * cellW, ry, cellW + 0.6, rowH + 0.6);
-        }
-      }
-
-      ctx.strokeStyle = "rgba(255,255,255,0.07)";
-      ctx.beginPath();
-      ctx.moveTo(0, traceH + 0.5); ctx.lineTo(W, traceH + 0.5);
-      ctx.stroke();
-    }
-
-    function heat(v) {
-      // deep navy -> teal -> violet -> warm white
-      var a = Math.min(1, v * 1.15);
-      if (a < 0.4) {
-        var u = a / 0.4;
-        return "rgba(" + Math.round(10 + 20 * u) + "," + Math.round(30 + 90 * u) + "," + Math.round(60 + 60 * u) + "," + (0.25 + 0.4 * u) + ")";
-      }
-      if (a < 0.75) {
-        var w = (a - 0.4) / 0.35;
-        return "rgba(" + Math.round(30 + 100 * w) + "," + Math.round(120 + 110 * w) + "," + Math.round(120 + 77 * w) + ",0.8)";
-      }
-      var z = (a - 0.75) / 0.25;
-      return "rgba(" + Math.round(130 + 125 * z) + "," + Math.round(230 - 40 * z) + "," + Math.round(197 + 20 * z) + ",0.95)";
     }
 
     var raf = null;
     resize();
 
     if (reduceMotion) {
-      var still = new Float32Array(BINS);
-      for (var s = 0; s < BINS; s++) still[s] = level(s / (BINS - 1), 0);
-      history.push(still);
-      draw(still);
+      sweep = 1;
+      for (var i = 0; i < BINS; i++) peakHold[i] = emission(freqOf(i), 0);
+      draw();
     } else {
       raf = requestAnimationFrame(frame);
     }
 
-    window.addEventListener("resize", function () {
-      resize();
-      if (reduceMotion && history.length) draw(history[history.length - 1]);
-    });
+    window.addEventListener("resize", function () { resize(); draw(); });
 
-    // Pause when scrolled out of view — no reason to burn cycles off-screen.
     if ("IntersectionObserver" in window && !reduceMotion) {
       new IntersectionObserver(function (entries) {
         entries.forEach(function (entry) {
-          if (entry.isIntersecting && raf === null) {
-            raf = requestAnimationFrame(frame);
-          } else if (!entry.isIntersecting && raf !== null) {
-            cancelAnimationFrame(raf);
-            raf = null;
-          }
+          if (entry.isIntersecting && raf === null) raf = requestAnimationFrame(frame);
+          else if (!entry.isIntersecting && raf !== null) { cancelAnimationFrame(raf); raf = null; }
         });
       }, { threshold: 0 }).observe(cv);
     }
+  }
 
-    // Live readouts under the scope.
-    var cf = document.querySelector("[data-readout='cf']");
-    var pk = document.querySelector("[data-readout='peak']");
-    if (cf && pk && !reduceMotion) {
-      setInterval(function () {
-        var strongest = carriers.reduce(function (a, b) { return b.a > a.a ? b : a; });
-        cf.textContent = (2.100 + strongest.f * 3.8).toFixed(3) + " GHz";
-        pk.textContent = (-21.4 + Math.sin(t * 0.7) * 1.8).toFixed(1) + " dBm";
-      }, 420);
+  /* ==================================================== calculators ===== */
+  /* First-order closed-form estimates — the free lead-magnet tools. Every
+     formula used is named in the note under each calculator. */
+
+  var C0 = 299.792458e6;                       // m/s
+
+  // FCC Part 15 Subpart B radiated limits (quasi-peak), at their reference
+  // distances. Declared before the wiring below so the initial run can see it.
+  var FCC = {
+    B: { dist: 3,  steps: [[88e6, 40.0], [216e6, 43.5], [960e6, 46.0], [Infinity, 54.0]] },
+    A: { dist: 10, steps: [[88e6, 39.1], [216e6, 43.5], [960e6, 46.4], [Infinity, 49.5]] }
+  };
+
+  // Sensible default geometry per stripline/microstrip, in mil.
+  var H_DEFAULT = { microstrip: 4, stripline: 20 };
+
+  var num = function (el) { return parseFloat(el.value); };
+  var set = function (root, key, text) {
+    var el = root.querySelector("[data-out='" + key + "']");
+    if (el) el.textContent = text;
+  };
+  var ok = function () {
+    return Array.prototype.every.call(arguments, function (v) {
+      return typeof v === "number" && isFinite(v) && v > 0;
+    });
+  };
+
+  document.querySelectorAll("[data-calc]").forEach(function (root) {
+    var kind = root.dataset.calc;
+    var compute = { impedance: impedanceCalc, resonance: resonanceCalc, fcc: fccCalc }[kind];
+    if (!compute) return;
+
+    var run = function () { compute(root); };
+    root.querySelectorAll("input, select").forEach(function (input) {
+      input.addEventListener("input", run);
+      input.addEventListener("change", run);
+    });
+    run();
+  });
+
+  /* --- trace impedance (IPC-2141A) --------------------------------------- */
+  function impedanceCalc(root) {
+    var typeEl = root.querySelector("[name='type']");
+    var hEl = root.querySelector("[name='h']");
+    var type = typeEl.value;
+
+    // The h field means different things per geometry — relabel it, and carry
+    // the value across only if it is still the other mode's untouched default.
+    var last = root.dataset.lastType;
+    if (last && last !== type && num(hEl) === H_DEFAULT[last]) {
+      hEl.value = H_DEFAULT[type];
+    }
+    root.dataset.lastType = type;
+
+    var hLabel = root.querySelector("label[for='" + hEl.id + "']");
+    if (hLabel) {
+      hLabel.textContent = type === "stripline"
+        ? "Plane-to-plane spacing b (mil)"
+        : "Dielectric height h (mil)";
+    }
+
+    var w  = num(root.querySelector("[name='w']"));       // mil
+    var h  = num(hEl);                                    // mil
+    var er = num(root.querySelector("[name='er']"));
+    var t  = num(root.querySelector("[name='t']"));       // mil (copper)
+    var warn = root.querySelector("[data-warn]");
+
+    var showWarn = function (message) {
+      if (!warn) return;
+      warn.textContent = message || "";
+      warn.style.display = message ? "block" : "none";
+    };
+
+    if (!ok(w, h, er, t)) {
+      set(root, "z0", "—"); set(root, "tpd", "—");
+      showWarn("");
+      return;
+    }
+
+    var z0, tpd;
+    if (type === "stripline") {
+      z0 = (60 / Math.sqrt(er)) * Math.log((4 * h) / (0.67 * Math.PI * (0.8 * w + t)));
+      tpd = 85 * Math.sqrt(er);
+    } else {
+      z0 = (87 / Math.sqrt(er + 1.41)) * Math.log((5.98 * h) / (0.8 * w + t));
+      tpd = 85 * Math.sqrt(0.475 * er + 0.67);
+    }
+
+    set(root, "tpd", tpd.toFixed(0));
+
+    if (!(z0 > 0)) {
+      // The log argument went below 1 — the trace is too wide for the spacing.
+      set(root, "z0", "—");
+      showWarn(type === "stripline"
+        ? "Plane-to-plane spacing is too small for a " + w + " mil trace — b needs to be roughly 4× the trace width before this formula is meaningful."
+        : "Dielectric height is too small for a " + w + " mil trace for this approximation to hold.");
+      return;
+    }
+
+    set(root, "z0", z0.toFixed(1));
+
+    // IPC-2141A is only fitted over a limited geometry range.
+    var ratio = w / h;
+    showWarn(type === "microstrip" && (ratio < 0.1 || ratio > 3.0)
+      ? "w/h = " + ratio.toFixed(2) + " is outside the 0.1–3.0 range this approximation was fitted over — treat the number as indicative only."
+      : "");
+  }
+
+  /* --- power-plane cavity resonance -------------------------------------- */
+  function resonanceCalc(root) {
+    var a  = num(root.querySelector("[name='a']")) / 1000;   // mm -> m
+    var b  = num(root.querySelector("[name='b']")) / 1000;
+    var er = num(root.querySelector("[name='er']"));
+    var h  = num(root.querySelector("[name='h']"));          // mm, plane separation
+
+    if (!ok(a, b, er, h)) {
+      ["f10", "f01", "f11", "cplane"].forEach(function (k) { set(root, k, "—"); });
+      return;
+    }
+
+    var k = C0 / (2 * Math.sqrt(er));
+    var f = function (m, n) {
+      return k * Math.sqrt(Math.pow(m / a, 2) + Math.pow(n / b, 2)) / 1e6; // MHz
+    };
+
+    var fmt = function (mhz) {
+      return mhz >= 1000 ? (mhz / 1000).toFixed(2) + " GHz" : mhz.toFixed(0) + " MHz";
+    };
+
+    set(root, "f10", fmt(f(1, 0)));
+    set(root, "f01", fmt(f(0, 1)));
+    set(root, "f11", fmt(f(1, 1)));
+
+    // Parallel-plate capacitance of the plane pair.
+    var cap = (8.854e-12 * er * a * b) / (h / 1000);  // farads
+    set(root, "cplane", (cap * 1e9).toFixed(2) + " nF");
+  }
+
+  /* --- FCC Part 15 radiated limit ---------------------------------------- */
+  function fccCalc(root) {
+    var mhz  = num(root.querySelector("[name='freq']"));
+    var cls  = root.querySelector("[name='class']").value;
+    var dist = num(root.querySelector("[name='dist']"));
+    var meas = parseFloat(root.querySelector("[name='meas']").value);
+
+    if (!ok(mhz, dist) || !isFinite(meas)) {
+      ["limit", "uvm", "margin", "verdict"].forEach(function (k) { set(root, k, "—"); });
+      return;
+    }
+
+    var spec = FCC[cls];
+    var hz = mhz * 1e6;
+    var base = spec.steps.find(function (s) { return hz < s[0]; })[1];
+
+    // Far-field extrapolation: field falls as 1/d, i.e. 20 dB per decade.
+    var limit = base + 20 * Math.log10(spec.dist / dist);
+    var margin = limit - meas;
+
+    set(root, "limit", limit.toFixed(1) + " dBµV/m");
+    set(root, "uvm", Math.pow(10, limit / 20).toFixed(0) + " µV/m");
+
+    // Standard convention: positive margin is headroom under the limit.
+    var colour = margin < 0 ? "var(--fail)" : margin < 6 ? "var(--risk)" : "var(--pass)";
+    set(root, "margin", (margin >= 0 ? "+" : "−") + Math.abs(margin).toFixed(1) + " dB");
+    var marginEl = root.querySelector("[data-out='margin']");
+    if (marginEl) marginEl.style.color = colour;
+
+    var el = root.querySelector("[data-out='verdict']");
+    if (el) {
+      el.textContent = margin < 0 ? "FAIL" : margin < 6 ? "RISK" : "PASS";
+      el.style.color = colour;
+    }
+
+    var warn = root.querySelector("[data-warn]");
+    if (warn) {
+      var nearField = dist < 47.7 / mhz;   // λ/2π boundary
+      warn.textContent = nearField
+        ? "At " + dist + " m and " + mhz + " MHz you are inside the λ/2π near-field boundary — the 20 dB/decade extrapolation does not hold here."
+        : "";
+      warn.style.display = nearField ? "block" : "none";
     }
   }
 
@@ -300,7 +505,7 @@
         return false;
       }
       if (input.type === "email" && value && !/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(value)) {
-        setError(input, "Enter a valid work email address.");
+        setError(input, "Enter a valid email address.");
         return false;
       }
       setError(input, "");
@@ -317,19 +522,19 @@
     form.addEventListener("submit", function (e) {
       e.preventDefault();
       var inputs = Array.prototype.slice.call(form.querySelectorAll("input, select, textarea"));
-      var ok = inputs.map(validate).every(Boolean);
+      var valid = inputs.map(validate).every(Boolean);
 
-      if (!ok) {
+      if (!valid) {
         var first = form.querySelector(".field.invalid input, .field.invalid select, .field.invalid textarea");
         if (first) first.focus();
         return;
       }
 
-      // No backend is wired up in this static build — the submit handler just
-      // confirms locally. Point this at your CRM/form endpoint to go live.
+      // No backend is wired up in this static build — the handler confirms
+      // locally. Point this at your form endpoint or inbox to go live.
       if (status) {
         status.textContent =
-          "Thanks — your request is queued. A Kestrel applications engineer will reply within one business day.";
+          "Thanks — that's in. You'll get a scoped reply with a fixed price and a start date within one business day.";
         status.classList.add("show");
         status.setAttribute("role", "status");
       }
