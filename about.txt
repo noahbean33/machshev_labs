@@ -1,0 +1,42 @@
+Your EM Partner
+Three ways we help
+From professional training in open-source FEM to turnkey engineering services and custom software development—we provide comprehensive electromagnetic solutions tailored to your needs.
+
+Hero Image
+Training Icon
+Professional Training
+Master open-source FEM for electromagnetics. Learn Palace and Gmsh from first principles to production-ready designs with 20+ hands-on projects covering RF applications, advanced meshing, and solver expertise.
+
+Engineering Icon
+Engineering Services
+Turnkey design and simulation services or expert consulting support. From silicon photonics to quantum RF, we deliver complete projects with verified results, comprehensive reports, and specialized guidance.
+
+Software Icon
+Custom Software Development
+Specialized software tailored to your needs. CAD automation tools, multi-physics simulation frameworks, custom GDSFactory integrations, and production-ready deployment on cloud HPC.
+
+Ready to Start Your Project?
+Let's discuss your electromagnetic engineering needs and find the right approach for your project.
+
+Let's work together!
+Frequently Asked Questions
+What does "turnkey engineering design" include?
+Complete project management from initial concept to final validated design. This includes CAD preparation, simulation setup, analysis, optimization, and comprehensive reporting with actionable recommendations.
+
+Can you handle both simple and complex projects?
+Absolutely. We scale our approach to match your needs — from quick design validation studies to complex multi-physics optimization challenges involving custom materials, advanced geometries, and sophisticated analysis requirements.
+
+What kind of custom software do you develop?
+We create parametric design tools, automated simulation workflows, custom post-processing scripts, and complete simulation pipelines tailored to your specific engineering process and requirements.
+
+How does knowledge transfer work?
+We offer hands-on training sessions, best practices workshops, mentoring programs, and ongoing consulting to help your team develop internal electromagnetic simulation capabilities and become self-sufficient.
+
+What file formats do you work with?
+We accept STEP, STL, IGES, and most common CAD formats. We can also clean up geometry, repair non-manifold edges, or simplify models for simulation as needed.
+
+What's included in your engineering reports?
+Professional PDF reports with simulation methodology, key performance metrics, annotated field visualizations, design recommendations, and expert analysis. Raw data and simulation files available upon request.
+
+How do you determine project scope and approach?
+We start with a detailed discussion of your requirements, objectives, and constraints. Based on this, we recommend the most appropriate service approach and provide a clear scope and timeline.

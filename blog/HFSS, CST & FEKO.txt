@@ -1,0 +1,82 @@
+We have compiled the following information about the most prominent high-frequency EM simulation tools:
+
+Feature/Tool	HFSS	FEKO	CST Studio Suite
+Company	Ansys (Synopsys)	Altair Engineering	Dassault Systèmes
+Main Solver Strategy	Finite Element Method (FEM) for full-wave 3D EM simulations.	Method of Moments (MoM) for surface integral equation-based simulations.	Time-Domain Solver (Finite Integration Technique - FIT) for transient EM problems.
+Additional Solution Strategies	Integral Equation (IE), Shooting and Bouncing Rays (SBR+), Hybrid Solvers (FEM + IE + SBR+).	Finite Element Method (FEM), Asymptotic Methods (PO, RL-GO, UTD).	Frequency-Domain Solver, Integral Equation Solver, Asymptotic Solver, Multilayer Solver, Hybrid Solvers.
+Multiphysics Integration	Thermal, Structural via Ansys Workbench.	Thermal and mechanical via OptiStruct.	Thermal, stress, bio-EM, integrates with SIMULIA for structural analysis.
+GPU Acceleration	Yes (SBR+, FEM, FDTD).	Yes (FDTD, MoM).	Yes (FDTD, MoM).
+Scripting	Dedicated Python framework (PyAEDT), limited MATLAB support.	Python API via Compose, limited MATLAB support.	VBA-based scripting, some Python integration via external interfaces, MATLAB optional.
+Ease of Use	Steep learning curve, powerful for complex EM designs.	Medium complexity, intuitive for antenna and RF analysis.	Complex, but GUI-based workflow helps users navigate advanced simulations.
+Main Application Areas	Antennas, RF & microwave components, PCB signal integrity, radar, electromagnetic interference (EMI), waveguides.	Antenna placement, radar cross-section (RCS), electromagnetic compatibility (EMC), automotive and aerospace applications.	EMC/EMI analysis, antenna design, installed performance, biomedical EM simulations, wireless communication.
+Industry Adoption	Aerospace, automotive, PCB, RF, biomedical.	Aerospace, automotive, defense.	RF, PCB, EMC/EMI, medical devices.
+So, what are the main differences?
+Main solver strategies
+One of the most obvious difference between HFSS, FEKO, and CST Studio Suite is the main solver strategy. This is indicative of the product’s origin and potential focus:
+
+HFSS relies primarily on the Finite Element Method (FEM), making it well-suited for full-wave analysis of complex geometries, particularly in high-frequency applications like RF and microwave components.
+FEKO is centered around the Method of Moments (MoM), which excels at solving surface integral equations, making it ideal for antenna placement, radar cross-section (RCS) analysis, and large-scale scattering problems.
+CST Studio Suite is unique in its emphasis on time-domain solvers (using the Finite Integration Technique, FIT), which provide fast broadband simulations, making it particularly attractive for transient EM problems and EMC/EMI studies.
+Beyond the solvers, however, it appears that all three companies have reached feature parity in terms of applications and physics coverage. Each tool provides dedicated modules for antenna design, electromagnetic interference (EMI) and compatibility (EMC), PCB signal integrity analysis, radar cross-section (RCS), and microwave component design.
+
+Ease of use, user interface, and scripting capabilities
+In sum, the differences are no longer in raw capabilities but rather in the workflow that each of these tools support.
+
+The Graphical User Interfaces (GUIs) and user experience vary significantly:
+
+HFSS, now part of Synopsys, integrates tightly with Ansys Workbench, which provides a structured workflow for multiphysics coupling but may feel rigid and complex to new users.
+FEKO has a more streamlined interface focused on antenna and RCS applications, making it easier to use for those specific problems.
+CST Studio Suite, as part of Dassault Systèmes, offers a highly visual, CAD-integrated experience, which benefits engineers working across multiple disciplines but can be overwhelming due to the sheer number of solver options and settings.
+Another key differentiator is scripting and automation support:
+
+HFSS has the most advanced Python integration via PyAEDT, allowing users to fully automate model setup, meshing, solving, and post-processing.
+FEKO provides a Python API via Altair Compose, but its scripting ecosystem is not as mature as Ansys’.
+CST Studio Suite primarily relies on VBA-based scripting, with Python support only available through external interfaces, making automation more cumbersome compared to HFSS.
+Pricing Comparison:
+How much does this software cost? Unfortunately, none of these companies publicly disclose any pricing information.
+
+To obtain a quote, you typically need to go trough the following steps: contact a certified distributor and go through a multi-step process. This begins with filling out detailed forms about your intended use case, industry, and specific requirements. Expect multiple calls and product demonstrations before even discussing pricing. Vendors often promote bundled solutions, making standalone licenses harder to price. Negotiations can be lengthy, involving back-and-forth discussions with sales representatives, managers, and sometimes legal departments.
+
+Vendors typically do not provide direct price quotes without a video or in-person meeting, making price comparisons challenging. According to online reports, they may not even respond to emails making direct requests for price estimates.
+
+For this reason, we have gathered pricing information based on anonymous forum posts on platforms like Reddit, EDABoard, and PhysicsStudents, and added some of our own industry experience in relation to relative pricing among different companies. This table will at least provide a rough order-of-magnitude estimate.
+
+Product	Initial Single-User License	Annual Maintenance & Support
+HFSS	USD 90,000	USD 18,000
+CST	USD 60,000	USD 12,000
+FEKO	USD 50,000	USD 10,000
+Note: We have listed an annual costs that starts at 20% of the initial price, which is the typical starting point, but it can go up to 30% depending on the service level.
+
+Typical Add-ons Requiring Additional Licenses
+In relation to what we listed as an initial price, there are typical addons that require additional licenses:
+
+HPC packs for PCs that have more than 4-core CPUs, and/or cluster computing with a large number of cores.
+Network floating licenses for companies with multiple engineers.
+Specialized solvers beyond the main solver strategy, or for specific applications.
+Optimization and AI-driven simulation modules.
+Extended support packages for priority access to technical assistance (the annual cost can reach up to 30%).
+The Procurement Process
+Acquiring these simulation tools can be a long and tedious process. It usually starts with contacting a distributor, filling out detailed forms about your organization and application. After that, expect multiple calls and product demonstrations where vendors try to align their solutions with your needs. Pricing discussions often involve several rounds of negotiations, with vendors pushing for multi-module packages or multi-year agreements. Some companies require legal and finance department approvals before finalizing the purchase, adding further delays.
+
+Total cost of ownership
+In order to calculate the total cost of owning this type of software, you have to factor in labor costs: not only it will take your staff to run the software, it will also take them time to get familiar with it.
+
+So what are the alternatives?
+While buying software from one of these large companies is considered the industry-standard choice for large corporations, for startups or small/medium businesses the pricing and commercial strategies of the major firms can be simply too hard to deal with.
+
+Some engineers rely on rough estimations instead of simulations.
+Others attempt to learn open-source tools—which takes time and expertise.
+Many choose to outsource simulations, which is often the smartest financial decision.
+Access Enterprise-Grade Simulations Without the Price Tag
+Instead of spending tens of thousands of dollars on software, small businesses have a better option:
+
+Outsourcing electromagnetic simulations.
+
+With a consulting service like Epsilon Forge, companies can:
+
+Get access to high-end EM tools without owning a license.
+Leverage expert knowledge instead of learning complex software.
+Pay only for what they need, rather than committing to expensive subscriptions.
+💡 Bottom Line: EM software is priced for big companies, but that doesn’t mean smaller businesses are out of options. Outsourcing simulations allows businesses to compete at an enterprise level—without enterprise costs.
+
+Further reading

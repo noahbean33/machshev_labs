@@ -1,0 +1,66 @@
+Introduction
+Magnetic grate separators, widely used to remove ferromagnetic impurities in the food industry, must meet stringent requirements for performance and reliability, as for example detailed in the HACCP certification.
+
+One of our clients, a manufacturer of magnetic separators, approached us to verify the performance of their existing design and help them with the certification process. Through simulation, we helped them confirm their design’s compliance with industry standards, and provide them with a validation.
+
+magnetic grid
+
+The Challenge
+The client’s magnetic grate separator featured strong Neodymium magnets, known for their high magnetic force exceeding 13,000 Gauss, capable of capturing even nano-sized ferromagnetic particles. The separator was designed to fit a square hopper, with the following key requirements:
+
+Performance: Demonstrate sufficient magnetic field strength above 300 Gauss and coverage to capture ferromagnetic impurities effectively.
+Certifiability: Comply with industry standards for food safety equipment.
+Validation of Design: Verify that the current design could perform consistently across various operational scenarios.
+Our task was to simulate the magnetic field and evaluate whether the existing design met certification standards. We conducted a detailed study of the separator, focusing on performance metrics relevant to certification.
+
+Our CAD-to-simulation Service in Practice
+EM simulation software is either expensive or, in the case of open-source software, very hard to use. So normally there is a difficult trade-off between time and money, where you either have to spend a lot of money or a lot of time. A lot of times, this doesn’t make sense.
+
+So in order to bridge the gap and make simulation accesible to companies of all sizes, we provide our own expertise in how to use either open-source, commercial, or our own propietary software, and offer a CAD-to-simulation service.
+
+Our service is ideal in various situations, and one-off design verification for certification purposes is one of them.
+
+What follows is a brief account of some of the details of this study that we were allowed to share.
+
+Geometry preparation and Material Properties
+The design contained the following materials:
+
+NdFeB Magnets: Axially-magnetized with constant magnetization intensity to be determined so that the magnetic field intensity matches given measurement data of 1.3 T near the poles. Orientation was provided by our client, who had followed a manual provided by their final industrial client.
+Stainless Steel structure, Non-magnetic 304 grade.
+Given that the supporting steel structure was non-magnetic, it was convenient to remove it from the simulation domain. This involved a simple defeaturing task, which was conducted using Fusion 360.
+
+orientation of magnets
+
+Solver and Computational Challenges
+The design analyzed in this study contained many small air gaps (as small as 0.3 mm) which are difficult to simulate accurately using standard Finite Element packages.
+
+For this reason, this particular application benefited from the use of a specialized tool we’ve developed, which is closely related to the Boundary Element Method, wich can provide highly accurate fields at all points.
+
+For surface meshing, we employed the open-source GMSH. Even though the surface mesh contained over 100,000 nodes, the computing time required for the simulations using our BEM-inspired tool was in the order of a few minutes in a modern workstation.
+
+Findings and Insights
+The simulation provided a detailed evaluation of the separator’s performance:
+
+horizontal slices
+
+Strong Magnetic Field:
+The NdFeB magnets generated a field strength exceeding the required 13,000 Gauss in critical areas, confirming their ability to capture even nano-sized particles.
+
+fields on the magnet surface
+
+Dead Zones Identified:
+Although the separator achieved strong local fields, certain regions showed reduced magnetic coverage, especially near the equatorial zone of each magnet.
+
+field lines
+
+Coverage analysis and trapping efficiency
+Finally, the structure of the dead-zones can be taken into account by plotting the iso-surfaces corresponding to 300 Gauss of magnetic field intensity.
+
+Anaylizing the structure of the isosurfaces enables to determine the possibility that a particle could traverse the structure trough a path where the magnetic field intensity is below 300 Gauss. It was found that bo particle could traverse the structure in any reasonable trajectory.
+
+volume coverage
+
+Results and Impact
+We prepared a detailed simulation report, including magnetic field visualizations and performance metrics. The simulation study confirmed the separator’s compliance with food safety standards, enabling the client to proceed with certification.
+
+Finally, our work provided the client with a robust and cost-effective design validation framework for future products.

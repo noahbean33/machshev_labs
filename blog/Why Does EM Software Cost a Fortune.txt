@@ -1,0 +1,72 @@
+If you’ve ever looked into electromagnetic (EM) simulation software, you’ve probably wondered: why does it cost so much?
+
+The answer comes down to who the software is designed for—large corporations.
+
+It should come as no surprise that most commercial EM software is developed with an enterprise focus, meaning it’s built for companies with big R&D budgets, dedicated engineering teams, and complex organizational needs that need to share data and processes among different departments.
+
+For small businesses, startups, and independent engineers, this pricing model is slamming the door in their faces.
+
+But that doesn’t mean high-end simulations are out of reach. So let’s break down why EM software is so expensive and what alternatives exist.
+
+The Market for EM Software Is Enterprise-Driven
+At its core, this market revolves around what big enterprises need and want. Think about companies like Dassault, Siemens, Altair, and Synoptic - they’ve built massive software platforms that do pretty much everything a large organization could need around EM simulation.
+
+Why do they take this approach?
+
+When a company has large engineering teams, simulation software needs to support more than just technical accuracy—it must also facilitate collaboration, data management, workflow efficiency across multiple departments, compliance, and security protocols. These challenges don’t exist in small teams, where a handful of engineers can work directly with each other and use simpler and more modular tools without major bottlenecks.
+
+Because of this complexity, the software market for large enterprises has become self-reinforcing—once a platform is widely adopted, switching becomes increasingly difficult. Companies invest millions in licenses, training, and workflow integration, making any transition costly and disruptive. On top of these natural switching costs, vendors introduce additional lock-in mechanisms, such as proprietary file formats, long-term licensing agreements, and deep integrations with other enterprise systems. As a result, even if alternative solutions emerge, the inertia of existing investments and built-in vendor constraints keep companies tied to their current platforms.
+
+The end result is a market where the products and pricing are shaped by enterprise requirements - everything from feature sets to integration capabilities is built around what large organizations need to operate efficiently, and priced at a premium because of the high switching costs.
+
+Considering these characteristics, it’s no surprise that the financial performance of enterprise-grade simulation software suites is so remarkable. If you had invested $100 in Ansys stock back in January 1998, you would have around $16.000 today (in 2025), compared to $520 if you had invested the same ammount in the S&P 500 index.
+
+Licensing Strategies That Shut Out Small Players
+Electromagnetic simulation software pricing isn’t just high—it’s structured specifically for enterprise customers, making it difficult for smaller players to access.
+
+As discussed in this post, tools like HFSS, FEKO, and CST come with steep costs. A single-seat license can range from $20,000 to over $100,000 per year, with strict per-user, per-machine, and sometimes even per-core restrictions. The pricing structure quickly escalates when you factor in additional modules—high-frequency simulations, thermal analysis, or even just using more than four computing cores often require separate purchases, driving up costs significantly.
+
+These tools are designed with large, full-time engineering teams in mind, where continuous usage justifies the investment. But for startups, small engineering firms, or researchers who only need occasional simulations, the cost-benefit equation becomes much harder to justify. While large corporations absorb these costs as part of their R&D budgets, smaller players have to get creative. Some rely on approximations instead of full simulations, others invest time in mastering open-source alternatives, and many find that outsourcing simulation work is the most cost-effective solution.
+
+This pricing model leads to different approaches to simulation based on company size. Large enterprises benefit from fully integrated, high-end tools because they need software that works seamlessly across departments and complex workflows. While big companies esentially excel at putting things together, smaller organizations, on the other hand, tend to be more agile and innovation-driven, often choosing a modular approach—picking the best tool for each task rather than committing to a single ecosystem. These differences shape how companies approach product development, engineering workflows, and strategic decisions around simulation.
+
+Enterprise vs. SMB Needs: Key Differences
+Factor	Large Corporations (Enterprise)	Small Businesses / Startups
+Budget	High, dedicated R&D funds	Limited, cost-sensitive
+Software Features Needed	Full suite, multiphysics, automation	Only essential features
+Integration Requirements	Must integrate across departments	Usually standalone use
+Industry Standards	Compliance-driven	More flexibility in software choice
+Vendor Preference	One-stop-shop, established brands	Open to modular or open-source solutions
+Switching Costs	High, deeply embedded in workflows	Lower, easier to adapt new tools
+Cost Structure	High upfront, long-term contracts	Pay-as-you-go, short-term flexibility
+Usage Model	Built for full-time engineering teams	Used occasionally, making high-cost licenses hard to justify
+Approach to Simulation	Integration-focused – prioritizing tools that connect across teams and processes	Innovation-driven – selecting the best tool for each task
+Two Strategies for EM Success
+If you’re facing the reality of expensive commercial EM software, you have options beyond committing to hefty annual licenses. Here are two strategic approaches that can help you access the electromagnetic simulation capabilities you need:
+
+Skip the Software, Get the Results
+Rather than investing in expensive licenses and training, you can outsource your electromagnetic simulation needs entirely. This means getting complete EM solutions from concept to validated design—whether you need simple verification or are tackling complex optimization challenges.
+
+This approach is ideal when:
+
+You need occasional simulations but can’t justify the annual license costs
+Your team lacks specialized EM expertise and training would be time-consuming
+You want to focus your resources on core product development, not simulation infrastructure
+You need results quickly without the learning curve
+You’re essentially accessing both the tools and the expert knowledge, but only paying for what you actually use. Instead of annual software costs that can reach six figures, you get enterprise-grade simulation results on demand.
+
+Build Your Own Capability with an Open-Core Partner
+Alternatively, you might want to develop your team’s in-house EM simulation capabilities using a combination of open-source and proprietary components. This approach gives you more control and flexibility while avoiding vendor lock-in.
+
+We can help you build a custom simulation stack that fits your needs, covering everything from CAD to cloud deployment. This means:
+
+Selecting the right mix of open-source tools (like Palace, FEniCSx, Gmsh) and specialized components
+Setting up workflows that integrate with your existing systems
+Training your team on the tools and methodologies
+Providing ongoing support as your needs evolve
+This strategy works well when:
+
+You have ongoing, frequent simulation needs that justify building internal capability
+You want to avoid long-term vendor lock-in and licensing restrictions
+Your team is technically capable and interested in learning new tools
+You value transparency and control over your simulation workflows

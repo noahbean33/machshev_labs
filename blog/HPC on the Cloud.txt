@@ -1,0 +1,59 @@
+Cloud-based HPC: a quick overview
+The initial applications of cloud computing were very far from the realm of HPC, as cloud providers initial focus was on cheap commodity hardware. However, things have changed in recent years, and now compute-intensive workloads are customarily run in the cloud.
+
+In fact, in more recent times we have started to witness some cloud providers offering InfiniBand, the golden standard for networking MPI applications. For example, see this news release by Google, and this description of HPC VMs offered by Microsoft’s Azure. AWS has a different approach to support MPI: see their release about low-latency networking
+
+So it is definitively possible to run HPC workloads on the cloud, even tightly coupled MPI jobs.
+
+When is cloud-based HPC worth the cost
+This discussion could be worth an entire post by itself. However, let’s briefly discuss some basic use cases that are potentially sweet spots of cloud-based HPC:
+
+Short, sharp workloads, which usually don’t find slots on existing facilities.
+Embarrasingly parallel jobs that can be run on cheap hardware.
+GPU computing, either for routine use or hardware experimentation.
+These kinds of workloads will have very different hardware requirements. One of the benefits of using the cloud is that we can optimize the hardware we provision for each application.
+
+How to run HPC workloads on the cloud
+One of the biggest cons of cloud computing for the newcomer, is that there are a gazillion options of how to run jobs and applications, each of which is heavily marketed.
+
+One of the main buzzwords in cloud computing is Kubernetes, a container orchestration technology. Hearing so much about it might cause the impression that anybody who isn’t using Kubernetes is surely missing out on something.
+
+But is Kubernetes useful for HPC?
+The main difference between an HPC workload and the type of application for which Kubernetes was built is that, while HPC workloads run to complete a complex task in the shortest possible time (even if this is a long time), Kubernetes is optimized for continuously running applications.
+
+In other words, HPC is about jobs that run to completion, while Kubernetes was designed to host services.
+
+So to decide whether you need Kubernetes or not, a good question to ask yourself is: do you intend host services? No? Well, then Kubernetes doesn’t have much to offer you, and it introduces another layer of complexity.
+
+Another thing to consider is that Kubernetes is not a tool per-se, but rather a framework in which to develop applications. So once you start using K8s, your job of configuring a cloud environment has only just began.
+
+Slurm cluster on the cloud
+In the world of HPC, job schedulers enjoy a solid foundation.
+
+As it happens, job-scheduling is no easy task. To get an idea of the complexity of the task, see this paper analyzes the features of 15 supercomputing and big data schedulers.
+
+Given that Slurm is arguably the most popular scheduler, one good option would be setting up a Slurm cluster on the cloud.
+
+Fortunately, every major cloud provider offers a simple tool to launch such a cluster:
+
+AWS ParallelCluster
+Azure Cyclecloud
+Google Cloud + SchedMD
+AWS ParallelCluster example workflow
+Let’s go over a quick overview of how a typicall Cloud HPC looks like on AWS.
+
+AWS developed an open-source Python command-line tool, pcluster, which allows to set up the desired cluster characteristics, like the characteristics of the head node, the type and number of compute nodes (including if we want on-demand or spot instances), the required networking capacity (including provisioning high-speed interconnects or not), and more.
+
+It all begins with installing the AWS ParallelCluster tool:
+
+pip3 install "aws-parallelcluster<3.0" --upgrade --user
+The workflow looks like follows:
+
+Using pcluster configure to create a configuration file,
+Manually editing the configuration file to adding permissions to access S3 buckets, specifying a custom bootstrap script with pre, and post-install actions (in particular, to install extra dependencies as root).
+Running pcluster create to allocate the resources. Importantly, while compute nodes are idle we are not charged for their use. In this step the required VPC network can be created for us automatically.
+Logging in to the head node via SSH (e.g. using VSCode Remote extension )
+Submitting jobs to Slurm.
+Post-processing the results, potentially logging into a visualization node with special characteristics like powerful graphics cards, using the remote visualization tool NICE DCV.
+Shutdown everything (including the head node, and the VPC networking) from within the AWS console: kill the head node EC2 instance and the CloudFormation VPC.
+For more thorough information, you can visit the official AWS Documentation.

@@ -1,0 +1,200 @@
+Transform your EM Workflow
+Open-Source Freedom. Commercial Reliability.
+With a modern EM stack you can iterate freely, optimize faster, and scale seamlessly with automated design exploration and cloud HPC.
+
+Let's work together!
+Simulation Visualization
+Why Traditional EM Tools Hold You Back
+Restrictive "HPC" Licensing
+Stop letting seat limits and artificial barriers dictate your simulation capacity. Be free to harness the power of cloud-based or on-prem HPC.
+
+Rigid & Inefficient Workflows
+Stop wrestling with bloated GUIs, manual mesh and CAD tweaking. Replace sequential, one-at-a-time testing with rapid, automated design exploration.
+
+Generic Support Tickets
+Stop relying on support staff who just read you the manual. Partner with experts who actually solve your physics problems.
+
+Open-Source FEM Electromagnetics
+pip install palace-toolkit
+Explore the Documentation →
+Backed by real support
+Active Q&A & Troubleshooting
+Get unstuck fast with direct access to expert guidance. No tickets, no waiting — real answers for your simulation problems.
+
+1:1 Diagnostic Sessions
+Private sessions to review your simulation setups, validate results, and debug complex models with direct expert feedback.
+
+Customized Templates
+Pre-built simulation templates tailored to your application — antennas, waveguides, filters, and more — so you start fast and iterate smarter.
+
+Online Program
+Join the Online Program Waiting List
+Access active Q&A, troubleshooting support, and 1:1 diagnostic sessions. Enrollment is invite-only — notify me when it opens.
+
+your-email@example.com
+
+I'm not a robot
+Protected by ALTCHA
+
+Notify Me
+Don't just run simulations. Trust them.
+EM Applications
+Real-World EM Applications
+Design and simulate patch antennas, phased arrays, waveguide filters, mmWave transitions, FSS, and EMI/EMC scenarios—from CubeSAT dual-patches to substrate integrated waveguides.
+
+Parametric CAD with Python
+Parametric CAD with Python
+Create parametric geometry with Python: reusable templates, design variables, and automated model generation for fast iteration and design-space exploration.
+
+Advanced Meshing with Gmsh
+Advanced Meshing with Gmsh
+Master boolean operations, adaptive refinement, sizing fields, and physical groups to build robust, convergence-ready meshes for complex 3D geometries.
+
+Palace Solver
+Palace Solver and Cloud/HPC
+Set up frequency sweeps, eigenmodes, and transient runs. Apply ports, lumped elements, and absorbing boundaries correctly for reliable, repeatable results.
+
+Verification & Validation
+Verification & Validation
+Build trust in your results: convergence checks, energy balance and sanity tests, port impedance validation, and comparisons against analytical or reference models.
+
+Post-Processing
+Post-Processing
+Turn solver output into engineering insight: field visualization, S-parameter plots, far-field patterns, and clean, reproducible reports using ParaView and Python tooling.
+
+Custom CAD and Simulation Software
+
+Build Internal Tools that Match Your Needs
+We develop specialized software tailored to your engineering needs. From CAD automation tools and parametric design generators to hybrid simulation frameworks and cloud-based deployment—we build the custom infrastructure that makes your workflow efficient and scalable.
+
+Technologies & Tools
+OpenCascade
+CUDA
+Python
+Julia
+C / C++
+Fortran
+Gmsh
+ParaView
+Qt
+VTK
+Three.js
+CuPy
+MPI
+Docker
+FEniCSx
+OpenEMS
+Palace
+Meep
+Slurm
+HPC
+gdsfactory
+FreeCAD
+CADQuery
+PyVista
+Custom Software Development
+Our Engineering Services
+
+Design Refinement and Full-Wave Verification
+In sectors like RFIC, Photonics, and Advanced Packaging, a single design iteration can cost hundreds of thousands of dollars and months of delay. Our engineering services bridge the gap between layout and tape-out, providing the physical-layer certainty needed to de-risk your investment and enhance device performance.
+
+Let's work together!
+Simulation Report Example
+RFIC & MMIC
+We perform full-wave EM extraction for critical on-chip passives. We characterize spiral inductors, transformers, and complex matching networks, delivering high-fidelity SPICE models that match silicon reality.
+
+Photonic Integrated Circuits (PIC)
+We leverage gdsfactory to build and validate automated photonic layouts. From high-efficiency grating couplers to complex interferometers, we provide the EM simulation and parameterized cell (PCell) development.
+
+Advanced Antennas & Array Design
+We design and validate advanced antenna systems. We optimize impedance matching, element coupling, and beam-steering behavior with full-wave simulation to improve gain, bandwidth, and radiation efficiency.
+
+Model Library & Open Wiki (Coming Soon)
+Silicon Photonics
+Silicon Photonics
+High-speed optical modulators, waveguide components, and passive structures via gdsfactory integration.
+
+RFIC Design
+RFIC Design with IHP
+Full-wave EM characterization of on-chip passives for IHP BiCMOS: spiral inductors, transformers, baluns, and matching networks with verified S-parameter models ready for circuit integration.
+
+Antennas & RF
+Antennas & Waveguides
+Patch antennas, horn antennas, phased arrays, waveguide components, and feed networks for radar, satellite, and wireless communications.
+
+Quantum RF
+Quantum RF
+Design and optimization of integrated passives for superconducting circuits: resonators, couplers, and interconnects with full-wave EM verification at mK operating conditions.
+
+About Us
+
+About Epsilon Forge
+We're a spin-off from the University of Buenos Aires and the CONICET research agency, built on deep technical expertise and a commitment to science and technology.
+
+Our mission is to reduce barriers to engineering innovation through cost-effective simulation software and expert support.
+
+Martin D. Maas
+Martin D. Maas, PhD
+Professor of Applied Mathematics
+
+Founder of Epsilon Forge
+
+University of Buenos Aires
+University of Buenos Aires, Argentina
+
+Simulation Services You Can Rely On
+Hover Logo
+Hover | Automation and Machinery
+Project Overview
+Challenge: Verify the design of a magnetic grid trap according to food safety standards.
+Solution: BEM-based simulations and detailed post-processing and documentation.
+Result: The study confirmed the separator's compliance while highlighting optimization possibilities.
+★★★★★
+"I hired Epsilon Forge for a finite element analysis of a magnetic trap, and the results were outstanding. Their team was professional, communicative, and delivered precise insights that exceeded expectations. The analysis helped optimize the design and move forward with confidence. Highly recommend their reliable and top-quality services!"
+
+- Daniel Manjon, Manager
+
+Google Review
+
+GDSFactory
+Project Overview
+Challenge: The chip design industry's reliance on traditional, closed-source CAD/CAE software leads to vendor lock-in, high costs, and slow innovation, especially for bleeding-edge fields like Quantum RF.
+Solution: Deployed a simulation server within the GDSFactory+ platform.
+Result: Ongoing work.
+Confidential | Medical Device Startup
+Project Overview
+Challenge: Help fine-tune patent-pending design and compare performance with a competitor's design.
+Solution: BEM-based simulation of electric fields.
+Result: Gained insight on fundamentals and found unexpected results.
+CONAE Logo
+CONAE | Argentina's Space Agency
+Project Overview
+Challenge: Account for cross-polarized backscattering of arable land.
+Solution: BEM-based and analytic simulations of rough surfaces.
+Result: Contributed to develop advanced retrieval algorithms for soil moisture, help characterized range of validity of analytical methods.
+Tenaris Logo
+Tenaris | Steel Industry
+Project Overview
+Challenge: Product mixing issues arising in spite of electromagnetic inspection equipment present.
+Solution: Implemented Nonlinear FEM-hysteresis model.
+Result: Improved operational practices to improve steel type discrimination.
+From our Blog
+Topics
+All
+company
+software
+hpc
+case studies
+FEM Electromagnetics in Python: A Complete Ecosystem Guide
+FEM Electromagnetics in Python: A Complete Ecosystem Guide
+Last modified: Oct 23 2025
+
+Unlock Every Stage of Product Development with EM Simulation
+Unlock Every Stage of Product Development with EM Simulation
+Last modified: October 3 2025
+
+Why Does EM Software Cost a Fortune?
+Why Does EM Software Cost a Fortune?
+Last modified: February 19 2025
+
+See all posts
