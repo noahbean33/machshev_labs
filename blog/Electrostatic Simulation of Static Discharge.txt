@@ -1,0 +1,101 @@
+En
+Search...
+Search
+Login
+EMWorks logo
+Company
+Show submenu for "Extra"
+EMWORKS Platform
+Show submenu for "Products"
+Applications
+Services
+Learning Center
+Show submenu for "Products"
+Support
+Programs
+Show submenu for "Extra"
+Get a Free Trial
+Contact Us
+Stripes
+Stripes
+Electrostatic Simulation of Static Discharge
+Predicting Electric Field and Dielectric Breakdown Risk
+
+Arvind Krishnan   .   May 25, 2017
+
+Unlock Your Trial – See EMAG in Action
+The best way to understand the impact of EMAG is to experience it yourself.
+Fill out the form to access your trial and start simulating real electromagnetic behavior — fields, losses, forces, and torques in your motors, transformers, actuators, and sensors — because seeing is believing.
+
+First Name
+ 
+Last Name
+ 
+E-mail
++1
+201-555-0123
+I agree to receive marketing material from EMWorks
+
+Send Request
+Static electricity is a familiar yet fascinating phenomenon that can cause both surprise and curiosity. At its core, it is the result of an imbalance of electric charges within or on the surface of a material. The shock we feel, often during the drier months, is a vivid demonstration of these principles at play in everyday life. Let's delve deeper into the science behind static electricity and how simulation tools like EMS can enhance our understanding of this everyday occurrence.
+
+Static electric shock
+
+Figure 1 - Static electric shock
+
+
+
+The Science of Static Electricity
+
+Static electricity occurs when two surfaces come into contact and then separate. One surface gains electrons, becoming negatively charged, while the other loses electrons, becoming positively charged. This imbalance creates an electric potential that can lead to a static discharge when a conductive path is established. In the context of a dry winter day, walking across a carpet with rubber-soled boots creates the perfect conditions for generating static electricity. The friction between the boots and the carpet fibers transfers electrons to your body, accumulating a negative charge.
+
+As you approach a conductive object like a metallic doorknob, the electric field around your charged body becomes increasingly concentrated, especially at points where the charge can most easily leap through the air—like the tips of your fingers. This process is known as ionization, where the air itself becomes a conductor due to the high voltage of the electric field exceeding the air's breakdown voltage, approximately 3 million volts per meter (3e6 V/m).
+
+.
+
+
+
+How EMS Simulation Enhances Understanding
+Using a simulation package like EMS to model this scenario can provide invaluable insights. EMS allows engineers and scientists to visualize and predict the behavior of electric fields in various conditions, including the critical moment of air breakdown leading to a static discharge. By simulating the buildup of electric charge and its potential discharge path, EMS offers a powerful tool for understanding not just static shocks but also the broader implications for designing safer and more reliable electrical and electro-mechanical systems.
+
+For industries reliant on high-voltage equipment, such as transmission cables and high-voltage insulators, the ability to predict electrical breakdown can prevent failures and improve safety. Simulation with EMS reduces the need for extensive physical testing, saving time and resources while enabling more innovative and effective solutions.
+
+Conclusion
+
+Static electricity, while a common experience, reveals complex physical processes. The simple act of walking across a carpet and touching a doorknob involves intricate electrical interactions culminating in a static discharge. Through the lens of EMS simulations, we gain a deeper appreciation for the underlying mechanisms of static electricity and its broader implications. This understanding is not just academic; it plays a crucial role in advancing technology and safety in numerous fields. As we continue to explore and simulate the natural world, tools like EMS will remain invaluable in bridging the gap between theoretical knowledge and practical application, making our encounters with phenomena like static electricity not just moments of surprise but of discovery.
+
+
+
+Share on
+
+
+
+Recent Articles
+
+Demagnetization in PMSM Rotors: Understanding the Causes and Preventing Performance Loss
+
+The Basics of Induction Heating for Modern Manufacturing
+emworks logo
+EMWorks develops electromagnetic simulation software designed to reduce complexity, accelerate time to market, and fit naturally into engineering workflows. With built-in CAD, an intuitive interface, and a dedicated support team that speaks engineers' language, our tools are easy to learn and easier to trust—freeing engineers to innovate faster and focus on solving real-world problems.
+Who We Are
+About Us
+Contact Us
+Support
+Privacy Policy
+FAQs
+Programs & Services
+Consulting
+Startup
+Academic
+Resources
+Blog
+Webinars
+Whitepapers
+Exhibitions
+Applications
+Electric Motors
+Transformers
+Magnetic Gears
+RF & Microwave Components
+© EMWorks Inc. All rights reserved.
+

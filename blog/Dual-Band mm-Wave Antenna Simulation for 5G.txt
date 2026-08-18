@@ -1,0 +1,117 @@
+En
+Search...
+Search
+Login
+EMWorks logo
+Company
+Show submenu for "Extra"
+EMWORKS Platform
+Show submenu for "Products"
+Applications
+Services
+Learning Center
+Show submenu for "Products"
+Support
+Programs
+Show submenu for "Extra"
+Get a Free Trial
+Contact Us
+Stripes
+Stripes
+Dual-Band mm-Wave Antenna Simulation for 5G
+Optimizing S-Parameters and Gain in 28 GHz and 38 GHz Bands
+
+Nadia Kari   .   April 21, 2017
+
+Unlock Your Trial – See EMAG in Action
+The best way to understand the impact of EMAG is to experience it yourself.
+Fill out the form to access your trial and start simulating real electromagnetic behavior — fields, losses, forces, and torques in your motors, transformers, actuators, and sensors — because seeing is believing.
+
+First Name
+ 
+Last Name
+ 
+E-mail
++1
+201-555-0123
+I agree to receive marketing material from EMWorks
+
+Send Request
+5G Antenna Simulation
+The demand for high-speed mobile communication drives the need for 5G antenna development, using tools like HFWorks for simulation. This enables the design of Dual-Band mm-wave antennas critical for 5G's ultra-fast data transmission. By addressing mm-wave frequency challenges, HFWorks aids in optimizing antenna design for a wide range of 5G applications, making it a cornerstone in advancing toward the next generation of mobile communications.
+
+CAD 5G Antenna Model
+
+
+3D model of Dual Band antenna for 5G applications
+Figure 1 - 3D model of Dual Band antenna for 5G applications
+
+This description highlights the design of a Dual-Band mm-wave antenna tailored for 5G networks, emphasizing its innovative features. The antenna incorporates L-shaped slots on a square patch, enhancing its capacitive and inductive properties to hit resonant frequencies at 28 GHz and 38 GHz. This design, utilizing RT/Duroid with specific electrical properties, is optimized for minimal energy loss and high signal integrity at mm-wave frequencies. A microstrip feed line of 0.2mm width achieves an impedance of 100 Ohms, ensuring efficient performance. The detailed geometrical parameters underscore the precision required in designing antennas for the next generation of mobile communications, reflecting a blend of advanced engineering and materials science.Schematic-diagram-of-the-main-geometrical-parameters
+
+Figure 2 - Schematic diagram (top and side view) of the main geometrical parameters of the mm-Wave patch antenna
+Variable	Value
+L1	3.1
+L2	2.5
+t1	0.1
+t2	2.7
+t3	0.4
+t4	0.4
+t5	0.5
+Lf	1.5
+Wf	0.2
+Df	0.9
+Table1 - The list of dimensions imported into SolidWorks  
+S-Parameters of the 5G antenna
+Figure 3 displays S-Parameters for the patch antenna, comparing HFWorks simulations with actual measurements. It highlights resonant frequencies at 27.375GHz (-29.87dB reflection coefficient) and 37.125GHz (-16.39dB), showcasing the antenna's performance at key 5G bands.
+
+ Return loss of the mm-wave antenna (a) measured results
+Figure 3-a
+ simulated results using HFWorks
+Figure3-b
+Figure 3 - Return loss of the mm-wave antenna (a) measured results, (b) simulated results using HFWorks
+Gain of the 5G antenna
+The far field simulation shows the distribution of the field around the model at a distance from the structure.  Figure 4 (a) illustrates the gain pattern in a 3D format at the first resonance frequency of 27.375 GHz, and Figure 4 (b) shows the same gain pattern in a 2D format.
+
+ 3D plot of gain pattern at 27.375GHzFigure 4-a
+
+2D plot of gain pattern at 27.375GHzFigure 4-b
+
+Figure 4 - (a) 3D plot of gain pattern at 27.375GHz,  (b) 2D plot of gain pattern at 27.375GHz
+Conclusion
+Understanding the design and simulation of Dual-Band mm-wave antennas is crucial for advancing 5G technology. This guide offers valuable insights into using HFWorks for optimizing antenna performance, addressing the key question of how these antennas are designed for 5G applications. It not only educates readers on the technical aspects but also provides practical solutions for engineers and designers aiming to enhance mobile communication. Through detailed analysis and comparison of simulation results, this content serves as an essential resource for anyone looking to deepen their understanding of 5G antenna technology.
+
+References
+[1] https://www.emworks.com/product/ATLASS [2] Menna El Shorbagyl, Raed M. Shubair, Mohamed I. AIHajri , Nazih Khaddaj Mallat, ''On the Design of Millimetre-Wave Antennas for 5G '', Microwave Symposium (MMS), 2016 16th Mediterranean, IEEE 2016, pp. 1-4.
+Share on
+
+
+
+Recent Articles
+
+Demagnetization in PMSM Rotors: Understanding the Causes and Preventing Performance Loss
+
+The Basics of Induction Heating for Modern Manufacturing
+emworks logo
+EMWorks develops electromagnetic simulation software designed to reduce complexity, accelerate time to market, and fit naturally into engineering workflows. With built-in CAD, an intuitive interface, and a dedicated support team that speaks engineers' language, our tools are easy to learn and easier to trust—freeing engineers to innovate faster and focus on solving real-world problems.
+Who We Are
+About Us
+Contact Us
+Support
+Privacy Policy
+FAQs
+Programs & Services
+Consulting
+Startup
+Academic
+Resources
+Blog
+Webinars
+Whitepapers
+Exhibitions
+Applications
+Electric Motors
+Transformers
+Magnetic Gears
+RF & Microwave Components
+© EMWorks Inc. All rights reserved.
+

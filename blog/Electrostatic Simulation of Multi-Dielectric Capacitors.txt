@@ -1,0 +1,113 @@
+En
+Search...
+Search
+Login
+EMWorks logo
+Company
+Show submenu for "Extra"
+EMWORKS Platform
+Show submenu for "Products"
+Applications
+Services
+Learning Center
+Show submenu for "Products"
+Support
+Programs
+Show submenu for "Extra"
+Get a Free Trial
+Contact Us
+Stripes
+Stripes
+Electrostatic Simulation of Multi-Dielectric Capacitors
+Calculating Capacitance and Predicting Dielectric Breakdown
+
+Arvind Krishnan   .   January 25, 2017
+
+Unlock Your Trial – See EMAG in Action
+The best way to understand the impact of EMAG is to experience it yourself.
+Fill out the form to access your trial and start simulating real electromagnetic behavior — fields, losses, forces, and torques in your motors, transformers, actuators, and sensors — because seeing is believing.
+
+First Name
+ 
+Last Name
+ 
+E-mail
++1
+201-555-0123
+I agree to receive marketing material from EMWorks
+
+Send Request
+What is a capacitor?
+A capacitor stores electrical energy differently from a battery. While batteries rely on chemical reactions to produce and transfer electrons, capacitors redistribute electrons without generating them. Capacitors can be charged by connecting them to a battery, after which they store the charges for later use. A basic capacitor, like the parallel plate capacitor, consists of two metallic plates separated by a distance and filled with air or a dielectric material.
+
+
+
+Parallel plate capacitor
+Figure 1 - Parallel plate capacitor
+
+
+
+How does a capacitor store charge?
+When a capacitor connects to a battery, it charges as electrons move from the top plate to the bottom, creating a positive charge on top and a negative charge on the bottom. Despite this, the capacitor remains electrically neutral overall. Connecting the charged capacitor to a load like a light bulb allows electrons to flow through the bulb, making it glow. This continues until the capacitor's plates return to an electrically neutral state, causing the bulb to stop glowing.
+How are capacitors measured?
+Capacitors are rated based on their capacitance, measured in Farads or Microfarads. Capacitance indicates the amount of charge a capacitor can hold, with higher capacitance values corresponding to a greater charge storage capacity.
+What role does the dielectric play?
+The dielectric in a capacitor is crucial because it determines the capacitor's ability to store charge. As the capacitor charges, the dielectric builds up an electric field. If this field becomes too strong, it can cause a dielectric breakdown, turning the dielectric into a conductor and preventing further charge storage. Therefore, selecting the appropriate dielectric is vital for ensuring the capacitor's reliability and functionality.
+A capacitor with multiple dielectrics
+In Figure 2, the capacitor's parallel plates are filled with three dielectrics. The objective is to find the capacitance of this capacitor using electromagnetic simulation software, EMS.
+Capacitor with 3 dielectrics
+
+Figure 2 - Capacitor with 3 dielectrics
+
+EMS can
+Compute the capacitance of this capacitor
+Compute the electric field in the dielectric region
+Predict if any breakdown occurs
+Capacitance calculation EMS results
+According to EMS, the capacitance value is 6e-11 Farads (Figure 3). Figure 4 illustrates the electric field distribution in the dielectric region when the capacitor is connected to a 12 V battery.
+Capacitance as computed by EMS
+
+Figure 3 - Capacitance as computed by EMS
+
+Electric field distribution in the dielectirc - Capacitance calculation
+Figure 4 - Electric field distribution in the dielectric
+
+Validation
+Theoretical Result	EMS Result
+Capacitance (F)	60.08e -12 F	60.084e -12 F
+  The formula for the theoretical result is taken from the source below.Source Capacitance
+Conclusion
+Understanding the capacitance calculation for capacitors with multiple dielectrics is essential for electrical and electronics engineers aiming to design more efficient and reliable circuits. The application note addresses this critical need by demonstrating how electromagnetic simulation software can be used for accurate capacitance calculation, offering a reliable method for engineers to predict how such capacitors will behave in real-world applications. This knowledge not only enhances design accuracy but also contributes significantly to the advancement of electronic component engineering.
+Share on
+
+
+
+Recent Articles
+
+Demagnetization in PMSM Rotors: Understanding the Causes and Preventing Performance Loss
+
+The Basics of Induction Heating for Modern Manufacturing
+emworks logo
+EMWorks develops electromagnetic simulation software designed to reduce complexity, accelerate time to market, and fit naturally into engineering workflows. With built-in CAD, an intuitive interface, and a dedicated support team that speaks engineers' language, our tools are easy to learn and easier to trust—freeing engineers to innovate faster and focus on solving real-world problems.
+Who We Are
+About Us
+Contact Us
+Support
+Privacy Policy
+FAQs
+Programs & Services
+Consulting
+Startup
+Academic
+Resources
+Blog
+Webinars
+Whitepapers
+Exhibitions
+Applications
+Electric Motors
+Transformers
+Magnetic Gears
+RF & Microwave Components
+© EMWorks Inc. All rights reserved.
+

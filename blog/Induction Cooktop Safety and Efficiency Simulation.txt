@@ -1,0 +1,133 @@
+En
+Search...
+Search
+Login
+EMWorks logo
+Company
+Show submenu for "Extra"
+EMWORKS Platform
+Show submenu for "Products"
+Applications
+Services
+Learning Center
+Show submenu for "Products"
+Support
+Programs
+Show submenu for "Extra"
+Get a Free Trial
+Contact Us
+Stripes
+Stripes
+Induction Cooktop Safety and Efficiency Simulation
+Coupled Electro-Magneto-Thermal Analysis with EMWORKS EMAG
+
+Majdi EL Fahem   .   July 25, 2017
+
+Unlock Your Trial – See EMAG in Action
+The best way to understand the impact of EMAG is to experience it yourself.
+Fill out the form to access your trial and start simulating real electromagnetic behavior — fields, losses, forces, and torques in your motors, transformers, actuators, and sensors — because seeing is believing.
+
+First Name
+ 
+Last Name
+ 
+E-mail
++1
+201-555-0123
+I agree to receive marketing material from EMWorks
+
+Send Request
+Cooking History
+Cooking technology evolved from simple open-fire roasting to advanced methods like microwaves and induction cookers, which use radio waves and electromagnetism for efficient, energy-saving cooking.
+
+Induction table
+
+Figure 1 - Induction cooker
+
+Electro-magneto-thermal coupling in EMS
+Induction heating intricately combines electromagnetic and thermal phenomena, where an alternating electric current creates an electromagnetic field that induces eddy currents in a workpiece. These eddy currents generate heat, evenly warming the workpiece. Addressing this multifaceted challenge, EMS offers solutions by enabling the coupling of these phenomena. Through an AC magnetic study linked to thermal analysis, EMS provides crucial data such as magnetic flux density, current densities (applied and eddy), inductance values critical for power electronics, and detailed thermal information like temperature and heat flux. The accompanying illustration showcases a CAD model of a commercially available induction table, designed using CAD software.
+
+the work coil situated in the bottom of table
+
+   Figure 2 - The work coil situated at the bottom of the table
+
+Figure 3 illustrates the magnetic flux within the induction cookware, highlighting its concentration around the iron cores. Meanwhile, Figure 4 depicts the eddy currents generated at the bottom of the pan.  
+Magnetic flux density around the cooktop
+
+Figure 3 - Magnetic flux density around the cooktop
+
+Eddy current density generated in the pan, fringe and vector plot
+
+Eddy current density generated in the pan, fringe and vector plot
+
+ Figure 4 - Eddy current density generated in the pan, fringe, and vector plot
+
+Figures 5a and 5b showcase the temperature distribution throughout the induction table and specifically in the pan, respectively.
+
+
+temperature distribution, a) in the whole model) in the surface of pan 
+a)
+
+temperature distribution, a) in the whole model) in the surface of pan 
+b)
+
+Figure 5 - Temperature distribution, a) in the whole model b) in the surface of pan
+
+Temperature in half a pan (it shows that the heat is located on the pan)
+
+Figure 6 - Temperature in half a pan (it shows that the heat is located on the pan)
+
+The figure illustrates the time variation of temperature at a specific point located at the bottom of the pan.Temperature variation in the bottom of the pan
+Figure 7 - Temperature variation in the bottom of the pan
+
+What is the Induction cooking risk?
+Induction-cooking
+
+
+
+Each type of cooktop has inherent dangers, from the risk of burns and fire with electric stoves to the potential for leaks and explosions with gas. Induction cooktops, while avoiding direct heat and thus reducing burn risks, introduce concerns about the effects of electromagnetic fields on health. The Federal Office of Public Health of Switzerland suggests that risks can be mitigated by using proper cookware and maintaining distance from the cooktop. Special caution is advised for individuals with pacemakers or defibrillators. Technologies like EMS can limit electromagnetic field exposure, making induction cooking safer. European regulations define exposure limits to protect against the potential stimulation of nerves and muscles by electromagnetic fields, with specific current density limits set for low and medium-frequency fields to ensure safety. These measures aim to minimize health risks while allowing the benefits of induction cooking to be safely enjoyed.
+
+The current exposure limits primarily address short-term safety concerns regarding electric and magnetic fields, leaving the potential long-term effects unconsidered. However, in the illustrated case, the application of EMS technology ensures that the magnetic flux stays within the safe limit of 6.25 micro Tesla within a 30 cm radius circle, demonstrating compliance with the prescribed safety standards.
+   2
+            Figure 8 - Variation of magnetic flux density in circle of 30 cm radius
+
+Conclusion
+Induction cooking marks a significant advancement in culinary technology, offering a safer and more energy-efficient alternative to traditional cooking methods. By leveraging electromagnetic fields, it directly heats cookware, minimizing the risks associated with open flames and hot surfaces. However, concerns about the health implications of electromagnetic fields have prompted rigorous safety standards and innovative solutions like EMS. This application note demonstrates how EMS technology aids in designing safer and more efficient induction cooktops by simulating and optimizing electromagnetic and thermal dynamics, ensuring that induction cooking is not only efficient but also adheres to the highest safety standards.
+
+References
+[1]: http://www.explainthatstuff.com/induction-cooktops.html [2]: http://ageactionalliance.org/wordpress/wp-content/uploads/2013/09/Federal-Office-of-Public-Health-Induction-hobs.pdf
+
+
+Share on
+
+
+
+Recent Articles
+
+Demagnetization in PMSM Rotors: Understanding the Causes and Preventing Performance Loss
+
+The Basics of Induction Heating for Modern Manufacturing
+emworks logo
+EMWorks develops electromagnetic simulation software designed to reduce complexity, accelerate time to market, and fit naturally into engineering workflows. With built-in CAD, an intuitive interface, and a dedicated support team that speaks engineers' language, our tools are easy to learn and easier to trust—freeing engineers to innovate faster and focus on solving real-world problems.
+Who We Are
+About Us
+Contact Us
+Support
+Privacy Policy
+FAQs
+Programs & Services
+Consulting
+Startup
+Academic
+Resources
+Blog
+Webinars
+Whitepapers
+Exhibitions
+Applications
+Electric Motors
+Transformers
+Magnetic Gears
+RF & Microwave Components
+© EMWorks Inc. All rights reserved.
+

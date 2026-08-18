@@ -1,0 +1,145 @@
+En
+Search...
+Search
+Login
+EMWorks logo
+Company
+Show submenu for "Extra"
+EMWORKS Platform
+Show submenu for "Products"
+Applications
+Services
+Learning Center
+Show submenu for "Products"
+Support
+Programs
+Show submenu for "Extra"
+Get a Free Trial
+Contact Us
+Stripes
+Stripes
+Switched Reluctance Motor Simulation for EV Traction
+Transient Magnetic and Motion Dynamics Analysis
+
+Mohamed Watouti   .   July 5, 2017
+
+Unlock Your Trial – See EMAG in Action
+The best way to understand the impact of EMAG is to experience it yourself.
+Fill out the form to access your trial and start simulating real electromagnetic behavior — fields, losses, forces, and torques in your motors, transformers, actuators, and sensors — because seeing is believing.
+
+First Name
+ 
+Last Name
+ 
+E-mail
++1
+201-555-0123
+I agree to receive marketing material from EMWorks
+
+Send Request
+Switched Reluctance Motor (SRM)
+Switched reluctance motors (SRMs) are distinguished by their simple, robust structure and lack of rotor windings or permanent magnets, making them ideal for high-speed applications. Their high power density is particularly beneficial for electric vehicle traction motors, positioning high-speed SRMs as promising options for enhancing efficiency and performance in the EV industry.
+
+CAD model of a Switched Reluctance Motor
+The designed switched reluctance motor is characterized as a three-phase machine, featuring six inner stator poles, eight outer rotor poles, and a shaft, as depicted in Figure 1.
+
+3D model of a switched reluctance motor
+
+Figure 1 - 3D model of a switched reluctance motor
+
+EMS Simulation of the In-Wheel Switched Reluctance Motor
+In EMS, switched reluctance motors undergo analysis via Transient Magnetic simulations coupled with motion, focusing on time-domain magnetic fields. This method computes key quantities like magnetic flux density (B), magnetic field (H), and current distribution (J), alongside derived metrics such as forces, torques, and losses. The simulation parameters were set to a Start Time of 0 s, End Time of 0.24 s, and Time Increment of 0.0025 s for detailed evaluation.
+
+
+
+EMS study coupled to CAD
+In the simulation, the rotor and shaft move within an Air region, driven by electromagnetic force from activated coils. At each time step, torque values from EMS update their positions. This process, facilitated without specifying software, ensures accurate motion dynamics. The motion is controlled by dynamic torque values provided by EMS, with no explicit mention of software tools.
+Preparing the Motion study in SolidWorksFigure 3 - Preparing the Motion study in SolidWorks
+
+ Torque definition in Motion study Figure 4 - Torque definition in Motion study
+
+In EMS, a virtual work is established at the origin of the rotor and shaft, linked to the torque specified in the motion study. This coupling enables a comprehensive motion analysis within the EMS framework, integrating transient magnetic studies seamlessly with motion simulations.
+
+Virtual Work definition in EMSFigure 5 - Virtual Work definition in EMS
+
+
+Coils
+This motor features six stator cores, with three phases exciting them (where two stator poles are associated with one phase). Each phase coil, encompassing two stator windings, is modeled in EMS as a wound coil with 120 turns and a diameter of 9 AWG, depicted in Figures 7a-7b. Figure 8 illustrates the current entry ports for the three-phase coils, while Figure 9 showcases the current excitation of these coils, with a current amplitude of 45 A.                      
+              Wound coil definition in EMS by entities             
+
+Figure 7a - Wound coil definition in EMS by entities
+
+ 
+
+   Wound coil definition in EMS
+
+       Figure 7b - Wound coil definition in EMS 
+
+Current entry ports for the three wound coilsFigure 8 - Current entry ports for the three wound coils
+
+   
+Current excitation of the three phases
+                       Figure 9 - Current excitation of the three phases 
+
+Material
+The simulated model comprises a stator, rotor, shaft, coils, Inner Air, Band, and Outer Air. Table 1 summarizes the material properties used in the model.
+
+Table 1: Materials used in the EMS simulation
+
+Component	Material	Relative permeability	Conductivity (S/m)
+Stator, rotor, shaft	M-19	Nonlinear	0
+Coils	Copper	0.99991	5.8e+007
+Band, Inner Air, Outer Air	Air	1	0
+Magnetic flux density computation
+In switched reluctance motor design, magnetic flux density plays a pivotal role in selecting appropriate ferromagnetic core materials. EMS calculates magnetic flux density for each time step (rotor position). Comparing with reference [1], the maximum magnetic flux density was determined to be 2.11 Tesla, as detailed in Table 2.
+
+Table 2: Magnetic flux density calculated by EMS and compared to Reference [1]
+Parameter	EMS result	Reference[1] result
+Magnetic flux density maximum value	2.11 Tesla	1.9 Tesla
+3D fields generated by the Switched Reluctance Motor
+EMS produces 3D plots illustrating the magnetic flux density. Figure 10 displays the 3D vector plot, while Figure 11 depicts the 3D plot of the magnetic flux density.
+
+
+
+3D Vector plot of magnetic flux densityFigure 10 - 3D Vector plot of magnetic flux density
+3D plot of the magnetic flux density
+Figure 11 - 3D plot of the magnetic flux density
+
+Conclusion
+EMS simulation offers invaluable insights for optimizing switched reluctance motors (SRMs) in electric vehicles, enhancing efficiency and performance. By accurately modeling electromagnetic phenomena and motion dynamics, EMS empowers engineers to design high-speed SRMs with improved power density and reliability. With EMS, electric vehicle manufacturers can accelerate innovation in motor technology, driving the transition towards sustainable transportation. Explore the potential of EMS simulation for SRMs and other electric vehicle components to revolutionize the automotive industry.
+
+Reference
+ [1] K. Cakir A. Sabanovic, “In-wheel Motor Design for Electric Vehicles” 9th IEEE International Workshop on Advanced Motion Control, 2006.
+Share on
+
+
+
+Recent Articles
+
+Demagnetization in PMSM Rotors: Understanding the Causes and Preventing Performance Loss
+
+The Basics of Induction Heating for Modern Manufacturing
+emworks logo
+EMWorks develops electromagnetic simulation software designed to reduce complexity, accelerate time to market, and fit naturally into engineering workflows. With built-in CAD, an intuitive interface, and a dedicated support team that speaks engineers' language, our tools are easy to learn and easier to trust—freeing engineers to innovate faster and focus on solving real-world problems.
+Who We Are
+About Us
+Contact Us
+Support
+Privacy Policy
+FAQs
+Programs & Services
+Consulting
+Startup
+Academic
+Resources
+Blog
+Webinars
+Whitepapers
+Exhibitions
+Applications
+Electric Motors
+Transformers
+Magnetic Gears
+RF & Microwave Components
+© EMWorks Inc. All rights reserved.
+

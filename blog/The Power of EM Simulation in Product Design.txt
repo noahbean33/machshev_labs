@@ -1,0 +1,114 @@
+En
+Search...
+Search
+Login
+EMWorks logo
+Company
+Show submenu for "Extra"
+EMWORKS Platform
+Show submenu for "Products"
+Applications
+Services
+Learning Center
+Show submenu for "Products"
+Support
+Programs
+Show submenu for "Extra"
+Get a Free Trial
+Contact Us
+Stripes
+Stripes
+The Power of EM Simulation in Product Design
+Integrating FEA with Autodesk Inventor for Faster Optimization
+
+Arvind Krishnan   .   November 1, 2016
+
+Unlock Your Trial – See EMAG in Action
+The best way to understand the impact of EMAG is to experience it yourself.
+Fill out the form to access your trial and start simulating real electromagnetic behavior — fields, losses, forces, and torques in your motors, transformers, actuators, and sensors — because seeing is believing.
+
+First Name
+ 
+Last Name
+ 
+E-mail
++1
+201-555-0123
+I agree to receive marketing material from EMWorks
+
+Send Request
+What is EM simulation?
+Electromagnetic (EM) simulation uses computational methods to analyze electric and magnetic fields in electrical devices, providing crucial insights into design performance. This process allows engineers to access essential parameters like inductance, impedance, and capacitance, crucial for designing motors, generators, transformers, and more. By leveraging EM simulation, designers can bypass the costly and time-consuming process of prototype testing, enabling faster optimization and improvement of their products.
+
+Benefits of EM simulation
+EM simulation has become a crucial part of the design process, enabling the creation of optimized, competitive products across global markets. Its integration into product development accelerates the transition from concept to reality, particularly through 3D CAD software like Autodesk Inventor. Tools like EMS for Autodesk Inventor streamline design validation and optimization, eliminating the need for physical prototypes. When combined with mechanical and thermal simulations, EM simulation offers a comprehensive understanding of a device's performance. The use of 3D printing to materialize designs for pre-manufacturing tests further revolutionizes the electrical devices industry, showcasing a modern, efficient digital engineering workflow.
+
+the-product-development-workflow-inside-autodesk-inventor
+Figure 1 - The product development workflow inside Autodesk Inventor
+
+Benefits of integration inside Autodesk Inventor
+Autodesk Inventor, popular among engineers for designing electrical machines and devices, integrates seamlessly with EMS for enhanced EM simulation capabilities. This integration allows for:
+
+Direct CAD Simulation: Use of 3D models for simulation within Inventor, maintaining design integrity.
+
+Efficient Design Revisions: Simulation insights enable substantial design modifications without leaving the Inventor platform.
+
+Ease of Use: The familiar Inventor interface simplifies the learning process for conducting EM simulations.
+
+This streamlined approach accelerates and simplifies the process of simulation-based product development, enhancing design optimization.
+
+Application areas
+EM simulation spans a wide array of application areas, from compact electrical machines to sizable transformers, accommodating various types of excitation such as DC and AC. The scope of electromagnetics is so broad that any attempt to categorize its applications might not fully capture its extensive reach. Acknowledging this, it's important to note the overlap among the diverse applications and devices within the field. Key areas include:
+
+Rotary and Linear Actuators, Motors, and Generators: Essential for motion and power generation.
+Transformers and Inductors: Critical for power conversion and electrical energy distribution.
+Insulators, High Power Switches, Bus Bar Networks, Induction Heaters: Vital for energy transfer, heating processes, and electrical safety.
+Sensors, Motion Controllers, and Measurement Devices: Fundamental for automation, precision control, and data acquisition.
+Permanent Magnet-Based Devices, Magnet Arrays, Magnetic Levitation: Innovative applications in transportation, material handling, and beyond.
+These examples underscore the vast, interwoven landscape of EM simulation applications, highlighting its critical role in advancing technology across multiple domains.
+
+
+
+EMS for Inventor can calculate the magnetic field inside a motor and also the cogging torque
+Figure 2 - EMS for Inventor can calculate the magnetic field inside a motor and also the cogging torque
+
+EMS for Inventor can help visualize the losses in the core of a transformer
+
+Figure 3 - EMS for Inventor can help visualize the losses in the core of a transformer
+
+Conclusion
+Integrating EM simulation with Autodesk Inventor stands as a cornerstone in advancing the design and optimization of electrical devices. This fusion enables engineers to leverage the comprehensive capabilities of EM simulation directly within a familiar CAD environment, significantly accelerating the development cycle from conceptualization to final product. Highlighted in the application note, this synergy not only streamlines the process of validating and refining designs but also greatly reduces the reliance on physical prototypes. As a result, Autodesk Inventor with EM simulation becomes an invaluable asset for engineers aiming to achieve efficiency, precision, and innovation in electrical device development.
+
+Share on
+
+
+
+Recent Articles
+
+Demagnetization in PMSM Rotors: Understanding the Causes and Preventing Performance Loss
+
+The Basics of Induction Heating for Modern Manufacturing
+emworks logo
+EMWorks develops electromagnetic simulation software designed to reduce complexity, accelerate time to market, and fit naturally into engineering workflows. With built-in CAD, an intuitive interface, and a dedicated support team that speaks engineers' language, our tools are easy to learn and easier to trust—freeing engineers to innovate faster and focus on solving real-world problems.
+Who We Are
+About Us
+Contact Us
+Support
+Privacy Policy
+FAQs
+Programs & Services
+Consulting
+Startup
+Academic
+Resources
+Blog
+Webinars
+Whitepapers
+Exhibitions
+Applications
+Electric Motors
+Transformers
+Magnetic Gears
+RF & Microwave Components
+© EMWorks Inc. All rights reserved.
+

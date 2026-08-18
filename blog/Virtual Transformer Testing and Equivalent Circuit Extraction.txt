@@ -1,0 +1,194 @@
+En
+Search...
+Search
+Login
+EMWorks logo
+Company
+Show submenu for "Extra"
+EMWORKS Platform
+Show submenu for "Products"
+Applications
+Services
+Learning Center
+Show submenu for "Products"
+Support
+Programs
+Show submenu for "Extra"
+Get a Free Trial
+Contact Us
+Stripes
+Stripes
+Virtual Transformer Testing and Equivalent Circuit Extraction
+Simulating Open Circuit and Short Circuit Tests for Loss Analysis
+
+Arvind Krishnan   .   September 20, 2017
+
+Unlock Your Trial – See EMAG in Action
+The best way to understand the impact of EMAG is to experience it yourself.
+Fill out the form to access your trial and start simulating real electromagnetic behavior — fields, losses, forces, and torques in your motors, transformers, actuators, and sensors — because seeing is believing.
+
+First Name
+ 
+Last Name
+ 
+E-mail
++1
+201-555-0123
+I agree to receive marketing material from EMWorks
+
+Send Request
+Transformer
+A transformer, an essential static electrical device, facilitates the transfer of electrical energy between multiple circuits via electromagnetic induction. Comprising a core (typically laminated steel), primary, and secondary windings, its operation, as illustrated in Figure 1, hinges on a time-varying current in the primary coil generating a corresponding magnetic field. This magnetic field fluctuation then induces a voltage in the secondary coil, as per Faraday’s law of induction. Crucially, this mechanism enables seamless power transfer between circuits without direct physical contact. But what significance does this hold?
+
+ A single phase transformer 
+
+Fig. 1.  A Single Phase Transformer
+
+Applications of Transformers
+Transformers play a vital role in the electric power sector, primarily used to adjust AC voltage levels as needed. Since the widespread adoption of AC power, transformers have become indispensable in power transmission and distribution. They also feature prominently in the electronic and RF industries, where their size varies greatly. From compact units of a few cubic centimeters for RF applications to massive high-power transformers spanning cubic meters and weighing several tons for interconnecting power grids, their versatility and scalability underscore their significance across various sectors.
+
+Losses in Transformers
+Two primary types of losses occur in transformers, crucial for engineering considerations:
+ 
+
+1. Core Loss 2. Winding Loss Efficient transformer design aims to minimize these losses. Engineers typically construct a prototype after designing a transformer, then measure losses through open-circuit and short-circuit tests. These tests not only quantify losses but also facilitate the creation of an equivalent circuit for the transformer. With the equivalent circuit established, engineers can seamlessly substitute the transformer with its equivalent circuit, simplifying system-level simulations for further analysis and optimization.
+ 
+
+Open Circuit Test
+ 
+
+The open circuit test, illustrated in Figure 2, serves to ascertain the core loss within a transformer. As implied, one winding—typically the high-voltage side—is left unloaded. The voltage across the low-voltage winding is then incrementally raised until it matches the rated voltage of the low-voltage circuit. A wattmeter connected to the low-voltage circuit measures the input power, representing the core loss of the transformer.
+
+ Open circuit test
+
+Fig. 2.  Open Circuit Test
+
+
+ 
+
+Short Circuit Test
+Figure 3 depicts the connection diagram for the short circuit test. Here, the low-voltage side of the transformer is short-circuited. On the high-voltage side, the voltage is progressively increased until the current attains the rated value for the high-voltage side. The wattmeter reading obtained can be considered an approximation of the copper loss in the transformer. Thus, the short circuit test serves to ascertain the copper loss within the transformer..
+
+ Short circuit test
+
+ Fig. 3. Short Circuit Test
+
+
+ 
+
+Open Circuit Test and Short Circuit Test Simulation
+The interesting feature about simulation in EMS is the ability to perform both the above-mentioned tests virtually. For the open circuit test, the following inputs are required.
+
+Material property of the core – the B-H curve of the steel material, lamination details, Core loss curve for the laminate (P-B curve)
+Rated voltage in the Low Voltage side must be applied to the low voltage winding
+The high voltage side must be kept open i.e. a current equal to 0 Amps must be applied to the high voltage winding
+Once the simulation is completed, EMS gives the core loss as an output. One can also get the Low Voltage side current from EMS. To perform short circuit test simulation the following inputs are required.
+
+The low voltage side must be shorted. Hence, we apply a 0 voltage across the low voltage winding.
+
+In the high voltage winding we apply different voltages and measure the current till we get the current equal to the rated current in the high voltage side. This can be performed using the Parametric simulation in EMS where the applied voltage can be varied and the current can be measured. Then we take the value of the voltage that gives the rated current and perform the short circuit simulation.
+
+Upon completion of the simulation, EMS provides data on copper loss, leakage inductance, and winding resistance. These results, derived from both the open circuit and short circuit tests, serve as the foundation for constructing the equivalent circuit of the transformer.
+Discussion of results, including equivalent circuits, is crucial for understanding the simulation outcomes. Here, I'll provide a brief overview of the modeling process within EMS and delve into the obtained results. The material used for the laminate is shown in Figure 5, while Figure 6 illustrates the coil definition within EMS. The results encompass findings from both open and short-circuit simulations, each conducted as separate studies within EMS. Figure 7 presents the Result table, and Figure 8 exhibits the section plot of the magnetic flux density for the open circuit test.
+ 
+ 
+
+Discussion of Results Including Equivalent Circuit
+In this section, I'll provide a concise overview of the EMS modeling process and analyze the results obtained. Figure 4 depicts the model used for simulation, while Figure 5 illustrates the laminate material utilized. Inside EMS, the coil definition is visualized in Figure 6. Results from both the open and short circuit simulations are examined, with each test conducted as a separate study in EMS. Figure 7 displays the Result table, and Figure 8 showcases the section plot of the magnetic flux density during the open circuit test.
+
+Single phase transformer simulated in EMS
+
+ 
+
+Fig. 4. Single-Phase Transformer Simulated in EMS 
+
+ 
+
+ 
+
+material used for laminates
+ 
+Fig. 5.  Material used for Laminates 
+ 
+ 
+ 
+ 
+ 
+
+ 
+Fig. 6. Coil Definition inside EMS 
+ 
+Figure 7 shows all the obtained results including the core loss:
+ 
+ 
+Result table contains all the results including the Core Loss
+ 
+ 
+Fig. 7.  Result Table 
+ 
+ 
+
+ 
+ 
+Fig. 8.  Section Plot of the Magnetic Flux Density
+ 
+ 
+ 
+Figure 9 shows the final equivalent circuit for the transformer.
+ 
+ 
+Equivalent circuit of the transformer
+
+ 
+
+Fig. 9.  Equivalent Circuit of the Transformer
+
+ 
+ 
+Conclusion
+In conclusion, understanding and simulating transformer behavior are crucial for enhancing efficiency in power transmission systems. With EMS, engineers can effectively model transformer operations, analyze performance factors, and optimize designs for maximum efficacy. By delving into the intricacies of transformer simulation and leveraging EMS capabilities, engineers can unlock insights that lead to more robust and efficient power distribution networks. With this comprehensive approach, the journey towards optimizing transformer performance becomes streamlined and effective, ensuring reliable and sustainable power supply systems for diverse applications.
+ 
+
+ 
+
+Watch our Webinar on Transformer Simulation
+To watch EMS in action and see how to simulate both open and short circuit studies in EMS click below to watch our webinar on transformer.
+
+ 
+
+ 
+
+ 
+Share on
+
+
+
+Recent Articles
+
+Demagnetization in PMSM Rotors: Understanding the Causes and Preventing Performance Loss
+
+The Basics of Induction Heating for Modern Manufacturing
+emworks logo
+EMWorks develops electromagnetic simulation software designed to reduce complexity, accelerate time to market, and fit naturally into engineering workflows. With built-in CAD, an intuitive interface, and a dedicated support team that speaks engineers' language, our tools are easy to learn and easier to trust—freeing engineers to innovate faster and focus on solving real-world problems.
+Who We Are
+About Us
+Contact Us
+Support
+Privacy Policy
+FAQs
+Programs & Services
+Consulting
+Startup
+Academic
+Resources
+Blog
+Webinars
+Whitepapers
+Exhibitions
+Applications
+Electric Motors
+Transformers
+Magnetic Gears
+RF & Microwave Components
+© EMWorks Inc. All rights reserved.
+

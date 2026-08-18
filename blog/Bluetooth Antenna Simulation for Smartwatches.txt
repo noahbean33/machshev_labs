@@ -1,0 +1,122 @@
+En
+Search...
+Search
+Login
+EMWorks logo
+Company
+Show submenu for "Extra"
+EMWORKS Platform
+Show submenu for "Products"
+Applications
+Services
+Learning Center
+Show submenu for "Products"
+Support
+Programs
+Show submenu for "Extra"
+Get a Free Trial
+Contact Us
+Stripes
+Stripes
+Bluetooth Antenna Simulation for Smartwatches
+Analyzing the Impact of Bending on Antenna Performance
+
+Nadia Kari   .   October 6, 2017
+
+Unlock Your Trial – See EMAG in Action
+The best way to understand the impact of EMAG is to experience it yourself.
+Fill out the form to access your trial and start simulating real electromagnetic behavior — fields, losses, forces, and torques in your motors, transformers, actuators, and sensors — because seeing is believing.
+
+First Name
+ 
+Last Name
+ 
+E-mail
++1
+201-555-0123
+I agree to receive marketing material from EMWorks
+
+Send Request
+Wearable technology, a prime example of IoT applications, encompasses smart electronics like smart watches. These devices commonly utilize Bluetooth for connectivity. This article explores the design of Bluetooth antennas for smart watches, focusing on two configurations: flat and bent. HFWorks' Antenna analysis simulates the electromagnetic behavior of these antennas, offering insights into their performance differences.
+
+Flat Bluetooth antenna
+Design and simulation
+Figure 1 depicts the configuration of the flat Bluetooth antenna structure, operating at 2.45 GHz. The antenna's overall size is specified, and it is excited using a microstrip line with a 50 Ohm impedance. The materials used include FR4 with a relative permittivity of 4.5, while the metals are treated as perfect electric conductors (PEC).
+
+Front and bottom view of the flat antenna.
+Figure 1 -  Front and bottom view of the flat antenna.
+Results
+The simulated return loss S11, obtained using HFWorks with the Fast Sweep Type, is illustrated in Figure 2. The frequency range spans from 2 GHz to 3 GHz, showcasing resonance at 2.45 GHz.
+
+Return loss S11 of the flat antenna (dB).
+
+Figure 2 - Return loss S11 of the flat antenna (dB).
+
+The Voltage Standing Wave Ratio (VSWR) is depicted in Figure3. At 2.45 GHz the VSWR is less than 1.2
+
+Figure 3 - 2D plot of the VSWR.
+Figure 4 presents polar plot views of the far field data, depicting the gain at 2.45 GHz in the XZ, XY, and YZ planes.
+
+2D plot of the gain at 2.45 GHz in the XY, YZ and XZ planes.
+
+Figure 4 - 2D plot of the gain at 2.45 GHz in the XY, YZ and XZ planes.
+
+Bent Bluetooth antenna
+Design and simulation
+Studying antenna performance under various bending conditions is crucial for wearable electronics. Different configurations using SOLIDWORKS are presented by varying the bending angle. Figure 5 illustrates the geometry of the bent Bluetooth antenna.
+
+The geometry of bent antenna (top and bottom views).Figure 5 - The geometry of the bent antenna (top and bottom views).
+
+Different bending angles are simulated and compared using the multi-configuration feature. Table 1 summarizes the configurations analyzed with HFWorks.
+
+Table1 -The different configurations simulated by HFWorks
+Name	Value
+Configuration 1	10deg
+Configuration 2	20deg
+Configuration 3	30deg
+Results
+Figure 6 illustrates the simulated return losses (S11) for each configuration, showcasing the impact of the bending angle on the antenna's resonant frequency.
+
+The simulated return loss S11 for each configuration.
+
+Figure 6 - The simulated return loss S11 for each configuration.
+
+After bending, the resonant frequencies shift to approximately 2.37 GHz, outside the Bluetooth band, indicating a notable impact of bending on the antenna's resonance frequency performance. Figure 7 showcases the gain pattern of various configurations, revealing an omnidirectional pattern across all configurations. However, the flat antenna exhibits the highest gain value.
+
+The gain pattern of each configurationFigure 7 -  The gain pattern of each configuration
+Conclusion
+Efficient antenna design is crucial for enhancing the performance of Bluetooth-enabled smartwatches. Through HFWorks simulation, we've explored the intricacies of both flat and bent antenna configurations, shedding light on resonance frequencies, return losses, and gain patterns. These insights are invaluable for designers seeking to optimize antenna performance for wearable electronics. By leveraging simulation tools like HFWorks, manufacturers can ensure that Bluetooth antennas deliver reliable connectivity and seamless user experiences in the rapidly evolving landscape of wearable technology.
+
+Share on
+
+
+
+Recent Articles
+
+Demagnetization in PMSM Rotors: Understanding the Causes and Preventing Performance Loss
+
+The Basics of Induction Heating for Modern Manufacturing
+emworks logo
+EMWorks develops electromagnetic simulation software designed to reduce complexity, accelerate time to market, and fit naturally into engineering workflows. With built-in CAD, an intuitive interface, and a dedicated support team that speaks engineers' language, our tools are easy to learn and easier to trust—freeing engineers to innovate faster and focus on solving real-world problems.
+Who We Are
+About Us
+Contact Us
+Support
+Privacy Policy
+FAQs
+Programs & Services
+Consulting
+Startup
+Academic
+Resources
+Blog
+Webinars
+Whitepapers
+Exhibitions
+Applications
+Electric Motors
+Transformers
+Magnetic Gears
+RF & Microwave Components
+© EMWorks Inc. All rights reserved.
+
