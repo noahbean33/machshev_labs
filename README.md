@@ -1,11 +1,43 @@
-# CEM LLC — company website
+# Machshev Labs LLC — company website
 
-Marketing site for **CEM LLC**, built from [CEM_LLC_Company_Design.md](CEM_LLC_Company_Design.md).
+Marketing site for **Machshev Labs LLC**, built from
+[CEM_LLC_Company_Design.md](CEM_LLC_Company_Design.md) — the working design doc predates the
+company's current name; the filename is left as-is since it's the source document, not site output.
 
 Positioning: computational electromagnetics for seed-to-Series-B hardware startups — EMI/EMC,
 SI/PI, and FCC pre-compliance, without a $50k enterprise CEM license.
 
 Static HTML, CSS, and vanilla JS. No build step, no dependencies, no network calls.
+
+## Logo
+
+`images/company_logo.jpg` is the source lockup (icon + wordmark, white background). Two derived,
+transparent-background assets are generated from it for use on the dark site:
+
+- `images/logo-icon.png` — the circuit-M mark alone, used in the nav and footer brand
+- `images/logo-full.png` — icon + "MACHSHEV LABS LLC" wordmark, generated but not yet placed on a page
+- `images/favicon.png` — small version of the icon, used as the browser-tab icon
+
+Regenerate them if `company_logo.jpg` changes — the crop boxes are tuned to that specific file:
+
+```bash
+python3 -c "
+from PIL import Image
+import numpy as np
+im = Image.open('images/company_logo.jpg').convert('RGB')
+a = np.array(im).astype(np.float32)
+def to_transparent(crop, pad=24, hi=248.0, lo=190.0):
+    h, w, _ = crop.shape
+    b = crop.mean(axis=2)
+    alpha = np.clip((hi - b) / (hi - lo), 0, 1) * 255
+    img = Image.fromarray(np.dstack([crop, alpha]).astype(np.uint8), 'RGBA')
+    canvas = Image.new('RGBA', (w+2*pad, h+2*pad), (0,0,0,0))
+    canvas.paste(img, (pad, pad), img)
+    return canvas
+to_transparent(a[85:754, 436:1225], 30).save('images/logo-icon.png')
+to_transparent(a[85:1000, 311:1448], 28).save('images/logo-full.png')
+"
+```
 
 ## Pages
 
@@ -50,7 +82,7 @@ Content is drawn from the design document, but some of it is **placeholder or pr
 
 - **The contact form has no backend.** It validates and confirms locally only. Point the submit
   handler in `assets/js/main.js` at your form endpoint or inbox.
-- **`hello@cemllc.example` is a placeholder.** Replace with the real address.
+- **`hello@machshevlabs.example` is a placeholder.** Replace with the real address.
 - **Founder section on `about.html` has no name or photo** — there is a `TODO` comment marking
   the spot. It reads as deliberate ("one engineer, on purpose") but is incomplete.
 - **Pricing is published as the design doc's draft ranges** ($2,500–5,000 sprint, $1,500/mo

@@ -1,5 +1,5 @@
 /* ==========================================================================
-   CEM LLC — design system
+   Machshev Labs — design system
    ========================================================================== */
 
 :root {
@@ -240,7 +240,7 @@ section[id], div[id] { scroll-margin-top: 88px; }
   letter-spacing: -0.02em;
 }
 .brand:hover { color: var(--text); }
-.brand__mark { flex: none; }
+.brand__mark { flex: none; height: 28px; width: auto; display: block; object-fit: contain; }
 .brand__sub {
   font-family: var(--mono);
   font-size: 0.62rem;
