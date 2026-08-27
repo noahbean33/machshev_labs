@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Palace: The Best Open-Source Alternative to HFSS Right Now — Machshev Labs</title>
+<meta name="description" content="Palace is an advanced electromagnetic finite element solver developed by AWS Labs, and it&#x27;s genuinely worth a look as a serious open-source alternative in high-frequency EM simulation.">
+<meta name="theme-color" content="#06080c">
+<link rel="icon" href="../images/favicon.png" type="image/png">
+<link rel="stylesheet" href="../assets/css/styles.css">
+</head>
+<body>
+
+<header class="site-header">
+  <div class="wrap">
+    <nav class="nav" aria-label="Primary">
+      <a class="brand" href="../index.html">
+        <img src="../images/logo-icon.png" alt="Machshev Labs" class="brand__mark" width="33" height="28">
+        Machshev Labs<span class="brand__sub">EMI · SI/PI · FCC</span>
+      </a>
+      <button class="nav__toggle" type="button" aria-expanded="false" aria-label="Toggle navigation"><span></span></button>
+      <ul class="nav__links">
+        <li><a href="../services.html">Services</a></li>
+        <li><a href="../services.html#pricing">Pricing</a></li>
+        <li><a href="../resources.html">Free tools</a></li>
+        <li><a href="../blog.html" aria-current="page">Blog</a></li>
+        <li><a href="../about.html">About</a></li>
+      </ul>
+      <div class="nav__cta">
+        <a class="btn btn--sm" href="../contact.html">Get a fixed-price quote</a>
+      </div>
+    </nav>
+  </div>
+</header>
+
+<main>
+
+  <section class="page-head">
+    <div class="wrap">
+      <a class="arrow-link" href="../blog.html" style="margin-bottom:18px">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M11 6l-6 6 6 6"/></svg>
+        All posts
+      </a>
+      <div class="post-meta">
+        <span class="badge badge--pass">Palace</span>
+        <span>CEM Tooling & Industry Notes · 09 of 10</span>
+        <span>·</span>
+        <span>2 min read</span>
+      </div>
+      <h1 style="max-width:26ch">Palace: The Best Open-Source Alternative to HFSS Right Now</h1>
+      <p class="lede">Palace is an advanced electromagnetic finite element solver developed by AWS Labs, and it's genuinely worth a look as a serious open-source alternative in high-frequency EM simulation.</p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="wrap">
+      <div class="post-layout">
+        <article class="post-body">
+<hr />
+<h2 id="specialized-electromagnetic-capabilities">Specialized electromagnetic capabilities</h2>
+<p>Plenty of open-source FEM tools exist, but few are tailored specifically to electromagnetic applications.</p>
+<p>The main obstacle to adopting open-source FEM for photonics, RF, or power electronics has historically been implementing specialized "port" boundary conditions yourself. General-purpose tools like Elmer and FEniCS give you a framework where you could theoretically build those, but Palace ships with built-in lumped ports and numerical wave ports — a genuinely applications-enabling feature, not a research exercise.</p>
+<h2 id="built-for-high-performance-computing">Built for high-performance computing</h2>
+<p>Palace is designed with performance as a first-class concern, supporting large-scale, detailed simulations. Built on MFEM and libCEED — modern libraries built for parallel architectures from the ground up — it takes advantage of whatever hardware you point it at, at no extra licensing cost.</p>
+<p>Whether that's an HPC cluster, a GPU workstation, or cloud infrastructure, Palace handles computationally intensive work by default, which means accurate, high-fidelity results without waiting on a license-gated core count.</p>
+<h2 id="where-its-still-rough">Where it's still rough</h2>
+<p>At the time of writing (v0.13), Palace can be rough around the edges and is missing a few conveniences, but it already covers most of HFSS's core functionality without the price tag, and with considerably more flexibility.</p>
+<p>Adopting a tool like Palace isn't just swapping software — it's rethinking your simulation environment, or building one from scratch if you've been avoiding simulation entirely because of cost. That means integrating CAD, meshing, and the rest of the toolchain, and getting comfortable with cloud compute along the way.</p>
+<h2 id="getting-started">Getting started</h2>
+<p>If you want to try open-source technology for electromagnetic modeling, Palace is worth the time. Head to the repository and documentation and give it a run — installation can be a genuine adventure, but the capability on the other side of it is worth the effort.</p>
+<h2 id="why-this-matters-for-a-startup-timeline">Why this matters for a startup timeline</h2>
+<p>The honest version of this story: getting from "clone the repo" to "a validated result I'd stake a tape-out on" is a real investment, even with a tool as capable as Palace. That gap — good open-source physics, not enough runway to build the workflow around it — is exactly why Machshev Labs runs the simulation as a service instead of asking a two-person hardware team to become full-wave EM engineers on a deadline. Same physics, someone who's already climbed the curve.</p>
+        </article>
+<aside class="post-toc" data-post-toc>
+          <span class="post-toc__label">On this page</span>
+          <ol>
+          <li><a href="#specialized-electromagnetic-capabilities">Specialized electromagnetic capabilities</a></li>
+          <li><a href="#built-for-high-performance-computing">Built for high-performance computing</a></li>
+          <li><a href="#where-its-still-rough">Where it&#x27;s still rough</a></li>
+          <li><a href="#getting-started">Getting started</a></li>
+          <li><a href="#why-this-matters-for-a-startup-timeline">Why this matters for a startup timeline</a></li>
+          </ol>
+        </aside>
+      </div>
+    </div>
+  </section>
+
+  <section class="section--tight">
+    <div class="wrap">
+      <div class="post-pager">
+<a class="post-pager__link is-prev" href="14_fem_electromagnetics_in_python.html"><span class="post-pager__dir">← Previous</span><span class="post-pager__title">FEM Electromagnetics in Python: Mapping the Open-Source Ecosystem</span></a>
+        <a class="post-pager__link is-next" href="16_em_simulation_product_lifecycle.html"><span class="post-pager__dir">Next →</span><span class="post-pager__title">Where EM Simulation Actually Pays Off in the Product Lifecycle</span></a>
+      </div>
+    </div>
+  </section>
+
+  <section class="section--tight" style="padding-bottom:clamp(64px,9vw,116px)">
+    <div class="wrap">
+      <div class="cta reveal">
+        <h2>Found something like this on your own board?</h2>
+        <p class="lede">
+          A stub that looks like a mistake, a split that isn't, a resonance nobody accounted for —
+          this is exactly what a Tier 2 simulation sprint checks before tape-out, not after a failed scan.
+        </p>
+        <div class="btn-row">
+          <a class="btn" href="../contact.html">Get a fixed-price quote</a>
+          <a class="btn btn--ghost" href="../services.html#tier2">See what a sprint covers</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer class="site-footer footer">
+  <div class="wrap">
+    <div class="footer__grid">
+      <div class="footer__brand">
+        <a class="brand" href="../index.html">
+          <img src="../images/logo-icon.png" alt="Machshev Labs" class="brand__mark" width="33" height="28">
+          Machshev Labs
+        </a>
+        <p>Computational electromagnetics for hardware startups. EMI/EMC, signal and power integrity, and FCC pre-compliance without the enterprise license.</p>
+      </div>
+      <div>
+        <h4>Services</h4>
+        <ul>
+          <li><a href="../services.html#tier2">SI/PI &amp; EMI sprints</a></li>
+          <li><a href="../services.html#tier3">FCC pre-compliance</a></li>
+          <li><a href="../services.html#tier1">Pre-flight check (roadmap)</a></li>
+          <li><a href="../services.html#pricing">Pricing</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Free tools</h4>
+        <ul>
+          <li><a href="../resources.html#impedance">Trace impedance</a></li>
+          <li><a href="../resources.html#resonance">Plane resonance</a></li>
+          <li><a href="../resources.html#fcc">FCC limit converter</a></li>
+          <li><a href="../resources.html#autopsies">EMI autopsies</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Blog</h4>
+        <ul>
+          <li><a href="../blog.html">All posts</a></li>
+          <li><a href="1_rf_fundamentals.html">Start here: Fundamentals</a></li>
+          <li><a href="16_em_simulation_product_lifecycle.html">Latest: Product Lifecycle</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Company</h4>
+        <ul>
+          <li><a href="../about.html">About</a></li>
+          <li><a href="../about.html#approach">How we work</a></li>
+          <li><a href="../contact.html">Contact</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer__bar">
+      <span>© <span data-year>2026</span> Machshev Labs LLC</span>
+      <span class="spacer"></span>
+      <span>Not an accredited test laboratory</span>
+      <a href="#">Privacy</a>
+      <a href="#">Terms</a>
+    </div>
+  </div>
+</footer>
+
+<script src="../assets/js/main.js"></script>
+</body>
+</html>

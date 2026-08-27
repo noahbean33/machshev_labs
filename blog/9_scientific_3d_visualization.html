@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The Best Open-Source Scientific 3D Visualization Libraries — Machshev Labs</title>
+<meta name="description" content="Scientific visualization of large 3D datasets is a complex task, and specialized software libraries have been built for it for a long time.">
+<meta name="theme-color" content="#06080c">
+<link rel="icon" href="../images/favicon.png" type="image/png">
+<link rel="stylesheet" href="../assets/css/styles.css">
+</head>
+<body>
+
+<header class="site-header">
+  <div class="wrap">
+    <nav class="nav" aria-label="Primary">
+      <a class="brand" href="../index.html">
+        <img src="../images/logo-icon.png" alt="Machshev Labs" class="brand__mark" width="33" height="28">
+        Machshev Labs<span class="brand__sub">EMI · SI/PI · FCC</span>
+      </a>
+      <button class="nav__toggle" type="button" aria-expanded="false" aria-label="Toggle navigation"><span></span></button>
+      <ul class="nav__links">
+        <li><a href="../services.html">Services</a></li>
+        <li><a href="../services.html#pricing">Pricing</a></li>
+        <li><a href="../resources.html">Free tools</a></li>
+        <li><a href="../blog.html" aria-current="page">Blog</a></li>
+        <li><a href="../about.html">About</a></li>
+      </ul>
+      <div class="nav__cta">
+        <a class="btn btn--sm" href="../contact.html">Get a fixed-price quote</a>
+      </div>
+    </nav>
+  </div>
+</header>
+
+<main>
+
+  <section class="page-head">
+    <div class="wrap">
+      <a class="arrow-link" href="../blog.html" style="margin-bottom:18px">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M11 6l-6 6 6 6"/></svg>
+        All posts
+      </a>
+      <div class="post-meta">
+        <span class="badge badge--pass">Visualization</span>
+        <span>CEM Tooling & Industry Notes · 03 of 10</span>
+        <span>·</span>
+        <span>2 min read</span>
+      </div>
+      <h1 style="max-width:26ch">The Best Open-Source Scientific 3D Visualization Libraries</h1>
+      <p class="lede">Scientific visualization of large 3D datasets is a complex task, and specialized software libraries have been built for it for a long time.</p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="wrap">
+      <div class="post-layout">
+        <article class="post-body">
+<p>Unlike other corners of CAD or CAE, 3D visualization software has mostly been open-source from the start — every library reviewed here carries a permissive license that allows commercial use.</p>
+<p>There are broadly two kinds of tools to reach for:</p>
+<ul>
+<li><strong>Large standalone applications</strong> like ParaView or VisIt: very powerful, with a steeper learning curve, and few real limits on what can be accomplished — including visualizing extremely massive datasets with sophisticated algorithms. Both support scripting, but the typical workflow is opening a file for post-processing.</li>
+<li><strong>Smaller, language-native libraries</strong>, usually tied to Python or Julia, focused on easy, seamless use from within the language. Easier to pick up, but with more limits on dataset size, fewer built-in algorithms, and fewer supported data formats.</li>
+</ul>
+<hr />
+<h2 id="paraview-python-and-standalone">ParaView (Python and standalone)</h2>
+<p>Perhaps the best-known scientific visualization suite, ParaView is developed by Kitware in alliance with Los Alamos and Sandia National Labs, among other partners. It relies on the Visualization Toolkit (VTK), also from Kitware, for its visualization building blocks and data processing model.</p>
+<p>It's best suited to post-processing data from large numerical simulations, supporting the most demanding visualizations of massive datasets via distributed processing. ParaView includes a GUI and a Python shell; a related tool, ParaViewWeb, lets you build interactive visualization applications inside a browser. There's an active discourse forum for support.</p>
+<p><strong>Website:</strong> <a href="https://www.paraview.org/">ParaView</a> · <strong>Docs:</strong> <a href="https://docs.paraview.org/">Official documentation</a></p>
+<h2 id="visit-python-and-standalone">VisIt (Python and standalone)</h2>
+<p>VisIt, developed at Lawrence Livermore National Laboratory and first released in 2002, offers a powerful visualization suite including parallel processing, support for many scientific data formats, and Python scripting.</p>
+<p>Like ParaView, VisIt leverages VTK for its building blocks. It's put particular effort into parallelizing to extremely massive scales and supporting non-standard data models — notably, it supports an unusually large number of input file formats.</p>
+<p><strong>Website:</strong> <a href="https://visit-dav.github.io/visit-website/">VisIt</a> · <strong>Docs:</strong> <a href="https://visitusers.org/">visitusers.org</a></p>
+<h2 id="pyvista-python">PyVista (Python)</h2>
+<p>Also VTK-based, PyVista provides visualization routines for 3D data, aiming for ease of use and broad applicability across science and engineering.</p>
+<p>Its original intent was to be an abstraction layer over VTK, exposing VTK's functionality "Pythonically" — and it supports most or all of it, including parallel file formats needed for very large datasets. The PyVista developers also maintain related tools, including PyMeshFix for repairing holes in surface meshes, a <a href="https://github.com/pyvista/tetgen">TetGen wrapper for Python</a>, and PyACVD, a Python implementation of the ACVD surface mesh resampling algorithm.</p>
+<p><strong>Website:</strong> <a href="https://pyvista.org/">PyVista</a> · <strong>Docs:</strong> <a href="https://docs.pyvista.org/">PyVista documentation</a></p>
+<h2 id="mayavi-python">Mayavi (Python)</h2>
+<p>Also VTK-based, Mayavi is a Python library focused on building visualization scenes directly from Python, with easy integration into the rest of the Python scientific stack.</p>
+<p>One downside: it can be slow on very large datasets, since it doesn't support parallel file formats.</p>
+<p><strong>Website:</strong> <a href="https://docs.enthought.com/mayavi/mayavi/">Mayavi</a></p>
+        </article>
+<aside class="post-toc" data-post-toc>
+          <span class="post-toc__label">On this page</span>
+          <ol>
+          <li><a href="#paraview-python-and-standalone">ParaView (Python and standalone)</a></li>
+          <li><a href="#visit-python-and-standalone">VisIt (Python and standalone)</a></li>
+          <li><a href="#pyvista-python">PyVista (Python)</a></li>
+          <li><a href="#mayavi-python">Mayavi (Python)</a></li>
+          </ol>
+        </aside>
+      </div>
+    </div>
+  </section>
+
+  <section class="section--tight">
+    <div class="wrap">
+      <div class="post-pager">
+<a class="post-pager__link is-prev" href="8_open_source_mesh_generation.html"><span class="post-pager__dir">← Previous</span><span class="post-pager__title">The Best Open-Source Mesh Generation Libraries</span></a>
+        <a class="post-pager__link is-next" href="10_open_source_electromagnetics.html"><span class="post-pager__dir">Next →</span><span class="post-pager__title">Open-Source Electromagnetics: FDTD, FEM, and MoM</span></a>
+      </div>
+    </div>
+  </section>
+
+  <section class="section--tight" style="padding-bottom:clamp(64px,9vw,116px)">
+    <div class="wrap">
+      <div class="cta reveal">
+        <h2>Found something like this on your own board?</h2>
+        <p class="lede">
+          A stub that looks like a mistake, a split that isn't, a resonance nobody accounted for —
+          this is exactly what a Tier 2 simulation sprint checks before tape-out, not after a failed scan.
+        </p>
+        <div class="btn-row">
+          <a class="btn" href="../contact.html">Get a fixed-price quote</a>
+          <a class="btn btn--ghost" href="../services.html#tier2">See what a sprint covers</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer class="site-footer footer">
+  <div class="wrap">
+    <div class="footer__grid">
+      <div class="footer__brand">
+        <a class="brand" href="../index.html">
+          <img src="../images/logo-icon.png" alt="Machshev Labs" class="brand__mark" width="33" height="28">
+          Machshev Labs
+        </a>
+        <p>Computational electromagnetics for hardware startups. EMI/EMC, signal and power integrity, and FCC pre-compliance without the enterprise license.</p>
+      </div>
+      <div>
+        <h4>Services</h4>
+        <ul>
+          <li><a href="../services.html#tier2">SI/PI &amp; EMI sprints</a></li>
+          <li><a href="../services.html#tier3">FCC pre-compliance</a></li>
+          <li><a href="../services.html#tier1">Pre-flight check (roadmap)</a></li>
+          <li><a href="../services.html#pricing">Pricing</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Free tools</h4>
+        <ul>
+          <li><a href="../resources.html#impedance">Trace impedance</a></li>
+          <li><a href="../resources.html#resonance">Plane resonance</a></li>
+          <li><a href="../resources.html#fcc">FCC limit converter</a></li>
+          <li><a href="../resources.html#autopsies">EMI autopsies</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Blog</h4>
+        <ul>
+          <li><a href="../blog.html">All posts</a></li>
+          <li><a href="1_rf_fundamentals.html">Start here: Fundamentals</a></li>
+          <li><a href="16_em_simulation_product_lifecycle.html">Latest: Product Lifecycle</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Company</h4>
+        <ul>
+          <li><a href="../about.html">About</a></li>
+          <li><a href="../about.html#approach">How we work</a></li>
+          <li><a href="../contact.html">Contact</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer__bar">
+      <span>© <span data-year>2026</span> Machshev Labs LLC</span>
+      <span class="spacer"></span>
+      <span>Not an accredited test laboratory</span>
+      <a href="#">Privacy</a>
+      <a href="#">Terms</a>
+    </div>
+  </div>
+</footer>
+
+<script src="../assets/js/main.js"></script>
+</body>
+</html>

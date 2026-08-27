@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The Best Open-Source Mesh Generation Libraries — Machshev Labs</title>
+<meta name="description" content="In engineering simulation, the tools you use can make a significant difference in the efficiency and effectiveness of a project. Open-source software has emerged as a powerful alternative to…">
+<meta name="theme-color" content="#06080c">
+<link rel="icon" href="../images/favicon.png" type="image/png">
+<link rel="stylesheet" href="../assets/css/styles.css">
+</head>
+<body>
+
+<header class="site-header">
+  <div class="wrap">
+    <nav class="nav" aria-label="Primary">
+      <a class="brand" href="../index.html">
+        <img src="../images/logo-icon.png" alt="Machshev Labs" class="brand__mark" width="33" height="28">
+        Machshev Labs<span class="brand__sub">EMI · SI/PI · FCC</span>
+      </a>
+      <button class="nav__toggle" type="button" aria-expanded="false" aria-label="Toggle navigation"><span></span></button>
+      <ul class="nav__links">
+        <li><a href="../services.html">Services</a></li>
+        <li><a href="../services.html#pricing">Pricing</a></li>
+        <li><a href="../resources.html">Free tools</a></li>
+        <li><a href="../blog.html" aria-current="page">Blog</a></li>
+        <li><a href="../about.html">About</a></li>
+      </ul>
+      <div class="nav__cta">
+        <a class="btn btn--sm" href="../contact.html">Get a fixed-price quote</a>
+      </div>
+    </nav>
+  </div>
+</header>
+
+<main>
+
+  <section class="page-head">
+    <div class="wrap">
+      <a class="arrow-link" href="../blog.html" style="margin-bottom:18px">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M11 6l-6 6 6 6"/></svg>
+        All posts
+      </a>
+      <div class="post-meta">
+        <span class="badge badge--pass">Meshing</span>
+        <span>CEM Tooling & Industry Notes · 02 of 10</span>
+        <span>·</span>
+        <span>4 min read</span>
+      </div>
+      <h1 style="max-width:26ch">The Best Open-Source Mesh Generation Libraries</h1>
+      <p class="lede">In engineering simulation, the tools you use can make a significant difference in the efficiency and effectiveness of a project. Open-source software has emerged as a powerful alternative to proprietary tools, offering flexibility, cost savings, and a vibrant developer community.</p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="wrap">
+      <div class="post-layout">
+        <article class="post-body">
+<p>One of the main appeals of open-source tools is that they eliminate the need for expensive licenses, making high-quality software accessible to small businesses, startups, and individual engineers. With access to the source code, users can also customize and adapt the tools to their specific needs.</p>
+<p>Are there shortcomings? How do these libraries compare on ease of use and feature parity with their commercial counterparts? This post gives a quick overview of some of the most important open-source meshing tools, and the challenges they present for engineering projects.</p>
+<hr />
+<h2 id="meshing-and-pre-processing-platforms">Meshing and pre-processing platforms</h2>
+<p>The first type of project users typically encounter is the large "pre-processing platform" that integrates many algorithms and functions — including some that overlap with CAD software rather than pure mesh generation. The two most well-known are Gmsh and Salome.</p>
+<h3 id="salome-comprehensive-pre-and-post-processing">Salome — comprehensive pre- and post-processing</h3>
+<p>Salome integrates multiple open-source tools into a comprehensive pre- and post-processing environment. It includes a GUI for geometry and meshing tasks and supports Python scripting to automate workflows.</p>
+<ul>
+<li><strong>License:</strong> GNU Lesser General Public License (LGPL)</li>
+<li><strong>Website:</strong> <a href="https://www.salome-platform.org/">Salome</a></li>
+</ul>
+<h3 id="gmsh-flexible-meshing-for-3d-simulations">Gmsh — flexible meshing for 3D simulations</h3>
+<p>Gmsh is known for its powerful meshing algorithms and flexibility. It offers a GUI for basic operations and extensive scripting in Python and its own <code>.geo</code> scripting language for advanced meshing tasks, plus bindings to many third-party open-source libraries for specific low-level routines.</p>
+<ul>
+<li><strong>License:</strong> GNU General Public License (GPL), with AGPL components (e.g. TetGen)</li>
+<li><strong>Website:</strong> <a href="https://gmsh.info/">Gmsh</a></li>
+</ul>
+<h3 id="netgen-a-pre-processing-platform">Netgen — a pre-processing platform</h3>
+<p>Netgen produces high-quality surface and volume meshes for finite element simulations. Tightly integrated with NGSolve, it relies on a Python interface and a GUI. It includes its own constructive solid geometry (CSG) system for parametric modelling, and supports boundary representations via STL as well as STEP and IGES through the OpenCascade CAD kernel.</p>
+<ul>
+<li><strong>License:</strong> GNU Lesser General Public License (LGPL)</li>
+<li><strong>Website:</strong> <a href="https://ngsolve.org/">NGSolve</a></li>
+</ul>
+<h3 id="openfoam-snappyhexmesh-hex-meshing-for-cfd">OpenFOAM snappyHexMesh — hex meshing for CFD</h3>
+<p>OpenFOAM is primarily a CFD tool, but it ships its own meshing routines. <code>snappyHexMesh</code> is one of its key meshing utilities, generating 3D meshes from hexahedral and split-hexahedral elements. It's particularly suited to complex geometries, working directly from triangulated surface data such as STL files — automatically refining and snapping the mesh to surfaces, with support for local refinement, boundary layer generation, and mesh smoothing.</p>
+<ul>
+<li><strong>License:</strong> GPL</li>
+<li><strong>Website:</strong> <a href="https://openfoam.org/">OpenFOAM</a></li>
+</ul>
+<h2 id="lower-level-3d-meshing-libraries">Lower-level 3D meshing libraries</h2>
+<h3 id="tetgen-efficient-tetrahedral-mesh-generation">TetGen — efficient tetrahedral mesh generation</h3>
+<p>TetGen specializes in efficient tetrahedral meshes for 3D simulations requiring complex meshing. No native GUI, but it integrates with other tools and can be scripted in Python.</p>
+<ul>
+<li><strong>License:</strong> Affero General Public License (AGPL)</li>
+<li><strong>Website:</strong> <a href="https://wias-berlin.de/software/tetgen/">TetGen, WIAS Berlin</a></li>
+</ul>
+<h3 id="tetwild-robust-tetrahedral-meshing">TetWild — robust tetrahedral meshing</h3>
+<p>TetWild focuses on robust tetrahedral meshing and handles challenging geometries with ease. It can be scripted in Python for customized workflows.</p>
+<ul>
+<li><strong>License:</strong> Mozilla Public License 2.0 (contains CGAL code under GPL)</li>
+<li><strong>Website:</strong> search GitHub for TetWild / the wildmeshing toolkit for the current maintained repository</li>
+</ul>
+<h3 id="mmg3d-automatic-3d-mesh-adaptation">MMG3D — automatic 3D mesh adaptation</h3>
+<p>MMG3D focuses on remeshing rather than meshing — adapting tetrahedral meshes to complex geometries and improving mesh quality. No GUI, but it integrates easily into other software and scripts in Python for automated adaptation.</p>
+<ul>
+<li><strong>License:</strong> GNU Lesser General Public License (LGPL)</li>
+<li><strong>Website:</strong> <a href="https://www.mmgtools.org/">MMG</a></li>
+</ul>
+<h3 id="cgal-mesh-generation-package">CGAL Mesh Generation Package</h3>
+<p>Part of the Computational Geometry Algorithms Library, CGAL's mesh generation package produces high-quality tetrahedral meshes for 3D domains as well as 2D triangular and 1D meshes, for FEM and numerical simulation. It supports complex geometries — implicit functions, CAD data, polyhedral surfaces — with adaptive meshing based on user-defined criteria.</p>
+<ul>
+<li><strong>License:</strong> Mixed LGPL/GPL; a commercial license is also offered</li>
+<li><strong>Website:</strong> <a href="https://www.cgal.org/">CGAL</a></li>
+</ul>
+<h3 id="constrained-delaunay-tetrahedralization">Constrained Delaunay Tetrahedralization</h3>
+<p>A family of algorithms for producing constrained Delaunay tetrahedralizations, useful for applications needing high-quality meshes under specific geometric constraints. Implementations vary in license and maturity — check current GitHub activity before picking one for a production pipeline.</p>
+<h2 id="2d-meshing">2D meshing</h2>
+<p>Gmsh handles 2D meshing too, but can be overkill for that alone. For a lightweight, powerful 2D-specific solution:</p>
+<h3 id="triangle-high-quality-2d-meshes">Triangle — high-quality 2D meshes</h3>
+<p>Triangle excels at high-quality triangular meshes for planar problems. No GUI; controlled via command line and scriptable in Python.</p>
+<ul>
+<li><strong>License:</strong> Non-commercial</li>
+<li><strong>Website:</strong> <a href="https://www.cs.cmu.edu/~quake/triangle.html">Triangle</a></li>
+</ul>
+<h3 id="scipyspatialdelaunay">scipy.spatial.Delaunay</h3>
+<p>Part of SciPy, this provides Delaunay triangulation of a point set. Mostly used in 2D but supports N dimensions — the function takes input points and constructs simplices (triangles in 2D, tetrahedra in 3D) covering the convex hull, ensuring no point lies inside another simplex's circumcircle.</p>
+<ul>
+<li><strong>License:</strong> BSD</li>
+<li><strong>Website:</strong> <a href="https://scipy.org/">SciPy</a></li>
+</ul>
+<h3 id="cdt-constrained-delaunay-triangulation-2d">CDT — Constrained Delaunay Triangulation (2D)</h3>
+<p>A header-only C++ library for 2D Constrained Delaunay Triangulations — fast, numerically robust, and easy to integrate. Handles complex boundaries including segments and holes.</p>
+<ul>
+<li><strong>License:</strong> MPL-2.0</li>
+<li><strong>Website:</strong> <a href="https://github.com/artem-ogre/CDT">GitHub</a></li>
+</ul>
+<h2 id="potential-challenges-and-sweet-spots">Potential challenges and sweet spots</h2>
+<p>In many simulation problems, geometry is simple but the physics is genuinely challenging — a situation that comes up constantly in both academic research and industry. Where geometric requirements are straightforward enough to script or draw with ease, open-source meshing tools deliver nearly all of the benefit with very few of the drawbacks: the ideal case for a non-expert user.</p>
+<p>The challenges show up with complex geometries specifically:</p>
+<ul>
+<li><strong>GUI limitations.</strong> Tools like Gmsh have powerful algorithms but limited GUIs. Getting full value out of them means scripting — an investment that pays off over time.</li>
+<li><strong>CAD-to-mesher communication.</strong> Getting CAD software and the mesher to communicate cleanly is tricky; surface and volume markers can get lost in the transition.</li>
+<li><strong>CAD model preparation.</strong> Not specific to open-source, but real: geometry imperfections, inconsistent surface definitions, and complex topology often require extensive manual cleanup before meshing will behave.</li>
+</ul>
+<h2 id="conclusion">Conclusion</h2>
+<p>Open-source meshing tools offer a compelling alternative to proprietary software — real flexibility and real cost savings. They present unique challenges for very complex geometries, but the benefits make them a valuable part of any engineer's toolkit.</p>
+        </article>
+<aside class="post-toc" data-post-toc>
+          <span class="post-toc__label">On this page</span>
+          <ol>
+          <li><a href="#meshing-and-pre-processing-platforms">Meshing and pre-processing platforms</a></li>
+          <li><a href="#lower-level-3d-meshing-libraries">Lower-level 3D meshing libraries</a></li>
+          <li><a href="#2d-meshing">2D meshing</a></li>
+          <li><a href="#potential-challenges-and-sweet-spots">Potential challenges and sweet spots</a></li>
+          <li><a href="#conclusion">Conclusion</a></li>
+          </ol>
+        </aside>
+      </div>
+    </div>
+  </section>
+
+  <section class="section--tight">
+    <div class="wrap">
+      <div class="post-pager">
+<a class="post-pager__link is-prev" href="7_open_source_fea_software.html"><span class="post-pager__dir">← Previous</span><span class="post-pager__title">The Best Open-Source Finite Element Analysis Software</span></a>
+        <a class="post-pager__link is-next" href="9_scientific_3d_visualization.html"><span class="post-pager__dir">Next →</span><span class="post-pager__title">The Best Open-Source Scientific 3D Visualization Libraries</span></a>
+      </div>
+    </div>
+  </section>
+
+  <section class="section--tight" style="padding-bottom:clamp(64px,9vw,116px)">
+    <div class="wrap">
+      <div class="cta reveal">
+        <h2>Found something like this on your own board?</h2>
+        <p class="lede">
+          A stub that looks like a mistake, a split that isn't, a resonance nobody accounted for —
+          this is exactly what a Tier 2 simulation sprint checks before tape-out, not after a failed scan.
+        </p>
+        <div class="btn-row">
+          <a class="btn" href="../contact.html">Get a fixed-price quote</a>
+          <a class="btn btn--ghost" href="../services.html#tier2">See what a sprint covers</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer class="site-footer footer">
+  <div class="wrap">
+    <div class="footer__grid">
+      <div class="footer__brand">
+        <a class="brand" href="../index.html">
+          <img src="../images/logo-icon.png" alt="Machshev Labs" class="brand__mark" width="33" height="28">
+          Machshev Labs
+        </a>
+        <p>Computational electromagnetics for hardware startups. EMI/EMC, signal and power integrity, and FCC pre-compliance without the enterprise license.</p>
+      </div>
+      <div>
+        <h4>Services</h4>
+        <ul>
+          <li><a href="../services.html#tier2">SI/PI &amp; EMI sprints</a></li>
+          <li><a href="../services.html#tier3">FCC pre-compliance</a></li>
+          <li><a href="../services.html#tier1">Pre-flight check (roadmap)</a></li>
+          <li><a href="../services.html#pricing">Pricing</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Free tools</h4>
+        <ul>
+          <li><a href="../resources.html#impedance">Trace impedance</a></li>
+          <li><a href="../resources.html#resonance">Plane resonance</a></li>
+          <li><a href="../resources.html#fcc">FCC limit converter</a></li>
+          <li><a href="../resources.html#autopsies">EMI autopsies</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Blog</h4>
+        <ul>
+          <li><a href="../blog.html">All posts</a></li>
+          <li><a href="1_rf_fundamentals.html">Start here: Fundamentals</a></li>
+          <li><a href="16_em_simulation_product_lifecycle.html">Latest: Product Lifecycle</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Company</h4>
+        <ul>
+          <li><a href="../about.html">About</a></li>
+          <li><a href="../about.html#approach">How we work</a></li>
+          <li><a href="../contact.html">Contact</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer__bar">
+      <span>© <span data-year>2026</span> Machshev Labs LLC</span>
+      <span class="spacer"></span>
+      <span>Not an accredited test laboratory</span>
+      <a href="#">Privacy</a>
+      <a href="#">Terms</a>
+    </div>
+  </div>
+</footer>
+
+<script src="../assets/js/main.js"></script>
+</body>
+</html>

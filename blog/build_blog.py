@@ -31,15 +31,50 @@ import latex2mathml.converter as l2m
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 BLOG_DIR = os.path.join(ROOT, "blog")
 
-# Reading order, and the one-word topic tag shown on cards and in the
+# Two series, each with its own reading order, numbering ("Reference 01
+# of N"), and prev/next pager — a reader moving through the RF series
+# never gets bounced into the tooling notes as a "next" post, and vice
+# versa. The tag is the one-word topic label shown on cards and in the
 # post meta line. Derived from the filenames' own numeric prefixes.
-POSTS = [
-    ("1_rf_fundamentals.md", "Fundamentals"),
-    ("2_rf_transmission_lines.md", "Transmission Lines"),
-    ("3_rf_stubs.md", "Stubs"),
-    ("4_rf_power_dividers.md", "Power Dividers"),
-    ("5_rf_coupler.md", "Couplers"),
-    ("6_rf_filter.md", "Filters"),
+SERIES = [
+    {
+        "key": "rf",
+        "label": "RF PCB Design",
+        "intro": (
+            "A reference series for engineers laying out boards above a few hundred "
+            "megahertz: the physics, the formulas in spreadsheet-ready form, and the "
+            "layout rules that actually follow from them."
+        ),
+        "posts": [
+            ("1_rf_fundamentals.md", "Fundamentals"),
+            ("2_rf_transmission_lines.md", "Transmission Lines"),
+            ("3_rf_stubs.md", "Stubs"),
+            ("4_rf_power_dividers.md", "Power Dividers"),
+            ("5_rf_coupler.md", "Couplers"),
+            ("6_rf_filter.md", "Filters"),
+        ],
+    },
+    {
+        "key": "notes",
+        "label": "CEM Tooling & Industry Notes",
+        "intro": (
+            "Field notes on the open-source computational electromagnetics stack — "
+            "solvers, meshing, visualization, HPC — and on why the commercial side of "
+            "this market is priced the way it is."
+        ),
+        "posts": [
+            ("7_open_source_fea_software.md", "FEA Tools"),
+            ("8_open_source_mesh_generation.md", "Meshing"),
+            ("9_scientific_3d_visualization.md", "Visualization"),
+            ("10_open_source_electromagnetics.md", "FDTD/FEM/MoM"),
+            ("11_hpc_on_the_cloud.md", "Cloud HPC"),
+            ("12_em_software_market_gap.md", "Market"),
+            ("13_hfss_cst_feko_comparison.md", "Commercial EM"),
+            ("14_fem_electromagnetics_in_python.md", "Python Workflows"),
+            ("15_palace_hfss_alternative.md", "Palace"),
+            ("16_em_simulation_product_lifecycle.md", "Product Lifecycle"),
+        ],
+    },
 ]
 
 WORDS_PER_MINUTE = 220
@@ -288,7 +323,7 @@ POST_TEMPLATE = """<!DOCTYPE html>
       </a>
       <div class="post-meta">
         <span class="badge badge--pass">{tag}</span>
-        <span>Reference {num:02d} of {total}</span>
+        <span>{series_label} · {num:02d} of {series_total}</span>
         <span>·</span>
         <span>{reading_time} min read</span>
       </div>
@@ -347,7 +382,7 @@ INDEX_TEMPLATE = """<!DOCTYPE html>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Blog — Machshev Labs</title>
-<meta name="description" content="A working reference series on RF PCB design: transmission lines, stubs, power dividers, couplers, and filters, with the arithmetic done rather than gestured at.">
+<meta name="description" content="Reference writing on RF PCB design and on the open-source computational electromagnetics stack, with the arithmetic done rather than gestured at.">
 <meta name="theme-color" content="#06080c">
 <link rel="icon" href="images/favicon.png" type="image/png">
 <link rel="stylesheet" href="assets/css/styles.css">
@@ -361,30 +396,24 @@ INDEX_TEMPLATE = """<!DOCTYPE html>
   <section class="page-head">
     <div class="wrap">
       <span class="eyebrow">Blog</span>
-      <h1 style="max-width:18ch">RF PCB design, worked in full</h1>
+      <h1 style="max-width:20ch">Reference writing, worked in full</h1>
       <p class="lede">
-        A reference series for engineers laying out boards above a few hundred megahertz: the
-        physics, the formulas in spreadsheet-ready form, and the layout rules that actually follow
-        from them. No signup, and the arithmetic is shown, not just the conclusion.
+        Two series: RF PCB design for engineers laying out boards above a few hundred megahertz,
+        and field notes on the open-source CEM stack and why the commercial side of this market is
+        priced the way it is. No signup, and the arithmetic is shown, not just the conclusion.
       </p>
     </div>
   </section>
 
-  <section class="section">
-    <div class="wrap">
-      <div class="grid grid--2">
-{cards}
-      </div>
-    </div>
-  </section>
+{sections}
 
   <section class="section--tight" style="padding-bottom:clamp(64px,9vw,116px)">
     <div class="wrap">
       <div class="cta reveal">
         <h2>Already past the reference stage?</h2>
         <p class="lede">
-          If you're staring at a layout decision that has real tape-out cost either way, that's what
-          the simulation sprints are for.
+          If you're staring at a layout or a sourcing decision that has real tape-out cost either
+          way, that's what the simulation sprints are for.
         </p>
         <div class="btn-row">
           <a class="btn" href="contact.html">Get a fixed-price quote</a>
@@ -403,40 +432,62 @@ INDEX_TEMPLATE = """<!DOCTYPE html>
 </html>
 """
 
+INDEX_SECTION_TEMPLATE = """  <section class="section{alt_class}">
+    <div class="wrap">
+      <div class="section-head reveal">
+        <span class="eyebrow">{label}</span>
+        <p class="lede">{intro}</p>
+      </div>
+      <div class="grid grid--2">
+{cards}
+      </div>
+    </div>
+  </section>
+"""
+
 
 def make_slug(md_filename):
     return os.path.splitext(md_filename)[0]
 
 
 def build():
-    total = len(POSTS)
-    parsed = []
+    all_posts = []  # flat list, in file-writing order, for the footer links
 
-    for i, (fname, tag) in enumerate(POSTS, start=1):
-        path = os.path.join(BLOG_DIR, fname)
-        with open(path, encoding="utf-8") as f:
-            raw = f.read()
+    for series in SERIES:
+        series_posts = []
+        series_total = len(series["posts"])
 
-        title, rest = split_title_and_body(raw)
-        excerpt_md, body_md = split_excerpt_and_body(rest)
-        body_html, toc = render_post_body(body_md)
-        reading_time = max(1, round(word_count(body_html) / WORDS_PER_MINUTE))
+        for i, (fname, tag) in enumerate(series["posts"], start=1):
+            path = os.path.join(BLOG_DIR, fname)
+            with open(path, encoding="utf-8") as f:
+                raw = f.read()
 
-        parsed.append({
-            "num": i,
-            "slug": make_slug(fname),
-            "tag": tag,
-            "title": title,
-            "excerpt_html": render_inline_markdown(excerpt_md),
-            "excerpt_plain": plain_text(excerpt_md),
-            "body_html": body_html,
-            "toc": toc,
-            "reading_time": reading_time,
-        })
+            title, rest = split_title_and_body(raw)
+            excerpt_md, body_md = split_excerpt_and_body(rest)
+            body_html, toc = render_post_body(body_md)
+            reading_time = max(1, round(word_count(body_html) / WORDS_PER_MINUTE))
+
+            series_posts.append({
+                "num": i,
+                "series_key": series["key"],
+                "series_label": series["label"],
+                "series_total": series_total,
+                "slug": make_slug(fname),
+                "tag": tag,
+                "title": title,
+                "excerpt_html": render_inline_markdown(excerpt_md),
+                "excerpt_plain": plain_text(excerpt_md),
+                "body_html": body_html,
+                "toc": toc,
+                "reading_time": reading_time,
+            })
+
+        series["parsed"] = series_posts
+        all_posts.extend(series_posts)
 
     # Keep this column the same height as its siblings (Services, Free
-    # tools, Company each list 3-4 items) rather than all 6 posts.
-    first_post, last_post = parsed[0], parsed[-1]
+    # tools, Company each list 3-4 items) rather than every post.
+    first_post, last_post = all_posts[0], all_posts[-1]
     footer_blog_links_root = (
         '<li><a href="blog.html">All posts</a></li>\n'
         '          <li><a href="blog/%s.html">Start here: %s</a></li>\n'
@@ -450,7 +501,11 @@ def build():
     ) % (first_post["slug"], first_post["tag"], last_post["slug"], last_post["tag"])
 
     # -------------------------------------------------------- post pages --
-    for i, post in enumerate(parsed):
+    # Prev/next stays inside each series — post 6 of the RF series never
+    # hands off to post 1 of the tooling notes as a "next" post.
+    for series in SERIES:
+      parsed = series["parsed"]
+      for i, post in enumerate(parsed):
         prev_post = parsed[i - 1] if i > 0 else None
         next_post = parsed[i + 1] if i < len(parsed) - 1 else None
 
@@ -499,7 +554,8 @@ def build():
             footer=footer_html("../", footer_blog_links_post),
             tag=post["tag"],
             num=post["num"],
-            total=total,
+            series_label=post["series_label"],
+            series_total=post["series_total"],
             reading_time=post["reading_time"],
             excerpt=post["excerpt_html"],
             body=post["body_html"],
@@ -512,38 +568,48 @@ def build():
         print("wrote", os.path.relpath(out_path, ROOT))
 
     # -------------------------------------------------------------- index --
-    cards = []
-    for post in parsed:
-        card = (
-            '<article class="card blog-card reveal">\n'
-            '          <div class="blog-card__head">\n'
-            '            <span class="blog-card__num">REF {num:02d}</span>\n'
-            '            <span class="badge badge--pass">{tag}</span>\n'
-            '          </div>\n'
-            '          <h3><a href="blog/{slug}.html" style="color:inherit">{title}</a></h3>\n'
-            '          <p>{excerpt}</p>\n'
-            '          <div class="blog-card__meta">\n'
-            '            <span>{reading_time} min read</span>\n'
-            '            <i class="dot"></i>\n'
-            '            <a class="arrow-link" href="blog/{slug}.html">Read\n'
-            '              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>\n'
-            '            </a>\n'
-            '          </div>\n'
-            '        </article>'
-        ).format(
-            num=post["num"],
-            tag=post["tag"],
-            slug=post["slug"],
-            title=html.escape(post["title"]),
-            excerpt=html.escape(post["excerpt_plain"]),
-            reading_time=post["reading_time"],
-        )
-        cards.append(card)
+    # One headed section per series, each with its own card grid.
+    section_html = []
+    for series in SERIES:
+        cards = []
+        for post in series["parsed"]:
+            card = (
+                '<article class="card blog-card reveal">\n'
+                '          <div class="blog-card__head">\n'
+                '            <span class="blog-card__num">REF {num:02d}</span>\n'
+                '            <span class="badge badge--pass">{tag}</span>\n'
+                '          </div>\n'
+                '          <h3><a href="blog/{slug}.html" style="color:inherit">{title}</a></h3>\n'
+                '          <p>{excerpt}</p>\n'
+                '          <div class="blog-card__meta">\n'
+                '            <span>{reading_time} min read</span>\n'
+                '            <i class="dot"></i>\n'
+                '            <a class="arrow-link" href="blog/{slug}.html">Read\n'
+                '              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>\n'
+                '            </a>\n'
+                '          </div>\n'
+                '        </article>'
+            ).format(
+                num=post["num"],
+                tag=post["tag"],
+                slug=post["slug"],
+                title=html.escape(post["title"]),
+                excerpt=html.escape(post["excerpt_plain"]),
+                reading_time=post["reading_time"],
+            )
+            cards.append(card)
+
+        section_html.append(INDEX_SECTION_TEMPLATE.format(
+            alt_class=" section--alt" if series is SERIES[1] else "",
+            label=series["label"],
+            intro=series["intro"],
+            cards="\n".join(cards),
+        ))
 
     index_page = INDEX_TEMPLATE.format(
         header=header_html("", blog_current=True),
         footer=footer_html("", footer_blog_links_root),
-        cards="\n".join(cards),
+        sections="\n".join(section_html),
     )
     index_path = os.path.join(ROOT, "blog.html")
     with open(index_path, "w", encoding="utf-8") as f:

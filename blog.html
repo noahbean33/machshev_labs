@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Blog — Machshev Labs</title>
-<meta name="description" content="A working reference series on RF PCB design: transmission lines, stubs, power dividers, couplers, and filters, with the arithmetic done rather than gestured at.">
+<meta name="description" content="Reference writing on RF PCB design and on the open-source computational electromagnetics stack, with the arithmetic done rather than gestured at.">
 <meta name="theme-color" content="#06080c">
 <link rel="icon" href="images/favicon.png" type="image/png">
 <link rel="stylesheet" href="assets/css/styles.css">
@@ -38,17 +38,21 @@
   <section class="page-head">
     <div class="wrap">
       <span class="eyebrow">Blog</span>
-      <h1 style="max-width:18ch">RF PCB design, worked in full</h1>
+      <h1 style="max-width:20ch">Reference writing, worked in full</h1>
       <p class="lede">
-        A reference series for engineers laying out boards above a few hundred megahertz: the
-        physics, the formulas in spreadsheet-ready form, and the layout rules that actually follow
-        from them. No signup, and the arithmetic is shown, not just the conclusion.
+        Two series: RF PCB design for engineers laying out boards above a few hundred megahertz,
+        and field notes on the open-source CEM stack and why the commercial side of this market is
+        priced the way it is. No signup, and the arithmetic is shown, not just the conclusion.
       </p>
     </div>
   </section>
 
   <section class="section">
     <div class="wrap">
+      <div class="section-head reveal">
+        <span class="eyebrow">RF PCB Design</span>
+        <p class="lede">A reference series for engineers laying out boards above a few hundred megahertz: the physics, the formulas in spreadsheet-ready form, and the layout rules that actually follow from them.</p>
+      </div>
       <div class="grid grid--2">
 <article class="card blog-card reveal">
           <div class="blog-card__head">
@@ -144,13 +148,175 @@
     </div>
   </section>
 
+  <section class="section section--alt">
+    <div class="wrap">
+      <div class="section-head reveal">
+        <span class="eyebrow">CEM Tooling & Industry Notes</span>
+        <p class="lede">Field notes on the open-source computational electromagnetics stack — solvers, meshing, visualization, HPC — and on why the commercial side of this market is priced the way it is.</p>
+      </div>
+      <div class="grid grid--2">
+<article class="card blog-card reveal">
+          <div class="blog-card__head">
+            <span class="blog-card__num">REF 01</span>
+            <span class="badge badge--pass">FEA Tools</span>
+          </div>
+          <h3><a href="blog/7_open_source_fea_software.html" style="color:inherit">The Best Open-Source Finite Element Analysis Software</a></h3>
+          <p>A quick tour of the main open-source Finite Element projects and libraries, to help you decide which one suits your needs.</p>
+          <div class="blog-card__meta">
+            <span>3 min read</span>
+            <i class="dot"></i>
+            <a class="arrow-link" href="blog/7_open_source_fea_software.html">Read
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+            </a>
+          </div>
+        </article>
+<article class="card blog-card reveal">
+          <div class="blog-card__head">
+            <span class="blog-card__num">REF 02</span>
+            <span class="badge badge--pass">Meshing</span>
+          </div>
+          <h3><a href="blog/8_open_source_mesh_generation.html" style="color:inherit">The Best Open-Source Mesh Generation Libraries</a></h3>
+          <p>In engineering simulation, the tools you use can make a significant difference in the efficiency and effectiveness of a project. Open-source software has emerged as a powerful alternative to proprietary tools, offering flexibility, cost savings, and a vibrant developer community.</p>
+          <div class="blog-card__meta">
+            <span>4 min read</span>
+            <i class="dot"></i>
+            <a class="arrow-link" href="blog/8_open_source_mesh_generation.html">Read
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+            </a>
+          </div>
+        </article>
+<article class="card blog-card reveal">
+          <div class="blog-card__head">
+            <span class="blog-card__num">REF 03</span>
+            <span class="badge badge--pass">Visualization</span>
+          </div>
+          <h3><a href="blog/9_scientific_3d_visualization.html" style="color:inherit">The Best Open-Source Scientific 3D Visualization Libraries</a></h3>
+          <p>Scientific visualization of large 3D datasets is a complex task, and specialized software libraries have been built for it for a long time.</p>
+          <div class="blog-card__meta">
+            <span>2 min read</span>
+            <i class="dot"></i>
+            <a class="arrow-link" href="blog/9_scientific_3d_visualization.html">Read
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+            </a>
+          </div>
+        </article>
+<article class="card blog-card reveal">
+          <div class="blog-card__head">
+            <span class="blog-card__num">REF 04</span>
+            <span class="badge badge--pass">FDTD/FEM/MoM</span>
+          </div>
+          <h3><a href="blog/10_open_source_electromagnetics.html" style="color:inherit">Open-Source Electromagnetics: FDTD, FEM, and MoM</a></h3>
+          <p>Computational electromagnetics spans a wide range of application areas — antennas, nanophotonics, solar cells, metamaterials, lasers, and more — and there are several distinct ways to approach the underlying computation.</p>
+          <div class="blog-card__meta">
+            <span>5 min read</span>
+            <i class="dot"></i>
+            <a class="arrow-link" href="blog/10_open_source_electromagnetics.html">Read
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+            </a>
+          </div>
+        </article>
+<article class="card blog-card reveal">
+          <div class="blog-card__head">
+            <span class="blog-card__num">REF 05</span>
+            <span class="badge badge--pass">Cloud HPC</span>
+          </div>
+          <h3><a href="blog/11_hpc_on_the_cloud.html" style="color:inherit">HPC on the Cloud: A Quick Overview</a></h3>
+          <p>The first applications of cloud computing were about as far from HPC as it gets — cloud providers&#x27; early focus was on cheap commodity hardware. That&#x27;s changed: compute-intensive workloads now run in the cloud as a matter of course.</p>
+          <div class="blog-card__meta">
+            <span>2 min read</span>
+            <i class="dot"></i>
+            <a class="arrow-link" href="blog/11_hpc_on_the_cloud.html">Read
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+            </a>
+          </div>
+        </article>
+<article class="card blog-card reveal">
+          <div class="blog-card__head">
+            <span class="blog-card__num">REF 06</span>
+            <span class="badge badge--pass">Market</span>
+          </div>
+          <h3><a href="blog/12_em_software_market_gap.html" style="color:inherit">The EM Simulation Market Was Never Built For You</a></h3>
+          <p>A single-seat HFSS or CST license runs $20,000 to over $100,000 a year. Add thermal analysis, add more than four cores, add anything past the base package, and the number climbs again. If you&#x27;re an independent engineer or a five-person hardware startup, you already know this — you priced it out and closed the tab.</p>
+          <div class="blog-card__meta">
+            <span>4 min read</span>
+            <i class="dot"></i>
+            <a class="arrow-link" href="blog/12_em_software_market_gap.html">Read
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+            </a>
+          </div>
+        </article>
+<article class="card blog-card reveal">
+          <div class="blog-card__head">
+            <span class="blog-card__num">REF 07</span>
+            <span class="badge badge--pass">Commercial EM</span>
+          </div>
+          <h3><a href="blog/13_hfss_cst_feko_comparison.html" style="color:inherit">HFSS vs. FEKO vs. CST Studio Suite</a></h3>
+          <p>A comparison of the three most prominent commercial high-frequency EM simulation tools.</p>
+          <div class="blog-card__meta">
+            <span>4 min read</span>
+            <i class="dot"></i>
+            <a class="arrow-link" href="blog/13_hfss_cst_feko_comparison.html">Read
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+            </a>
+          </div>
+        </article>
+<article class="card blog-card reveal">
+          <div class="blog-card__head">
+            <span class="blog-card__num">REF 08</span>
+            <span class="badge badge--pass">Python Workflows</span>
+          </div>
+          <h3><a href="blog/14_fem_electromagnetics_in_python.html" style="color:inherit">FEM Electromagnetics in Python: Mapping the Open-Source Ecosystem</a></h3>
+          <p>If you&#x27;re venturing into computational electromagnetics with open-source tools, you&#x27;ve probably noticed something: the landscape is fragmented. Unlike commercial EM packages that bundle everything from geometry creation to field visualization, the open-source world offers specialized tools that each excel at one part of the problem.</p>
+          <div class="blog-card__meta">
+            <span>10 min read</span>
+            <i class="dot"></i>
+            <a class="arrow-link" href="blog/14_fem_electromagnetics_in_python.html">Read
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+            </a>
+          </div>
+        </article>
+<article class="card blog-card reveal">
+          <div class="blog-card__head">
+            <span class="blog-card__num">REF 09</span>
+            <span class="badge badge--pass">Palace</span>
+          </div>
+          <h3><a href="blog/15_palace_hfss_alternative.html" style="color:inherit">Palace: The Best Open-Source Alternative to HFSS Right Now</a></h3>
+          <p>Palace is an advanced electromagnetic finite element solver developed by AWS Labs, and it&#x27;s genuinely worth a look as a serious open-source alternative in high-frequency EM simulation.</p>
+          <div class="blog-card__meta">
+            <span>2 min read</span>
+            <i class="dot"></i>
+            <a class="arrow-link" href="blog/15_palace_hfss_alternative.html">Read
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+            </a>
+          </div>
+        </article>
+<article class="card blog-card reveal">
+          <div class="blog-card__head">
+            <span class="blog-card__num">REF 10</span>
+            <span class="badge badge--pass">Product Lifecycle</span>
+          </div>
+          <h3><a href="blog/16_em_simulation_product_lifecycle.html" style="color:inherit">Where EM Simulation Actually Pays Off in the Product Lifecycle</a></h3>
+          <p>The journey from an idea to a certified, market-ready product is complex and full of risk. Electromagnetic simulation isn&#x27;t a luxury bolted onto that process — it&#x27;s the tool that de-risks and speeds up nearly every stage of it, if you know where to point it.</p>
+          <div class="blog-card__meta">
+            <span>2 min read</span>
+            <i class="dot"></i>
+            <a class="arrow-link" href="blog/16_em_simulation_product_lifecycle.html">Read
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+            </a>
+          </div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+
   <section class="section--tight" style="padding-bottom:clamp(64px,9vw,116px)">
     <div class="wrap">
       <div class="cta reveal">
         <h2>Already past the reference stage?</h2>
         <p class="lede">
-          If you're staring at a layout decision that has real tape-out cost either way, that's what
-          the simulation sprints are for.
+          If you're staring at a layout or a sourcing decision that has real tape-out cost either
+          way, that's what the simulation sprints are for.
         </p>
         <div class="btn-row">
           <a class="btn" href="contact.html">Get a fixed-price quote</a>
@@ -195,7 +361,7 @@
         <ul>
           <li><a href="blog.html">All posts</a></li>
           <li><a href="blog/1_rf_fundamentals.html">Start here: Fundamentals</a></li>
-          <li><a href="blog/6_rf_filter.html">Latest: Filters</a></li>
+          <li><a href="blog/16_em_simulation_product_lifecycle.html">Latest: Product Lifecycle</a></li>
         </ul>
       </div>
       <div>

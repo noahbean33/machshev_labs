@@ -48,8 +48,8 @@ to_transparent(a[85:1000, 311:1448], 28).save('images/logo-full.png')
 | `resources.html` | Three working calculators, EMI autopsy teasers, KiCad/Altium plugin status |
 | `about.html` | Mission, who it's for and isn't for, how we work, services-then-software rationale, founder |
 | `contact.html` | Hardware-startup intake form with client-side validation, what-happens-next, FAQ |
-| `blog.html` | Index of the RF PCB design reference series (generated — see Blog below) |
-| `blog/*.html` | The six posts themselves (generated — see Blog below) |
+| `blog.html` | Index of both blog series, grouped into sections (generated — see Blog below) |
+| `blog/*.html` | The 16 posts themselves (generated — see Blog below) |
 
 ## Working calculators
 
@@ -66,9 +66,9 @@ Both the impedance and FCC tools warn when inputs fall outside where the method 
 
 ## Blog
 
-`blog.html` and `blog/1_rf_fundamentals.html` … `blog/6_rf_filter.html` are **generated**, not
-hand-written. Source is the six markdown files in `blog/*.md` (a reference series on RF PCB
-design); `blog/build_blog.py` renders them into the site's design system and writes the HTML.
+`blog.html` and every `blog/N_*.html` file are **generated**, not hand-written. Source is the
+numbered markdown files in `blog/*.md`; `blog/build_blog.py` renders them into the site's design
+system and writes the HTML.
 
 ```bash
 pip install markdown latex2mathml
@@ -81,17 +81,48 @@ nothing is fetched or run in the visitor's browser, so this doesn't compromise t
 step, no dependencies" claim for the deployed site — there is no build step *to view it*, only to
 regenerate it after an edit.
 
+**Two series**, defined in `build_blog.py`'s `SERIES` list, each with its own numbering
+("Reference NN of N") and prev/next pager — post 6 of one series never hands off to post 1 of the
+other:
+
+- **RF PCB Design** (`1_rf_fundamentals.md` … `6_rf_filter.md`) — the original reference series.
+- **CEM Tooling & Industry Notes** (`7_open_source_fea_software.md` … `16_em_simulation_product_lifecycle.md`)
+  — open-source EM/FEA/meshing/visualization tooling and market commentary, cleaned up from raw
+  `.txt` drafts that used to live in `blog/`. Two of those drafts were **not** converted and were
+  left in place rather than published or deleted — see "Content not published" below.
+
 What the generator assumes about the source markdown (see its docstring for specifics):
-- Title is either a `# H1` (files 1–4) or a single bold line (files 5–6) as the very first line.
+- Title is either a `# H1` or a single bold line (`**Title**`) as the very first line — both
+  styles appear across the corpus.
 - Math is `$$...$$`, `\[...\]`, or `\(...\)` — no bare `$...$`. It's converted to **MathML**
   (via `latex2mathml`) and rendered natively by the browser: no client-side JS, no KaTeX/MathJax,
   no CDN. MathML Core has broad support in current Chrome/Edge/Firefox/Safari; there's no fallback
   for older engines.
 - The first paragraph after the title is lifted out as the excerpt/lede; everything after that is
-  the body, run through `python-markdown` (`tables`, `toc`, `sane_lists` extensions).
+  the body, run through `python-markdown` (`tables`, `toc`, `sane_lists`, `fenced_code` extensions).
 - Reading time is word count ÷ 220 wpm. No publish dates are shown — none of the source files carry
-  real authored dates, and inventing one would be a fabricated timestamp; series position (01–06)
-  and reading time stand in instead.
+  real authored dates, and inventing one would be a fabricated timestamp; series position and
+  reading time stand in instead.
+
+### Content not published
+
+`blog/Launching.txt` and `blog/The Power of EM Simulation in Product Design.txt` are still sitting
+in the folder, untouched, deliberately not converted:
+
+- **`Launching.txt`** is a personal founder-origin story for a different, real company
+  ("EpsilonForge") — PhD, postdoc, University of Buenos Aires, CONICET. Publishing it under
+  Machshev Labs would misattribute a real person's biography to a fictional founder this site
+  already leaves unnamed on purpose (see the `about.html` TODO). Several of the *converted* posts
+  (12, 13, 14, 15) came from the same EpsilonForge-branded source material — those were rewritten
+  to drop the company name, the personal voice, and the service claims that don't match what
+  Machshev Labs actually offers (e.g. general CAE integration consulting, cloud/HPC deployment),
+  keeping only the genuinely reusable technical content.
+- **`The Power of EM Simulation in Product Design.txt`** is a scraped EMWorks Inc. marketing page
+  — their nav chrome, a lead-gen form, a named real author's byline, their copyright footer. It's
+  third-party copyrighted material with someone else's name on it, not raw material to clean up.
+
+Neither file should be published as-is. If you want the topics covered, they'd need to be written
+fresh rather than edited from these sources — happy to do that on request.
 - On-page "On this page" TOC is built from whichever heading level is shallowest in that doc (some
   posts use `##`, others only `###`).
 

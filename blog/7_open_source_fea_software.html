@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The Best Open-Source Finite Element Analysis Software — Machshev Labs</title>
+<meta name="description" content="A quick tour of the main open-source Finite Element projects and libraries, to help you decide which one suits your needs.">
+<meta name="theme-color" content="#06080c">
+<link rel="icon" href="../images/favicon.png" type="image/png">
+<link rel="stylesheet" href="../assets/css/styles.css">
+</head>
+<body>
+
+<header class="site-header">
+  <div class="wrap">
+    <nav class="nav" aria-label="Primary">
+      <a class="brand" href="../index.html">
+        <img src="../images/logo-icon.png" alt="Machshev Labs" class="brand__mark" width="33" height="28">
+        Machshev Labs<span class="brand__sub">EMI · SI/PI · FCC</span>
+      </a>
+      <button class="nav__toggle" type="button" aria-expanded="false" aria-label="Toggle navigation"><span></span></button>
+      <ul class="nav__links">
+        <li><a href="../services.html">Services</a></li>
+        <li><a href="../services.html#pricing">Pricing</a></li>
+        <li><a href="../resources.html">Free tools</a></li>
+        <li><a href="../blog.html" aria-current="page">Blog</a></li>
+        <li><a href="../about.html">About</a></li>
+      </ul>
+      <div class="nav__cta">
+        <a class="btn btn--sm" href="../contact.html">Get a fixed-price quote</a>
+      </div>
+    </nav>
+  </div>
+</header>
+
+<main>
+
+  <section class="page-head">
+    <div class="wrap">
+      <a class="arrow-link" href="../blog.html" style="margin-bottom:18px">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M11 6l-6 6 6 6"/></svg>
+        All posts
+      </a>
+      <div class="post-meta">
+        <span class="badge badge--pass">FEA Tools</span>
+        <span>CEM Tooling & Industry Notes · 01 of 10</span>
+        <span>·</span>
+        <span>3 min read</span>
+      </div>
+      <h1 style="max-width:26ch">The Best Open-Source Finite Element Analysis Software</h1>
+      <p class="lede">A quick tour of the main open-source Finite Element projects and libraries, to help you decide which one suits your needs.</p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="wrap">
+      <div class="post-layout">
+        <article class="post-body">
+<hr />
+<h2 id="commercial-vs-open-source-simulation-software">Commercial vs. open-source simulation software</h2>
+<p>The question of which FEM software to use arises naturally, and the discussion below rests on three basic observations:</p>
+<ul>
+<li>In real applications, very few people write FEM code from scratch anymore.</li>
+<li>Commercial FEM software is usually easy to use for predefined cases, but obscure to customize and hard to integrate with external tools — and it is expensive, typically charging per user or per processor.</li>
+<li>Open-source FEM software has reached a high level of maturity in recent years, but it is generally harder to use than its commercial counterparts.</li>
+</ul>
+<p>Open-source offers real long-term value, but making a high-quality open-source scientific software project viable beyond academic or expert use remains a genuine challenge.</p>
+<p>With that framing, here are the main open-source projects for Finite Element Analysis that see active development and support a sizeable user base. This list isn't exhaustive — if there's an important, actively developed project missing, let us know and we'll add it.</p>
+<h2 id="elmer">Elmer</h2>
+<p><strong>Website:</strong> <a href="https://www.csc.fi/web/elmer">csc.fi/web/elmer</a></p>
+<p>Elmer is a GPL-licensed multiphysics solver based on the Finite Element Method. It includes modules for fluid dynamics, structural mechanics, electromagnetics, heat transfer, acoustics, and more.</p>
+<p>The project ships a graphical user interface (ElmerGUI) capable of importing meshes in various file formats, setting up a PDE system, and exporting model data and results. Postprocessing is usually done via ParaView.</p>
+<h2 id="fenics-project">FEniCS Project</h2>
+<p><strong>Website:</strong> <a href="https://fenicsproject.org/">fenicsproject.org</a></p>
+<p>FEniCS is centered on the numerical solution of partial differential equations with the Finite Element Method. It covers applications ranging from thermomechanics to electromagnetics.</p>
+<p>Meshing is performed via third-party libraries such as Gmsh, while FEniCS offers high-level Python and C++ interfaces to make problem definition and solution straightforward. Models can be prototyped on a laptop and later run on a cluster without changes.</p>
+<p>FEniCSx can be downloaded from the project site; its Python and C++ interface is called DOLFINx.</p>
+<h2 id="freefem">FreeFEM</h2>
+<p><strong>Website:</strong> <a href="https://freefem.org/">freefem.org</a></p>
+<p>FreeFEM is a library for multi-physics simulation via the Finite Element Method, with pre-built modules for Navier-Stokes, linear and non-linear elasticity, thermodynamics, magnetostatics, electrostatics, and fluid-structure interaction.</p>
+<p>It includes its own scripting language for implementing new physics modules, its own mesh generation routines, and compatibility with other open-source tools like Gmsh and ParaView.</p>
+<h2 id="code-aster-structural-and-thermomechanical-analysis">Code-Aster: structural and thermomechanical analysis</h2>
+<p><strong>Website:</strong> <a href="https://www.code-aster.org">code-aster.org</a></p>
+<p>Code-Aster, and its associated Salome-Meca software suite, was developed by Électricité de France R&amp;D in collaboration with universities and industry. It focuses on solid mechanics — thermal and mechanical behavior of linear and non-linear materials, static and dynamic analysis — with application areas including fatigue, damage, fracture, and contact mechanics, plus modules for geomaterials, porous media, and multi-physics coupling.</p>
+<p>The project is used operationally by EDF to justify the service lifetime of components and materials in the nuclear field, and applies to machines, pressure vessels, and civil engineering structures. It is GPL-licensed and includes a GUI.</p>
+<h2 id="openfoam-computational-fluid-dynamics">OpenFOAM: computational fluid dynamics</h2>
+<p><strong>Website:</strong> <a href="https://openfoam.org/">openfoam.org</a></p>
+<p>OpenFOAM is a GPL-licensed project centered on Computational Fluid Dynamics. CFD spans several families of numerical methods, Finite Element among them.</p>
+<p>It's used across engineering applications involving heat, thermodynamics, chemistry, and solids — engines, heat exchangers, electronics cooling, combustion, and more. It includes its own mesh generation for simple or complex geometries; post-processing runs through a ParaView-based GUI, and problem/geometry definition is done via scripting.</p>
+<h2 id="dealii">Deal.II</h2>
+<p><strong>Website:</strong> <a href="https://www.dealii.org">dealii.org</a></p>
+<p>Deal.II is a modern C++ library for solving partial differential equations with the finite element method. Originating from researchers at institutions including Heidelberg University and Colorado State University, it emphasizes adaptive mesh refinement, parallel computing, and high-order finite elements — well suited to high-performance computing environments.</p>
+<p>Distributed under the LGPL (v2.1 or later). It has no native GUI and is typically paired with ParaView or VisIt for post-processing.</p>
+<h2 id="moose">MOOSE</h2>
+<p><strong>Website:</strong> <a href="https://mooseframework.inl.gov">mooseframework.inl.gov</a></p>
+<p>MOOSE (Multiphysics Object Oriented Simulation Environment) was designed to streamline sophisticated multiphysics simulations — particularly in nuclear engineering, though it handles a wide range of PDE-based problems generally. It's developed by Idaho National Laboratory and released under the LGPL (v2.1).</p>
+<p>MOOSE uses a text-based input system rather than a built-in GUI, relying on tools like ParaView for visualization and post-processing.</p>
+        </article>
+<aside class="post-toc" data-post-toc>
+          <span class="post-toc__label">On this page</span>
+          <ol>
+          <li><a href="#commercial-vs-open-source-simulation-software">Commercial vs. open-source simulation software</a></li>
+          <li><a href="#elmer">Elmer</a></li>
+          <li><a href="#fenics-project">FEniCS Project</a></li>
+          <li><a href="#freefem">FreeFEM</a></li>
+          <li><a href="#code-aster-structural-and-thermomechanical-analysis">Code-Aster: structural and thermomechanical analysis</a></li>
+          <li><a href="#openfoam-computational-fluid-dynamics">OpenFOAM: computational fluid dynamics</a></li>
+          <li><a href="#dealii">Deal.II</a></li>
+          <li><a href="#moose">MOOSE</a></li>
+          </ol>
+        </aside>
+      </div>
+    </div>
+  </section>
+
+  <section class="section--tight">
+    <div class="wrap">
+      <div class="post-pager">
+<span></span>
+        <a class="post-pager__link is-next" href="8_open_source_mesh_generation.html"><span class="post-pager__dir">Next →</span><span class="post-pager__title">The Best Open-Source Mesh Generation Libraries</span></a>
+      </div>
+    </div>
+  </section>
+
+  <section class="section--tight" style="padding-bottom:clamp(64px,9vw,116px)">
+    <div class="wrap">
+      <div class="cta reveal">
+        <h2>Found something like this on your own board?</h2>
+        <p class="lede">
+          A stub that looks like a mistake, a split that isn't, a resonance nobody accounted for —
+          this is exactly what a Tier 2 simulation sprint checks before tape-out, not after a failed scan.
+        </p>
+        <div class="btn-row">
+          <a class="btn" href="../contact.html">Get a fixed-price quote</a>
+          <a class="btn btn--ghost" href="../services.html#tier2">See what a sprint covers</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer class="site-footer footer">
+  <div class="wrap">
+    <div class="footer__grid">
+      <div class="footer__brand">
+        <a class="brand" href="../index.html">
+          <img src="../images/logo-icon.png" alt="Machshev Labs" class="brand__mark" width="33" height="28">
+          Machshev Labs
+        </a>
+        <p>Computational electromagnetics for hardware startups. EMI/EMC, signal and power integrity, and FCC pre-compliance without the enterprise license.</p>
+      </div>
+      <div>
+        <h4>Services</h4>
+        <ul>
+          <li><a href="../services.html#tier2">SI/PI &amp; EMI sprints</a></li>
+          <li><a href="../services.html#tier3">FCC pre-compliance</a></li>
+          <li><a href="../services.html#tier1">Pre-flight check (roadmap)</a></li>
+          <li><a href="../services.html#pricing">Pricing</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Free tools</h4>
+        <ul>
+          <li><a href="../resources.html#impedance">Trace impedance</a></li>
+          <li><a href="../resources.html#resonance">Plane resonance</a></li>
+          <li><a href="../resources.html#fcc">FCC limit converter</a></li>
+          <li><a href="../resources.html#autopsies">EMI autopsies</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Blog</h4>
+        <ul>
+          <li><a href="../blog.html">All posts</a></li>
+          <li><a href="1_rf_fundamentals.html">Start here: Fundamentals</a></li>
+          <li><a href="16_em_simulation_product_lifecycle.html">Latest: Product Lifecycle</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Company</h4>
+        <ul>
+          <li><a href="../about.html">About</a></li>
+          <li><a href="../about.html#approach">How we work</a></li>
+          <li><a href="../contact.html">Contact</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer__bar">
+      <span>© <span data-year>2026</span> Machshev Labs LLC</span>
+      <span class="spacer"></span>
+      <span>Not an accredited test laboratory</span>
+      <a href="#">Privacy</a>
+      <a href="#">Terms</a>
+    </div>
+  </div>
+</footer>
+
+<script src="../assets/js/main.js"></script>
+</body>
+</html>

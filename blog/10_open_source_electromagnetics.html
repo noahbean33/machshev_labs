@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Open-Source Electromagnetics: FDTD, FEM, and MoM — Machshev Labs</title>
+<meta name="description" content="Computational electromagnetics spans a wide range of application areas — antennas, nanophotonics, solar cells, metamaterials, lasers, and more — and there are several distinct ways to approach the…">
+<meta name="theme-color" content="#06080c">
+<link rel="icon" href="../images/favicon.png" type="image/png">
+<link rel="stylesheet" href="../assets/css/styles.css">
+</head>
+<body>
+
+<header class="site-header">
+  <div class="wrap">
+    <nav class="nav" aria-label="Primary">
+      <a class="brand" href="../index.html">
+        <img src="../images/logo-icon.png" alt="Machshev Labs" class="brand__mark" width="33" height="28">
+        Machshev Labs<span class="brand__sub">EMI · SI/PI · FCC</span>
+      </a>
+      <button class="nav__toggle" type="button" aria-expanded="false" aria-label="Toggle navigation"><span></span></button>
+      <ul class="nav__links">
+        <li><a href="../services.html">Services</a></li>
+        <li><a href="../services.html#pricing">Pricing</a></li>
+        <li><a href="../resources.html">Free tools</a></li>
+        <li><a href="../blog.html" aria-current="page">Blog</a></li>
+        <li><a href="../about.html">About</a></li>
+      </ul>
+      <div class="nav__cta">
+        <a class="btn btn--sm" href="../contact.html">Get a fixed-price quote</a>
+      </div>
+    </nav>
+  </div>
+</header>
+
+<main>
+
+  <section class="page-head">
+    <div class="wrap">
+      <a class="arrow-link" href="../blog.html" style="margin-bottom:18px">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M11 6l-6 6 6 6"/></svg>
+        All posts
+      </a>
+      <div class="post-meta">
+        <span class="badge badge--pass">FDTD/FEM/MoM</span>
+        <span>CEM Tooling & Industry Notes · 04 of 10</span>
+        <span>·</span>
+        <span>5 min read</span>
+      </div>
+      <h1 style="max-width:26ch">Open-Source Electromagnetics: FDTD, FEM, and MoM</h1>
+      <p class="lede">Computational electromagnetics spans a wide range of application areas — antennas, nanophotonics, solar cells, metamaterials, lasers, and more — and there are several distinct ways to approach the underlying computation.</p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="wrap">
+      <div class="post-layout">
+        <article class="post-body">
+<p>There are three major families of numerical method for electromagnetic simulation: FDTD, FEM, and MoM. Each is best suited to certain cases, with its own advantages and disadvantages. This post covers the basic trade-offs between them, with references to some of the best open-source implementations of each.</p>
+<hr />
+<h2 id="fdtd-fem-and-mom-at-a-glance">FDTD, FEM, and MoM at a glance</h2>
+<div class="table-wrap">
+<table>
+<thead>
+<tr>
+<th>Method</th>
+<th>Solver type</th>
+<th>Discretization</th>
+<th>Material type</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>FDTD</td>
+<td>Differential equation</td>
+<td>Volumetric domain</td>
+<td>Non-linear, anisotropic</td>
+</tr>
+<tr>
+<td>FEM</td>
+<td>Variational form</td>
+<td>Volumetric domain</td>
+<td>Non-linear, anisotropic, multi-physics</td>
+</tr>
+<tr>
+<td>MoM / BEM</td>
+<td>Integral equations</td>
+<td>Surface currents</td>
+<td>Linear, piecewise homogeneous</td>
+</tr>
+</tbody>
+</table>
+</div>
+<h2 id="finite-difference-time-domain-fdtd">Finite-Difference Time-Domain (FDTD)</h2>
+<p>FDTD applies finite differences to Maxwell's equations in a second-order, stable, staggered-grid scheme for the electric and magnetic fields. The method was introduced in a seminal 1966 paper by Kane Yee; the term "FDTD" was popularized later, by Taflove, in the 1980s.</p>
+<p><strong>Advantages</strong></p>
+<ul>
+<li>Time-domain by nature, so it supports a wide range of frequencies in a single run — valuable for broadband analysis.</li>
+<li>Non-linear materials are straightforward to incorporate.</li>
+<li>Explicit time-stepping and relative simplicity make it easy to parallelize and implement across computational environments.</li>
+</ul>
+<p><strong>Disadvantages</strong></p>
+<p>That time-domain flexibility comes at a price:</p>
+<ul>
+<li><strong>Complex geometries are hard to accommodate.</strong> FDTD uses a global grid-like mesh, so applying it to a complex geometry ends up with unnecessarily high resolution in regions where it isn't needed. Mesh size scales roughly like <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mo stretchy="false">&#x00028;</mo><mi>&#x003BB;</mi><mo>&#x0002F;</mo><mi>d</mi><mi>x</mi><msup><mo stretchy="false">&#x00029;</mo><mn>3</mn></msup></mrow></math>, where <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>&#x003BB;</mi></mrow></math> is the wavelength and <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>d</mi><mi>x</mi></mrow></math> is the finest geometric resolution required. Graded meshes help, but remain global in nature, which limits how much they can compensate. Combined with the CFL condition — under which the time step <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>&#x00394;</mi><mi>t</mi></mrow></math> scales with <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>&#x00394;</mi><mi>x</mi></mrow></math> — total compute time scales roughly like <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mo stretchy="false">&#x00028;</mo><mi>&#x003BB;</mi><mo>&#x0002F;</mo><mi>d</mi><mi>x</mi><msup><mo stretchy="false">&#x00029;</mo><mn>4</mn></msup></mrow></math>.</li>
+<li><strong>Error accumulates over time.</strong> As with any finite-difference method, wave propagation on the discrete grid doesn't obey the exact dispersion relation of Maxwell's equations, but an approximate version of it. This numerical dispersion error can become one of FDTD's main accuracy limitations.</li>
+<li>The combination of a global grid and dispersion error makes high-frequency propagation genuinely challenging: the initial error, and therefore the required grid size, has to be small enough to compensate for accumulation. Taflove reports needing a discretization finer than 1/100th wavelength to reach 1.5 dB accuracy in one such study.</li>
+</ul>
+<p><strong>Best open-source FDTD codes</strong></p>
+<div class="table-wrap">
+<table>
+<thead>
+<tr>
+<th>Software</th>
+<th>License</th>
+<th>Written in</th>
+<th>Interface</th>
+<th>Parallelization</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Meep</td>
+<td>GPL</td>
+<td>C++</td>
+<td>Python, Scheme, C++</td>
+<td>MPI</td>
+</tr>
+<tr>
+<td>gprMax</td>
+<td>GPL</td>
+<td>Python + Cython</td>
+<td>Python</td>
+<td>CUDA, MPI</td>
+</tr>
+<tr>
+<td>openEMS</td>
+<td>GPL</td>
+<td>C++</td>
+<td>MATLAB, Python</td>
+<td>MPI</td>
+</tr>
+</tbody>
+</table>
+</div>
+<ul>
+<li><strong>Meep.</strong> Developed at MIT — a highly efficient FDTD package, scriptable in Python or Scheme, or callable from C++. Parallelized with MPI, with a library covering a variety of material types. Recommended for optics and photonics.</li>
+<li><strong>openEMS.</strong> Developed at the University of Duisburg-Essen and parallelized with MPI. MATLAB or Octave are the main scripting interfaces; the related pyEMS project provides a high-level Python interface. Recommended for RF applications.</li>
+<li><strong>gprMax.</strong> Developed at the University of Edinburgh for modelling Ground Penetrating Radar, but usable for electromagnetic wave propagation more broadly. Command-line driven, written in Python with performance-critical parts in Cython/OpenMP.</li>
+</ul>
+<h2 id="finite-element-method-fem">Finite Element Method (FEM)</h2>
+<p>FEM is a widely used approach for solving PDEs, particularly effective in computational electromagnetics for its flexibility with complex geometries. It's built on a weak integral formulation, obtained by multiplying the PDE by test functions and integrating by parts. Unknowns and test functions are then restricted to suitable discrete spaces, typically producing sparse linear algebra problems.</p>
+<p>Run in the frequency domain, as it usually is, FEM doesn't suffer from FDTD's dispersion error. It can also be used as part of a time-stepping scheme, in which case the same dispersion concerns reappear. FEM is also well suited to multi-physics problems — electromagnetism coupled with elasticity, heat transfer, or fluid dynamics — since substantial existing software can be reused.</p>
+<p><strong>Disadvantages</strong></p>
+<ul>
+<li><strong>Volumetric meshing is challenging.</strong> Generating accurate volumetric meshes is complex and time-consuming, often requiring significant manual effort. Automated meshing exists but has limits on quality.</li>
+<li><strong>Steeper learning curve.</strong> FEM demands more intricate setup and a deeper understanding than FDTD.</li>
+<li><strong>Less efficient for homogeneous materials and large open regions.</strong> FEM's volumetric discretization requires meshing the entire domain — even uniform, linear-material regions or large open spaces — making it less efficient than surface-based methods like BEM.</li>
+</ul>
+<p><strong>Best open-source FEM codes for electromagnetism</strong></p>
+<div class="table-wrap">
+<table>
+<thead>
+<tr>
+<th>Software</th>
+<th>License</th>
+<th>Written in</th>
+<th>Interface</th>
+<th>Parallelization</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Elmer FEM</td>
+<td>LGPL</td>
+<td>Fortran</td>
+<td>GUI, config file</td>
+<td>MPI</td>
+</tr>
+<tr>
+<td>FEniCS</td>
+<td>LGPL</td>
+<td>C++</td>
+<td>Python, C++</td>
+<td>MPI</td>
+</tr>
+<tr>
+<td>Palace</td>
+<td>Apache-2.0</td>
+<td>C++</td>
+<td>Config file</td>
+<td>MPI and GPU</td>
+</tr>
+</tbody>
+</table>
+</div>
+<ul>
+<li><strong>Elmer FEM.</strong> An open-source finite element solver for multiphysical simulations, with built-in electromagnetics solvers for magnetostatics, electrostatics, and the wave equation. Uses a configuration file, which can be generated via GUI; the related pyelmer project offers an alternative way to generate those files.</li>
+<li><strong>FEniCS.</strong> A popular LGPLv3 package for solving PDEs, with high-level Python and C++ interfaces and support for high-performance clusters. The FEniCS tutorial includes a magnetostatics example.</li>
+<li><strong>Palace.</strong> Developed at AWS and aimed at quantum-computing hardware simulation, built on MFEM and libCEED. A high-performance FEM solver for large-scale electromagnetic simulation on HPC systems, with advanced solvers — and notably the steepest learning curve of the three, reflecting its HPC focus.</li>
+</ul>
+<h2 id="method-of-moments-mom-boundary-element-method-bem">Method of Moments (MoM) / Boundary Element Method (BEM)</h2>
+<p>MoM is a frequency-domain method for electromagnetic simulation that enforces radiation boundary conditions automatically, without discretizing a large volume of air around the geometry of interest.</p>
+<p>Its main advantage is that it only requires meshing surfaces, giving it a substantial computational edge over FDTD and FEM. As a frequency-domain method, it doesn't suffer from numerical dispersion either.</p>
+<p>Its main drawback: it's best suited to linear problems and piecewise-homogeneous materials, and it's harder to parallelize.</p>
+<p><strong>Best open-source MoM codes</strong></p>
+<div class="table-wrap">
+<table>
+<thead>
+<tr>
+<th>Software</th>
+<th>License</th>
+<th>Written in</th>
+<th>Interface</th>
+<th>Input meshes</th>
+<th>Parallelization</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Bempp</td>
+<td>MIT</td>
+<td>Python</td>
+<td>Python, C++</td>
+<td>Gmsh, meshio</td>
+<td>Shared memory</td>
+</tr>
+<tr>
+<td>PumaEM</td>
+<td>GPLv3</td>
+<td>C++, Fortran</td>
+<td>Python</td>
+<td>Gmsh, GiD, Ansys, VRML</td>
+<td>MPI</td>
+</tr>
+<tr>
+<td>NEC-2</td>
+<td>GPLv2</td>
+<td>C++</td>
+<td>C++, Python, Ruby</td>
+<td>Antenna parameters</td>
+<td>None</td>
+</tr>
+<tr>
+<td>Traceon</td>
+<td>Open-core</td>
+<td>Python + C</td>
+<td>Python</td>
+<td>Own geometry module</td>
+<td>Shared memory</td>
+</tr>
+</tbody>
+</table>
+</div>
+<ul>
+<li><strong>Bempp.</strong> An MIT-licensed computational boundary element platform for electrostatic, acoustic, and electromagnetic problems. Uses JIT-compiled OpenCL or Numba kernels to assemble BEM operators on CPU or GPU, with a Python interface, Fast Multipole Method acceleration via ExaFMM-t, and coupled FEM/BEM computation via FEniCS interfaces.</li>
+<li><strong>PumaEM.</strong> A GPLv3 Method of Moments implementation, accelerated with the Multilevel Fast Multipole Method and parallelized via MPI.</li>
+<li><strong>NEC-2.</strong> A classical LLNL code, rewritten in C++, targeted at wire and surface antenna simulation. CocoaNEC provides a macOS GUI.</li>
+<li><strong>Traceon.</strong> An open-core project for electron optics simulation using Boundary Element Methods and particle tracing — an open-source core with some features reserved for a commercial version.</li>
+</ul>
+        </article>
+<aside class="post-toc" data-post-toc>
+          <span class="post-toc__label">On this page</span>
+          <ol>
+          <li><a href="#fdtd-fem-and-mom-at-a-glance">FDTD, FEM, and MoM at a glance</a></li>
+          <li><a href="#finite-difference-time-domain-fdtd">Finite-Difference Time-Domain (FDTD)</a></li>
+          <li><a href="#finite-element-method-fem">Finite Element Method (FEM)</a></li>
+          <li><a href="#method-of-moments-mom-boundary-element-method-bem">Method of Moments (MoM) / Boundary Element Method (BEM)</a></li>
+          </ol>
+        </aside>
+      </div>
+    </div>
+  </section>
+
+  <section class="section--tight">
+    <div class="wrap">
+      <div class="post-pager">
+<a class="post-pager__link is-prev" href="9_scientific_3d_visualization.html"><span class="post-pager__dir">← Previous</span><span class="post-pager__title">The Best Open-Source Scientific 3D Visualization Libraries</span></a>
+        <a class="post-pager__link is-next" href="11_hpc_on_the_cloud.html"><span class="post-pager__dir">Next →</span><span class="post-pager__title">HPC on the Cloud: A Quick Overview</span></a>
+      </div>
+    </div>
+  </section>
+
+  <section class="section--tight" style="padding-bottom:clamp(64px,9vw,116px)">
+    <div class="wrap">
+      <div class="cta reveal">
+        <h2>Found something like this on your own board?</h2>
+        <p class="lede">
+          A stub that looks like a mistake, a split that isn't, a resonance nobody accounted for —
+          this is exactly what a Tier 2 simulation sprint checks before tape-out, not after a failed scan.
+        </p>
+        <div class="btn-row">
+          <a class="btn" href="../contact.html">Get a fixed-price quote</a>
+          <a class="btn btn--ghost" href="../services.html#tier2">See what a sprint covers</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer class="site-footer footer">
+  <div class="wrap">
+    <div class="footer__grid">
+      <div class="footer__brand">
+        <a class="brand" href="../index.html">
+          <img src="../images/logo-icon.png" alt="Machshev Labs" class="brand__mark" width="33" height="28">
+          Machshev Labs
+        </a>
+        <p>Computational electromagnetics for hardware startups. EMI/EMC, signal and power integrity, and FCC pre-compliance without the enterprise license.</p>
+      </div>
+      <div>
+        <h4>Services</h4>
+        <ul>
+          <li><a href="../services.html#tier2">SI/PI &amp; EMI sprints</a></li>
+          <li><a href="../services.html#tier3">FCC pre-compliance</a></li>
+          <li><a href="../services.html#tier1">Pre-flight check (roadmap)</a></li>
+          <li><a href="../services.html#pricing">Pricing</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Free tools</h4>
+        <ul>
+          <li><a href="../resources.html#impedance">Trace impedance</a></li>
+          <li><a href="../resources.html#resonance">Plane resonance</a></li>
+          <li><a href="../resources.html#fcc">FCC limit converter</a></li>
+          <li><a href="../resources.html#autopsies">EMI autopsies</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Blog</h4>
+        <ul>
+          <li><a href="../blog.html">All posts</a></li>
+          <li><a href="1_rf_fundamentals.html">Start here: Fundamentals</a></li>
+          <li><a href="16_em_simulation_product_lifecycle.html">Latest: Product Lifecycle</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Company</h4>
+        <ul>
+          <li><a href="../about.html">About</a></li>
+          <li><a href="../about.html#approach">How we work</a></li>
+          <li><a href="../contact.html">Contact</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer__bar">
+      <span>© <span data-year>2026</span> Machshev Labs LLC</span>
+      <span class="spacer"></span>
+      <span>Not an accredited test laboratory</span>
+      <a href="#">Privacy</a>
+      <a href="#">Terms</a>
+    </div>
+  </div>
+</footer>
+
+<script src="../assets/js/main.js"></script>
+</body>
+</html>

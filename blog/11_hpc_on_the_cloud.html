@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>HPC on the Cloud: A Quick Overview — Machshev Labs</title>
+<meta name="description" content="The first applications of cloud computing were about as far from HPC as it gets — cloud providers&#x27; early focus was on cheap commodity hardware. That&#x27;s changed: compute-intensive workloads now run…">
+<meta name="theme-color" content="#06080c">
+<link rel="icon" href="../images/favicon.png" type="image/png">
+<link rel="stylesheet" href="../assets/css/styles.css">
+</head>
+<body>
+
+<header class="site-header">
+  <div class="wrap">
+    <nav class="nav" aria-label="Primary">
+      <a class="brand" href="../index.html">
+        <img src="../images/logo-icon.png" alt="Machshev Labs" class="brand__mark" width="33" height="28">
+        Machshev Labs<span class="brand__sub">EMI · SI/PI · FCC</span>
+      </a>
+      <button class="nav__toggle" type="button" aria-expanded="false" aria-label="Toggle navigation"><span></span></button>
+      <ul class="nav__links">
+        <li><a href="../services.html">Services</a></li>
+        <li><a href="../services.html#pricing">Pricing</a></li>
+        <li><a href="../resources.html">Free tools</a></li>
+        <li><a href="../blog.html" aria-current="page">Blog</a></li>
+        <li><a href="../about.html">About</a></li>
+      </ul>
+      <div class="nav__cta">
+        <a class="btn btn--sm" href="../contact.html">Get a fixed-price quote</a>
+      </div>
+    </nav>
+  </div>
+</header>
+
+<main>
+
+  <section class="page-head">
+    <div class="wrap">
+      <a class="arrow-link" href="../blog.html" style="margin-bottom:18px">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M11 6l-6 6 6 6"/></svg>
+        All posts
+      </a>
+      <div class="post-meta">
+        <span class="badge badge--pass">Cloud HPC</span>
+        <span>CEM Tooling & Industry Notes · 05 of 10</span>
+        <span>·</span>
+        <span>2 min read</span>
+      </div>
+      <h1 style="max-width:26ch">HPC on the Cloud: A Quick Overview</h1>
+      <p class="lede">The first applications of cloud computing were about as far from HPC as it gets — cloud providers' early focus was on cheap commodity hardware. That's changed: compute-intensive workloads now run in the cloud as a matter of course.</p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="wrap">
+      <div class="post-layout">
+        <article class="post-body">
+<p>More recently, cloud providers have started offering InfiniBand — the standard for networking MPI applications. Azure has published HPC-focused VM offerings, Google Cloud has released InfiniBand-backed instances, and AWS supports MPI through its own low-latency networking approach. Tightly coupled MPI jobs on the cloud are a solved problem at this point.</p>
+<hr />
+<h2 id="when-cloud-based-hpc-is-worth-the-cost">When cloud-based HPC is worth the cost</h2>
+<p>That question could fill a post on its own, but a few sweet spots stand out:</p>
+<ul>
+<li><strong>Short, sharp workloads</strong> that don't easily find a slot on existing on-prem facilities.</li>
+<li><strong>Embarrassingly parallel jobs</strong> that run fine on cheap hardware.</li>
+<li><strong>GPU computing</strong>, whether for routine use or hardware experimentation.</li>
+</ul>
+<p>These workload types have very different hardware requirements, and one of the real benefits of the cloud is provisioning the right hardware for each one rather than compromising on a single fixed cluster.</p>
+<h2 id="how-to-actually-run-hpc-workloads-on-the-cloud">How to actually run HPC workloads on the cloud</h2>
+<p>The biggest obstacle for a newcomer is the sheer number of heavily marketed options for running jobs and applications.</p>
+<h3 id="is-kubernetes-useful-for-hpc">Is Kubernetes useful for HPC?</h3>
+<p>Kubernetes comes up constantly — enough that not using it can start to feel like you're missing something. But the core difference matters: an HPC workload runs to completion on a complex task, however long that takes, while Kubernetes is built for continuously running services.</p>
+<p>HPC is about jobs that finish. Kubernetes was designed to host things that don't. The question worth asking is simply: do you intend to host services? If not, Kubernetes doesn't have much to offer, and it adds a real layer of complexity on top. It's also worth remembering that Kubernetes isn't a tool so much as a framework for building applications — adopting it is the start of configuring your environment, not the end.</p>
+<h3 id="slurm-on-the-cloud">Slurm on the cloud</h3>
+<p>Job scheduling is a genuinely hard problem in HPC — a comparison of 15 supercomputing and big-data schedulers gives some sense of the design space. Slurm is arguably the most popular scheduler, and setting up a Slurm cluster on the cloud is a solid default option.</p>
+<p>Every major cloud provider offers a tool to launch one directly:</p>
+<ul>
+<li>AWS ParallelCluster</li>
+<li>Azure CycleCloud</li>
+<li>Google Cloud + SchedMD</li>
+</ul>
+<h3 id="a-quick-aws-parallelcluster-workflow">A quick AWS ParallelCluster workflow</h3>
+<p>AWS's open-source Python CLI tool, <code>pcluster</code>, lets you configure cluster characteristics: the head node, the type and number of compute nodes (on-demand or spot), required networking capacity (including whether to provision a high-speed interconnect), and more.</p>
+<p>It starts with installing the tool:</p>
+<pre><code>pip3 install &quot;aws-parallelcluster&lt;3.0&quot; --upgrade --user
+</code></pre>
+<p>The typical workflow:</p>
+<ol>
+<li>Run <code>pcluster configure</code> to create a configuration file.</li>
+<li>Edit that file by hand — add S3 bucket permissions, specify a custom bootstrap script for pre- and post-install actions (e.g. installing extra dependencies as root).</li>
+<li>Run <code>pcluster create</code> to allocate resources. Compute nodes aren't billed while idle, and the required VPC network is created automatically.</li>
+<li>Log in to the head node via SSH (the VS Code Remote extension works well here).</li>
+<li>Submit jobs to Slurm.</li>
+<li>Post-process results — optionally on a visualization node with a capable GPU, using the remote visualization tool NICE DCV.</li>
+<li>Tear everything down from the AWS console: terminate the head node's EC2 instance and delete the CloudFormation VPC stack.</li>
+</ol>
+<p>For the full details, see the official AWS ParallelCluster documentation.</p>
+        </article>
+<aside class="post-toc" data-post-toc>
+          <span class="post-toc__label">On this page</span>
+          <ol>
+          <li><a href="#when-cloud-based-hpc-is-worth-the-cost">When cloud-based HPC is worth the cost</a></li>
+          <li><a href="#how-to-actually-run-hpc-workloads-on-the-cloud">How to actually run HPC workloads on the cloud</a></li>
+          </ol>
+        </aside>
+      </div>
+    </div>
+  </section>
+
+  <section class="section--tight">
+    <div class="wrap">
+      <div class="post-pager">
+<a class="post-pager__link is-prev" href="10_open_source_electromagnetics.html"><span class="post-pager__dir">← Previous</span><span class="post-pager__title">Open-Source Electromagnetics: FDTD, FEM, and MoM</span></a>
+        <a class="post-pager__link is-next" href="12_em_software_market_gap.html"><span class="post-pager__dir">Next →</span><span class="post-pager__title">The EM Simulation Market Was Never Built For You</span></a>
+      </div>
+    </div>
+  </section>
+
+  <section class="section--tight" style="padding-bottom:clamp(64px,9vw,116px)">
+    <div class="wrap">
+      <div class="cta reveal">
+        <h2>Found something like this on your own board?</h2>
+        <p class="lede">
+          A stub that looks like a mistake, a split that isn't, a resonance nobody accounted for —
+          this is exactly what a Tier 2 simulation sprint checks before tape-out, not after a failed scan.
+        </p>
+        <div class="btn-row">
+          <a class="btn" href="../contact.html">Get a fixed-price quote</a>
+          <a class="btn btn--ghost" href="../services.html#tier2">See what a sprint covers</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer class="site-footer footer">
+  <div class="wrap">
+    <div class="footer__grid">
+      <div class="footer__brand">
+        <a class="brand" href="../index.html">
+          <img src="../images/logo-icon.png" alt="Machshev Labs" class="brand__mark" width="33" height="28">
+          Machshev Labs
+        </a>
+        <p>Computational electromagnetics for hardware startups. EMI/EMC, signal and power integrity, and FCC pre-compliance without the enterprise license.</p>
+      </div>
+      <div>
+        <h4>Services</h4>
+        <ul>
+          <li><a href="../services.html#tier2">SI/PI &amp; EMI sprints</a></li>
+          <li><a href="../services.html#tier3">FCC pre-compliance</a></li>
+          <li><a href="../services.html#tier1">Pre-flight check (roadmap)</a></li>
+          <li><a href="../services.html#pricing">Pricing</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Free tools</h4>
+        <ul>
+          <li><a href="../resources.html#impedance">Trace impedance</a></li>
+          <li><a href="../resources.html#resonance">Plane resonance</a></li>
+          <li><a href="../resources.html#fcc">FCC limit converter</a></li>
+          <li><a href="../resources.html#autopsies">EMI autopsies</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Blog</h4>
+        <ul>
+          <li><a href="../blog.html">All posts</a></li>
+          <li><a href="1_rf_fundamentals.html">Start here: Fundamentals</a></li>
+          <li><a href="16_em_simulation_product_lifecycle.html">Latest: Product Lifecycle</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Company</h4>
+        <ul>
+          <li><a href="../about.html">About</a></li>
+          <li><a href="../about.html#approach">How we work</a></li>
+          <li><a href="../contact.html">Contact</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer__bar">
+      <span>© <span data-year>2026</span> Machshev Labs LLC</span>
+      <span class="spacer"></span>
+      <span>Not an accredited test laboratory</span>
+      <a href="#">Privacy</a>
+      <a href="#">Terms</a>
+    </div>
+  </div>
+</footer>
+
+<script src="../assets/js/main.js"></script>
+</body>
+</html>

@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>HFSS vs. FEKO vs. CST Studio Suite — Machshev Labs</title>
+<meta name="description" content="A comparison of the three most prominent commercial high-frequency EM simulation tools.">
+<meta name="theme-color" content="#06080c">
+<link rel="icon" href="../images/favicon.png" type="image/png">
+<link rel="stylesheet" href="../assets/css/styles.css">
+</head>
+<body>
+
+<header class="site-header">
+  <div class="wrap">
+    <nav class="nav" aria-label="Primary">
+      <a class="brand" href="../index.html">
+        <img src="../images/logo-icon.png" alt="Machshev Labs" class="brand__mark" width="33" height="28">
+        Machshev Labs<span class="brand__sub">EMI · SI/PI · FCC</span>
+      </a>
+      <button class="nav__toggle" type="button" aria-expanded="false" aria-label="Toggle navigation"><span></span></button>
+      <ul class="nav__links">
+        <li><a href="../services.html">Services</a></li>
+        <li><a href="../services.html#pricing">Pricing</a></li>
+        <li><a href="../resources.html">Free tools</a></li>
+        <li><a href="../blog.html" aria-current="page">Blog</a></li>
+        <li><a href="../about.html">About</a></li>
+      </ul>
+      <div class="nav__cta">
+        <a class="btn btn--sm" href="../contact.html">Get a fixed-price quote</a>
+      </div>
+    </nav>
+  </div>
+</header>
+
+<main>
+
+  <section class="page-head">
+    <div class="wrap">
+      <a class="arrow-link" href="../blog.html" style="margin-bottom:18px">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M11 6l-6 6 6 6"/></svg>
+        All posts
+      </a>
+      <div class="post-meta">
+        <span class="badge badge--pass">Commercial EM</span>
+        <span>CEM Tooling & Industry Notes · 07 of 10</span>
+        <span>·</span>
+        <span>4 min read</span>
+      </div>
+      <h1 style="max-width:26ch">HFSS vs. FEKO vs. CST Studio Suite</h1>
+      <p class="lede">A comparison of the three most prominent commercial high-frequency EM simulation tools.</p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="wrap">
+      <div class="post-layout">
+        <article class="post-body">
+<hr />
+<div class="table-wrap">
+<table>
+<thead>
+<tr>
+<th>Feature</th>
+<th>HFSS</th>
+<th>FEKO</th>
+<th>CST Studio Suite</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Company</td>
+<td>Ansys (Synopsys)</td>
+<td>Altair Engineering</td>
+<td>Dassault Systèmes</td>
+</tr>
+<tr>
+<td>Main solver strategy</td>
+<td>Finite Element Method (FEM) for full-wave 3D EM</td>
+<td>Method of Moments (MoM) for surface integral equations</td>
+<td>Time-domain solver (Finite Integration Technique) for transient EM</td>
+</tr>
+<tr>
+<td>Additional strategies</td>
+<td>Integral Equation, Shooting and Bouncing Rays (SBR+), hybrid FEM+IE+SBR+</td>
+<td>FEM, asymptotic methods (PO, RL-GO, UTD)</td>
+<td>Frequency-domain, integral equation, asymptotic, multilayer, and hybrid solvers</td>
+</tr>
+<tr>
+<td>Multiphysics</td>
+<td>Thermal, structural via Ansys Workbench</td>
+<td>Thermal and mechanical via OptiStruct</td>
+<td>Thermal, stress, bio-EM; integrates with SIMULIA for structural</td>
+</tr>
+<tr>
+<td>GPU acceleration</td>
+<td>Yes (SBR+, FEM, FDTD)</td>
+<td>Yes (FDTD, MoM)</td>
+<td>Yes (FDTD, MoM)</td>
+</tr>
+<tr>
+<td>Scripting</td>
+<td>Dedicated Python framework (PyAEDT); limited MATLAB</td>
+<td>Python API via Compose; limited MATLAB</td>
+<td>VBA; Python via external interfaces; optional MATLAB</td>
+</tr>
+<tr>
+<td>Ease of use</td>
+<td>Steep learning curve; powerful for complex designs</td>
+<td>Medium complexity; intuitive for antenna/RF</td>
+<td>Complex, but the GUI-based workflow helps navigate advanced setups</td>
+</tr>
+<tr>
+<td>Main applications</td>
+<td>Antennas, RF/microwave, PCB signal integrity, radar, EMI</td>
+<td>Antenna placement, RCS, EMC, automotive/aerospace</td>
+<td>EMC/EMI, antenna design, installed performance, biomedical, wireless</td>
+</tr>
+<tr>
+<td>Industry adoption</td>
+<td>Aerospace, automotive, PCB, RF, biomedical</td>
+<td>Aerospace, automotive, defense</td>
+<td>RF, PCB, EMC/EMI, medical devices</td>
+</tr>
+</tbody>
+</table>
+</div>
+<h2 id="where-they-actually-differ">Where they actually differ</h2>
+<p><strong>Solver strategy</strong> is the most obvious split, and it tells you something about each product's origin and focus. HFSS leans on the Finite Element Method — well suited to full-wave analysis of complex geometries in high-frequency RF and microwave work. FEKO centers on the Method of Moments, which excels at surface integral equations — strong for antenna placement, radar cross-section analysis, and large-scale scattering. CST leans on time-domain solvers via the Finite Integration Technique, giving fast broadband simulation that suits transient EM problems and EMC/EMI studies particularly well.</p>
+<p>Beyond the primary solver, though, all three have effectively reached feature parity on applications and physics coverage — each provides dedicated modules for antenna design, EMI/EMC, PCB signal integrity, RCS, and microwave component design.</p>
+<p><strong>Ease of use, UI, and scripting</strong> are where the real day-to-day differences live. HFSS, now under Synopsys, integrates tightly with Ansys Workbench — a structured multiphysics workflow that can feel rigid to newcomers. FEKO's interface is more streamlined and antenna/RCS-focused, which makes it easier to pick up for those specific problems. CST, under Dassault Systèmes, offers a highly visual, CAD-integrated experience that suits engineers working across disciplines but can feel like a lot of surface area given the sheer number of solver options.</p>
+<p>Scripting maturity varies too: HFSS has the deepest Python integration via PyAEDT, letting you automate model setup, meshing, solving, and post-processing end to end. FEKO's Python API via Altair Compose exists but isn't as mature. CST relies primarily on VBA, with Python support only through external interfaces — noticeably more friction for automation than HFSS.</p>
+<h2 id="pricing-and-why-its-hard-to-get-a-straight-answer">Pricing — and why it's hard to get a straight answer</h2>
+<p>None of these companies publish pricing. Getting a quote typically means going through a certified distributor: detailed forms about your use case and industry, multiple calls and demos, and only then a conversation about price — often bundled in a way that makes a standalone license hard to isolate. Vendors routinely won't give a number over email at all.</p>
+<p>The rough figures below come from anonymized forum discussion (Reddit, EDABoard, and similar) plus general industry experience with relative pricing, so treat them as order-of-magnitude, not quotes:</p>
+<div class="table-wrap">
+<table>
+<thead>
+<tr>
+<th>Product</th>
+<th>Initial single-user license</th>
+<th>Annual maintenance &amp; support</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>HFSS</td>
+<td>~$90,000</td>
+<td>~$18,000</td>
+</tr>
+<tr>
+<td>CST</td>
+<td>~$60,000</td>
+<td>~$12,000</td>
+</tr>
+<tr>
+<td>FEKO</td>
+<td>~$50,000</td>
+<td>~$10,000</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>Annual maintenance typically starts around 20% of the initial license and can run to 30% depending on service level. Beyond the base license, expect to pay again for HPC packs on machines with more than four cores or for cluster computing, network floating licenses for multiple engineers, specialized solvers beyond the base strategy, optimization/AI-driven modules, and extended support tiers.</p>
+<p>The procurement process itself is part of the cost: distributor contact, detailed forms, multiple demo calls, multi-round negotiation (often pushing multi-module packages or multi-year terms), and sometimes legal/finance sign-off before anything closes. Total cost of ownership has to include the staff time spent both running the tool and getting proficient with it in the first place — which for a team without a dedicated EM specialist is often the larger number.</p>
+<h2 id="so-what-are-the-alternatives">So what are the alternatives?</h2>
+<p>For large corporations, buying from one of these three is the industry-standard choice. For startups and small or mid-sized teams, the pricing and sales process can simply be too much to absorb. The usual responses:</p>
+<ul>
+<li>Rely on rough hand estimates instead of simulation.</li>
+<li>Learn one of the open-source tools — which takes real time and expertise to get productive with.</li>
+<li>Outsource the simulation work to a specialist, which is often the better financial call for occasional or bounded-scope needs.</li>
+</ul>
+<p>That third option is the actual gap Machshev Labs is built to fill for hardware startups specifically: fixed-price SI/PI and EMI simulation sprints, and FCC/CE pre-compliance guidance, without the license or the learning curve.</p>
+        </article>
+<aside class="post-toc" data-post-toc>
+          <span class="post-toc__label">On this page</span>
+          <ol>
+          <li><a href="#where-they-actually-differ">Where they actually differ</a></li>
+          <li><a href="#pricing-and-why-its-hard-to-get-a-straight-answer">Pricing — and why it&#x27;s hard to get a straight answer</a></li>
+          <li><a href="#so-what-are-the-alternatives">So what are the alternatives?</a></li>
+          </ol>
+        </aside>
+      </div>
+    </div>
+  </section>
+
+  <section class="section--tight">
+    <div class="wrap">
+      <div class="post-pager">
+<a class="post-pager__link is-prev" href="12_em_software_market_gap.html"><span class="post-pager__dir">← Previous</span><span class="post-pager__title">The EM Simulation Market Was Never Built For You</span></a>
+        <a class="post-pager__link is-next" href="14_fem_electromagnetics_in_python.html"><span class="post-pager__dir">Next →</span><span class="post-pager__title">FEM Electromagnetics in Python: Mapping the Open-Source Ecosystem</span></a>
+      </div>
+    </div>
+  </section>
+
+  <section class="section--tight" style="padding-bottom:clamp(64px,9vw,116px)">
+    <div class="wrap">
+      <div class="cta reveal">
+        <h2>Found something like this on your own board?</h2>
+        <p class="lede">
+          A stub that looks like a mistake, a split that isn't, a resonance nobody accounted for —
+          this is exactly what a Tier 2 simulation sprint checks before tape-out, not after a failed scan.
+        </p>
+        <div class="btn-row">
+          <a class="btn" href="../contact.html">Get a fixed-price quote</a>
+          <a class="btn btn--ghost" href="../services.html#tier2">See what a sprint covers</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer class="site-footer footer">
+  <div class="wrap">
+    <div class="footer__grid">
+      <div class="footer__brand">
+        <a class="brand" href="../index.html">
+          <img src="../images/logo-icon.png" alt="Machshev Labs" class="brand__mark" width="33" height="28">
+          Machshev Labs
+        </a>
+        <p>Computational electromagnetics for hardware startups. EMI/EMC, signal and power integrity, and FCC pre-compliance without the enterprise license.</p>
+      </div>
+      <div>
+        <h4>Services</h4>
+        <ul>
+          <li><a href="../services.html#tier2">SI/PI &amp; EMI sprints</a></li>
+          <li><a href="../services.html#tier3">FCC pre-compliance</a></li>
+          <li><a href="../services.html#tier1">Pre-flight check (roadmap)</a></li>
+          <li><a href="../services.html#pricing">Pricing</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Free tools</h4>
+        <ul>
+          <li><a href="../resources.html#impedance">Trace impedance</a></li>
+          <li><a href="../resources.html#resonance">Plane resonance</a></li>
+          <li><a href="../resources.html#fcc">FCC limit converter</a></li>
+          <li><a href="../resources.html#autopsies">EMI autopsies</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Blog</h4>
+        <ul>
+          <li><a href="../blog.html">All posts</a></li>
+          <li><a href="1_rf_fundamentals.html">Start here: Fundamentals</a></li>
+          <li><a href="16_em_simulation_product_lifecycle.html">Latest: Product Lifecycle</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Company</h4>
+        <ul>
+          <li><a href="../about.html">About</a></li>
+          <li><a href="../about.html#approach">How we work</a></li>
+          <li><a href="../contact.html">Contact</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer__bar">
+      <span>© <span data-year>2026</span> Machshev Labs LLC</span>
+      <span class="spacer"></span>
+      <span>Not an accredited test laboratory</span>
+      <a href="#">Privacy</a>
+      <a href="#">Terms</a>
+    </div>
+  </div>
+</footer>
+
+<script src="../assets/js/main.js"></script>
+</body>
+</html>
