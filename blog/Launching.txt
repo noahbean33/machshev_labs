@@ -1,26 +1,21 @@
-My background in applied mathematics
-For many years, I’ve wanted to launch a project like EpsilonForge—a software development studio, R&D lab, and consultancy. Right now feels like the right moment.
+# My Background in Applied Mathematics
 
-Over the years, I’ve worked as an applied mathematician, constantly exploring which applications to pursue and what kind of mathematics to focus on.
+I've wanted to launch something like EpsilonForge for years: a software development studio, R&D lab, and consultancy in one. This is the right moment to do it.
 
-I’ve been an industry intern, participated in technology transfer projects from academia to government agencies, completed a PhD, worked as a post-doc, and served as a full-time researcher. It’s fair to say I’ve gained a solid understanding of what mathematical R&D is about across different environments.
+I've spent my career as an applied mathematician, moving between problems and asking which applications were worth pursuing and which mathematics was worth building around them. I've been an industry intern, worked on technology transfer projects moving research from academia into government agencies, completed a PhD, done a post-doc, and worked as a full-time researcher. Between those environments, I've seen what mathematical R&D actually looks like from most of the angles there are to see it from.
 
-However, I came to realize that spending most of my time in academia rather than in a company with actual customers has its limitations.
+What I took from that: spending most of my time in academia rather than inside a company with real customers has a ceiling. Academic work struggles to push past proof-of-concept. Early-stage ideation matters, but industry is where advances get tested against reality and where that pressure feeds back into stronger fundamental research. That feedback loop is what makes industry the more interesting place to build from.
 
-In academia, it’s challenging to establish an agenda that goes beyond proof-of-concept work. While early-stage ideation is often significant, industry’s pivotal advancements propel progress and fortify fundamental research—which arguably makes it a more interesting place to be in many ways.
+That's why I wanted a different environment, one where I can put mathematical skill and software craftsmanship to work together instead of keeping them separate.
 
-For these reasons, I felt the need to seek a different work environment, one where I can leverage both mathematical skills and software development craftsmanship.
+## Specialization and Trade: Software and R&D Services
 
-Specialization and trade: software and R&D services
-By launching EpsilonForge, I aim to provide specialized services and customized mathematical software to the global marketplace.
+EpsilonForge exists to provide specialized services and custom mathematical software to the global market.
 
-One of my inspirations comes from a seemingly simple yet profound idea: specialization and trade have been driving forces of human progress for centuries. In present times, thanks to modern information technologies, there’s room for more specialization and trade than ever before.
+The idea behind it is simple: specialization and trade have driven human progress for centuries, and modern information technology has opened more room for both than ever before. A small, specialized team can now reach a global market directly.
 
-Beyond the trends of remote work and the global gig economy, I hope to remain connected with talented people bringing fresh ideas to the field.
+That doesn't mean working in isolation. Remote work and the gig economy make the model possible, but I want to stay connected to people doing original work in the field. I'm keeping active ties to my alma mater institutions, the University of Buenos Aires and CONICET, through joint R&D projects.
 
-For that reason, I’ll make time to participate in joint R&D projects with my alma mater institutions: the University of Buenos Aires and the CONICET research agency.
+I see EpsilonForge as a bridge between global industry and local researchers and students, one that brings funding and motivation to promising research that might not otherwise get pursued.
 
-I envision Epsilon Forge as a bridge between global industry and local researchers and students, providing both funding and motivation to explore promising research areas.
-
-If any of this resonates with you and you’re curious about what’s next, stay tuned. I’ll periodically share updates—about the services I offer, topics I’m exploring beyond client work, joint projects with academic partners, and discussions on industry trends.
-
+If this resonates with you, stay tuned. I'll be sharing updates on the services I offer, what I'm exploring outside client work, joint projects with academic partners, and where I see the industry heading.
