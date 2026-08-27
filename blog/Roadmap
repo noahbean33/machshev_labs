@@ -1,0 +1,105 @@
+
+## Minimum kit
+- KiCad
+- NanoVNA (or LibreVNA)
+- SMA edge-launch connectors
+- 2-layer FR-4, 1.6 mm, JLCPCB/PCBWay
+- 0805 C0G capacitors and 1% thin-film resistors
+- Stay **below ~400–500 MHz** on standard FR-4 for the first boards
+
+FR-4 is fine here. Rogers is not a beginner requirement.
+
+## Project 1 — RF proto / cal board (best first board)
+A small board with:
+- SMA in / SMA out
+- 50 Ω microstrip
+- Open, short, 50 Ω load pads
+- Through line
+- A few 0805 pads for L/C experiments
+
+This teaches ground planes, connector launch, 50 Ω width, and VNA calibration. Existing patterns:
+- MegawattKS-style proto boards in KiCad: [github.com/maelh/radio-frequency-prototype-boards](https://github.com/maelh/radio-frequency-prototype-boards)
+- DH1TW VNA proto board
+- Cheap “NanoVNA RF demo kit” boards as a measurement reference
+
+**Success looks like:** after SOLT cal, the through is ~0 dB, the 50 Ω load is a dot near the Smith-chart center, and an 0805 capacitor looks like a capacitor.
+
+## Project 2 — Pi attenuator (best first *circuit*)
+Fixed 3 / 6 / 10 / 20 dB π-pad, SMA–SMA.
+
+Why it is the right first circuit:
+- Only resistors
+- Easy to calculate
+- Easy to measure (S21 = attenuation, S11 should be good)
+- Teaches why layout still matters even when “it’s just resistors”
+
+Use three 0805 resistors, short traces, unbroken ground, vias near the pads. Then measure actual attenuation vs frequency. You will see it degrade as frequency rises. That lesson is worth more than a pretty LNA.
+
+## Project 3 — HF/VHF low-pass filter
+Classic ham harmonic LPF: 7 MHz, 14 MHz, or 28 MHz cutoff. Lumped LC, 5-element Chebyshev or Butterworth.
+
+This is the first project that feels like RF:
+- Filter tables → real parts
+- Parasitics show up
+- NanoVNA S21 is immediately educational
+
+Design notes:
+- Put two capacitor footprints in parallel so you can hit odd values
+- Keep loops small
+- Ground every cap with nearby vias
+- Expect cutoff to move a little from the calculator
+
+A good follow-on is one board with **swap-in footprints** so the same PCB can be 40 m or 20 m by changing parts.
+
+## Project 4 — Bias tee
+SMA RF in, SMA RF out, DC injector.
+
+Useful and still simple:
+- Series inductor / RFC
+- DC-blocking caps
+- Decoupling on the DC side
+
+Measure:
+- S21 insertion loss
+- S11
+- DC isolation from the RF ports
+
+This is the first board that is actually useful in an SDR lab (power an LNA over coax).
+
+## After those three, then pick one
+| Project | Why wait | What you learn |
+|---|---|---|
+| 433 MHz or 2 m bandpass | Need tighter layout and better parts | Loaded Q, matching, SAW vs LC |
+| Simple LNA (SPF5189Z / BGA2818 / similar) | Oscillation and bias mistakes | Stability, matching, shielding |
+| Coupled-line coupler or Wilkinson | Geometry-sensitive | Even/odd mode, isolation |
+| Printed antenna | Hard to judge without a known feed | Return loss vs actual radiation |
+
+Do not start with a 2.4 GHz ESP32 antenna “because Wi‑Fi is easy.” That hides layout mistakes behind a module.
+
+## Layout rules that matter on board one
+1. Solid ground plane on the bottom. No cuts under RF traces.
+2. Calculate 50 Ω microstrip for **your** stackup. On typical 1.6 mm FR-4, that is roughly 3 mm wide — wider than beginners expect.
+3. Put SMAs on the board edge. Do not run a skinny trace to a random header.
+4. Stitch ground with vias along the RF path, especially at connector grounds and shunt components.
+5. Keep the RF path short and straight. Components go *in* the line, not off on little loops.
+6. 0805 first. 0402 later. Hand-solderable beats theoretically better.
+7. Label ports and include a version number. You will make rev 2.
+
+## What to publish if this is for the open-source lab
+For each board, ship:
+- KiCad project
+- BOM with manufacturer part numbers
+- Stackup used (thickness, copper, claimed Er)
+- Photo of the board
+- NanoVNA S11/S21 plots, **with calibration notes**
+- What failed on rev 1
+
+That last item is the useful part. A 10 dB attenuator with measured data is a better open-source contribution than an unfinished “6 GHz transceiver.”
+
+## Practical first order
+1. Proto/cal board  
+2. 10 dB π attenuator  
+3. 40 m or 2 m low-pass filter  
+4. Bias tee  
+
+One JLCPCB panel can hold all four. That is a complete beginner RF PCB curriculum and a legitimate first lab deliverable.
