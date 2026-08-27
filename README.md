@@ -48,6 +48,8 @@ to_transparent(a[85:1000, 311:1448], 28).save('images/logo-full.png')
 | `resources.html` | Three working calculators, EMI autopsy teasers, KiCad/Altium plugin status |
 | `about.html` | Mission, who it's for and isn't for, how we work, services-then-software rationale, founder |
 | `contact.html` | Hardware-startup intake form with client-side validation, what-happens-next, FAQ |
+| `blog.html` | Index of the RF PCB design reference series (generated — see Blog below) |
+| `blog/*.html` | The six posts themselves (generated — see Blog below) |
 
 ## Working calculators
 
@@ -62,10 +64,42 @@ All three run entirely client-side (`assets/js/main.js`) and were verified again
 Both the impedance and FCC tools warn when inputs fall outside where the method is valid
 (w/h outside 0.1–3.0; measurement inside the λ/2π near-field boundary).
 
+## Blog
+
+`blog.html` and `blog/1_rf_fundamentals.html` … `blog/6_rf_filter.html` are **generated**, not
+hand-written. Source is the six markdown files in `blog/*.md` (a reference series on RF PCB
+design); `blog/build_blog.py` renders them into the site's design system and writes the HTML.
+
+```bash
+pip install markdown latex2mathml
+python blog/build_blog.py
+```
+
+Re-run it whenever a `blog/*.md` file changes — the generator overwrites the corresponding
+`.html` file(s) and `blog.html`. The two pip packages are a **generation-time** dependency only;
+nothing is fetched or run in the visitor's browser, so this doesn't compromise the "no build
+step, no dependencies" claim for the deployed site — there is no build step *to view it*, only to
+regenerate it after an edit.
+
+What the generator assumes about the source markdown (see its docstring for specifics):
+- Title is either a `# H1` (files 1–4) or a single bold line (files 5–6) as the very first line.
+- Math is `$$...$$`, `\[...\]`, or `\(...\)` — no bare `$...$`. It's converted to **MathML**
+  (via `latex2mathml`) and rendered natively by the browser: no client-side JS, no KaTeX/MathJax,
+  no CDN. MathML Core has broad support in current Chrome/Edge/Firefox/Safari; there's no fallback
+  for older engines.
+- The first paragraph after the title is lifted out as the excerpt/lede; everything after that is
+  the body, run through `python-markdown` (`tables`, `toc`, `sane_lists` extensions).
+- Reading time is word count ÷ 220 wpm. No publish dates are shown — none of the source files carry
+  real authored dates, and inventing one would be a fabricated timestamp; series position (01–06)
+  and reading time stand in instead.
+- On-page "On this page" TOC is built from whichever heading level is shallowest in that doc (some
+  posts use `##`, others only `###`).
+
 ## Assets
 
 - `assets/css/styles.css` — design tokens including Pass/Risk/Fail verdict colours, all components
-- `assets/js/main.js` — nav, scroll reveal, emissions-scan canvas, calculators, form validation
+- `assets/js/main.js` — nav, scroll reveal, emissions-scan canvas, calculators, form validation,
+  active-section highlighting for the blog post TOC
 
 ## Run it
 
@@ -99,3 +133,8 @@ structure, and the open-questions list — is deliberately **not** on the public
 
 Every page footer carries "Not an accredited test laboratory," and `services.html` and
 `contact.html` state it explicitly, since Tier 3 sits close to a claim that would be wrong.
+
+`blog/electromagnetics/` and `blog/rf/` hold reference PDFs (course-note style material on Smith
+charts, transmission lines, microwave devices, etc.) that aren't wired into the site — they read as
+source material for the six posts, not additional posts of their own. Left untouched; ask if you
+want any of them linked or turned into a seventh/eighth post.

@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Blog — Machshev Labs</title>
+<meta name="description" content="A working reference series on RF PCB design: transmission lines, stubs, power dividers, couplers, and filters, with the arithmetic done rather than gestured at.">
+<meta name="theme-color" content="#06080c">
+<link rel="icon" href="images/favicon.png" type="image/png">
+<link rel="stylesheet" href="assets/css/styles.css">
+</head>
+<body>
+
+<header class="site-header">
+  <div class="wrap">
+    <nav class="nav" aria-label="Primary">
+      <a class="brand" href="index.html">
+        <img src="images/logo-icon.png" alt="Machshev Labs" class="brand__mark" width="33" height="28">
+        Machshev Labs<span class="brand__sub">EMI · SI/PI · FCC</span>
+      </a>
+      <button class="nav__toggle" type="button" aria-expanded="false" aria-label="Toggle navigation"><span></span></button>
+      <ul class="nav__links">
+        <li><a href="services.html">Services</a></li>
+        <li><a href="services.html#pricing">Pricing</a></li>
+        <li><a href="resources.html">Free tools</a></li>
+        <li><a href="blog.html" aria-current="page">Blog</a></li>
+        <li><a href="about.html">About</a></li>
+      </ul>
+      <div class="nav__cta">
+        <a class="btn btn--sm" href="contact.html">Get a fixed-price quote</a>
+      </div>
+    </nav>
+  </div>
+</header>
+
+<main>
+
+  <section class="page-head">
+    <div class="wrap">
+      <span class="eyebrow">Blog</span>
+      <h1 style="max-width:18ch">RF PCB design, worked in full</h1>
+      <p class="lede">
+        A reference series for engineers laying out boards above a few hundred megahertz: the
+        physics, the formulas in spreadsheet-ready form, and the layout rules that actually follow
+        from them. No signup, and the arithmetic is shown, not just the conclusion.
+      </p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="wrap">
+      <div class="grid grid--2">
+<article class="card blog-card reveal">
+          <div class="blog-card__head">
+            <span class="blog-card__num">REF 01</span>
+            <span class="badge badge--pass">Fundamentals</span>
+          </div>
+          <h3><a href="blog/1_rf_fundamentals.html" style="color:inherit">RF PCB Design, Part 1: Wavelength, Materials, and the Point Where Copper Stops Being a Wire</a></h3>
+          <p>A working reference for engineers who already know how to lay out a board and now have to make one that works above a few hundred megahertz. Formulas are given in the form you can put in a spreadsheet, with the constants pre-collapsed where that helps.</p>
+          <div class="blog-card__meta">
+            <span>17 min read</span>
+            <i class="dot"></i>
+            <a class="arrow-link" href="blog/1_rf_fundamentals.html">Read
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+            </a>
+          </div>
+        </article>
+<article class="card blog-card reveal">
+          <div class="blog-card__head">
+            <span class="blog-card__num">REF 02</span>
+            <span class="badge badge--pass">Transmission Lines</span>
+          </div>
+          <h3><a href="blog/2_rf_transmission_lines.html" style="color:inherit">Transmission Lines Above 1 GHz: Modes, Loss Budgets, and When the Expensive Laminate Pays</a></h3>
+          <p>Most PCB design rules for RF are handed down as a list to memorize. Keep the reference plane solid. Use four layers. Don&#x27;t neck the trace. Buy Rogers if you&#x27;re doing anything serious. Every one of those is a consequence of a small number of physical facts, and if you know the facts you can derive the rules yourself, including the cases where the rule is wrong for your board.</p>
+          <div class="blog-card__meta">
+            <span>22 min read</span>
+            <i class="dot"></i>
+            <a class="arrow-link" href="blog/2_rf_transmission_lines.html">Read
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+            </a>
+          </div>
+        </article>
+<article class="card blog-card reveal">
+          <div class="blog-card__head">
+            <span class="blog-card__num">REF 03</span>
+            <span class="badge badge--pass">Stubs</span>
+          </div>
+          <h3><a href="blog/3_rf_stubs.html" style="color:inherit">Stubs: The Copper Shapes on RF Boards That Aren&#x27;t Mistakes</a></h3>
+          <p>Every engineer who has opened up a Wi-Fi module, a GPS front end, or a power amplifier evaluation board has seen them: a short spur of copper hanging off a trace and going nowhere, a fan-shaped wedge, a rectangle terminated in a cluster of vias. They look like layout errors or leftover test points. They are neither. They are stubs, and they are one of the few genuinely distributed-element tools available to you in ordinary PCB fabrication.</p>
+          <div class="blog-card__meta">
+            <span>18 min read</span>
+            <i class="dot"></i>
+            <a class="arrow-link" href="blog/3_rf_stubs.html">Read
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+            </a>
+          </div>
+        </article>
+<article class="card blog-card reveal">
+          <div class="blog-card__head">
+            <span class="blog-card__num">REF 04</span>
+            <span class="badge badge--pass">Power Dividers</span>
+          </div>
+          <h3><a href="blog/4_rf_power_dividers.html" style="color:inherit">Splitting Power on a PCB: T-Junctions, Wilkinsons, and the Physics That Forces the Choice</a></h3>
+          <p>Every RF board that feeds two things from one source runs into the same wall. You have a 50 Ω source and two 50 Ω loads, and the obvious move (tie them together) fails for reasons that have nothing to do with power and everything to do with impedance. What follows is the full path from that constraint through the two structures that solve it, with the layout math, the component selection, the failure modes, and the measurement procedure.</p>
+          <div class="blog-card__meta">
+            <span>21 min read</span>
+            <i class="dot"></i>
+            <a class="arrow-link" href="blog/4_rf_power_dividers.html">Read
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+            </a>
+          </div>
+        </article>
+<article class="card blog-card reveal">
+          <div class="blog-card__head">
+            <span class="blog-card__num">REF 05</span>
+            <span class="badge badge--pass">Couplers</span>
+          </div>
+          <h3><a href="blog/5_rf_coupler.html" style="color:inherit">RF and Microwave PCB Couplers: Design Principles and Practical Considerations</a></h3>
+          <p>In RF and microwave PCB design, couplers are fundamental passive structures used to split, combine, or sample signals with high efficiency. Unlike discrete components that introduce insertion loss and parasitics, these structures are realized entirely with microstrip or stripline traces over a continuous ground plane. They are nearly lossless when properly designed and require no active semiconductor devices. The three most common printed coupler topologies—90-degree hybrids, rat-race hybrids, and directional (backward-wave) couplers—each exploit controlled electromagnetic coupling and precise electrical lengths to achieve specific amplitude and phase relationships.</p>
+          <div class="blog-card__meta">
+            <span>4 min read</span>
+            <i class="dot"></i>
+            <a class="arrow-link" href="blog/5_rf_coupler.html">Read
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+            </a>
+          </div>
+        </article>
+<article class="card blog-card reveal">
+          <div class="blog-card__head">
+            <span class="blog-card__num">REF 06</span>
+            <span class="badge badge--pass">Filters</span>
+          </div>
+          <h3><a href="blog/6_rf_filter.html" style="color:inherit">PCB RF Filter Design Using Transmission-Line Equivalents</a></h3>
+          <p>In microwave and RF printed-circuit-board design, discrete surface-mount inductors and capacitors become impractical above a few gigahertz. Parasitic package inductance, self-resonance, and the physical size of the components relative to wavelength make them unsuitable. Designers therefore synthesize the required reactive elements directly from sections of microstrip or stripline transmission line. The electrical behavior of a short length of line is dual to that of a lumped inductor or capacitor, depending on its characteristic impedance, electrical length, and termination (open or short).</p>
+          <div class="blog-card__meta">
+            <span>3 min read</span>
+            <i class="dot"></i>
+            <a class="arrow-link" href="blog/6_rf_filter.html">Read
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+            </a>
+          </div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section class="section--tight" style="padding-bottom:clamp(64px,9vw,116px)">
+    <div class="wrap">
+      <div class="cta reveal">
+        <h2>Already past the reference stage?</h2>
+        <p class="lede">
+          If you're staring at a layout decision that has real tape-out cost either way, that's what
+          the simulation sprints are for.
+        </p>
+        <div class="btn-row">
+          <a class="btn" href="contact.html">Get a fixed-price quote</a>
+          <a class="btn btn--ghost" href="services.html">See the services</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer class="site-footer footer">
+  <div class="wrap">
+    <div class="footer__grid">
+      <div class="footer__brand">
+        <a class="brand" href="index.html">
+          <img src="images/logo-icon.png" alt="Machshev Labs" class="brand__mark" width="33" height="28">
+          Machshev Labs
+        </a>
+        <p>Computational electromagnetics for hardware startups. EMI/EMC, signal and power integrity, and FCC pre-compliance without the enterprise license.</p>
+      </div>
+      <div>
+        <h4>Services</h4>
+        <ul>
+          <li><a href="services.html#tier2">SI/PI &amp; EMI sprints</a></li>
+          <li><a href="services.html#tier3">FCC pre-compliance</a></li>
+          <li><a href="services.html#tier1">Pre-flight check (roadmap)</a></li>
+          <li><a href="services.html#pricing">Pricing</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Free tools</h4>
+        <ul>
+          <li><a href="resources.html#impedance">Trace impedance</a></li>
+          <li><a href="resources.html#resonance">Plane resonance</a></li>
+          <li><a href="resources.html#fcc">FCC limit converter</a></li>
+          <li><a href="resources.html#autopsies">EMI autopsies</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Blog</h4>
+        <ul>
+          <li><a href="blog.html">All posts</a></li>
+          <li><a href="blog/1_rf_fundamentals.html">Start here: Fundamentals</a></li>
+          <li><a href="blog/6_rf_filter.html">Latest: Filters</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Company</h4>
+        <ul>
+          <li><a href="about.html">About</a></li>
+          <li><a href="about.html#approach">How we work</a></li>
+          <li><a href="contact.html">Contact</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer__bar">
+      <span>© <span data-year>2026</span> Machshev Labs LLC</span>
+      <span class="spacer"></span>
+      <span>Not an accredited test laboratory</span>
+      <a href="#">Privacy</a>
+      <a href="#">Terms</a>
+    </div>
+  </div>
+</footer>
+
+<script src="assets/js/main.js"></script>
+</body>
+</html>

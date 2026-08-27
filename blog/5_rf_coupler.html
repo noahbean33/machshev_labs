@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>RF and Microwave PCB Couplers: Design Principles and Practical Considerations — Machshev Labs</title>
+<meta name="description" content="In RF and microwave PCB design, couplers are fundamental passive structures used to split, combine, or sample signals with high efficiency. Unlike discrete components that introduce insertion loss…">
+<meta name="theme-color" content="#06080c">
+<link rel="icon" href="../images/favicon.png" type="image/png">
+<link rel="stylesheet" href="../assets/css/styles.css">
+</head>
+<body>
+
+<header class="site-header">
+  <div class="wrap">
+    <nav class="nav" aria-label="Primary">
+      <a class="brand" href="../index.html">
+        <img src="../images/logo-icon.png" alt="Machshev Labs" class="brand__mark" width="33" height="28">
+        Machshev Labs<span class="brand__sub">EMI · SI/PI · FCC</span>
+      </a>
+      <button class="nav__toggle" type="button" aria-expanded="false" aria-label="Toggle navigation"><span></span></button>
+      <ul class="nav__links">
+        <li><a href="../services.html">Services</a></li>
+        <li><a href="../services.html#pricing">Pricing</a></li>
+        <li><a href="../resources.html">Free tools</a></li>
+        <li><a href="../blog.html" aria-current="page">Blog</a></li>
+        <li><a href="../about.html">About</a></li>
+      </ul>
+      <div class="nav__cta">
+        <a class="btn btn--sm" href="../contact.html">Get a fixed-price quote</a>
+      </div>
+    </nav>
+  </div>
+</header>
+
+<main>
+
+  <section class="page-head">
+    <div class="wrap">
+      <a class="arrow-link" href="../blog.html" style="margin-bottom:18px">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M11 6l-6 6 6 6"/></svg>
+        All posts
+      </a>
+      <div class="post-meta">
+        <span class="badge badge--pass">Couplers</span>
+        <span>Reference 05 of 6</span>
+        <span>·</span>
+        <span>4 min read</span>
+      </div>
+      <h1 style="max-width:26ch">RF and Microwave PCB Couplers: Design Principles and Practical Considerations</h1>
+      <p class="lede">In RF and microwave PCB design, couplers are fundamental passive structures used to split, combine, or sample signals with high efficiency. Unlike discrete components that introduce insertion loss and parasitics, these structures are realized entirely with microstrip or stripline traces over a continuous ground plane. They are nearly lossless when properly designed and require no active semiconductor devices. The three most common printed coupler topologies—90-degree hybrids, rat-race hybrids, and directional (backward-wave) couplers—each exploit controlled electromagnetic coupling and precise electrical lengths to achieve specific amplitude and phase relationships.</p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="wrap">
+      <div class="post-layout">
+        <article class="post-body">
+<h3 id="the-90-degree-hybrid">The 90-Degree Hybrid</h3>
+<p>The 90-degree hybrid (also called a branch-line coupler) is a four-port network constructed from interconnected quarter-wavelength transmission-line segments. A signal applied at port 1 divides equally between ports 2 and 3, with a 90° phase difference between the two outputs. Port 4 is isolated and is normally terminated in a matched 50 Ω load so that any residual energy is absorbed rather than reflected.</p>
+<p>In a standard single-section design the branch impedances are not uniform. Two of the lines are set to the system impedance <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msub><mi>Z</mi><mn>0</mn></msub></mrow></math> (typically 50 Ω) while the remaining two are set to
+<math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><mrow><mfrac><mrow><msub><mi>Z</mi><mn>0</mn></msub></mrow><mrow><msqrt><mrow><mn>2</mn></mrow></msqrt></mrow></mfrac><mo>&#x02248;</mo><mn>0.707</mn><mspace width="0.167em" /><msub><mi>Z</mi><mn>0</mn></msub><mo>&#x0002E;</mo></mrow></math>
+This impedance profile produces equal power division and the required quadrature phase shift at the design frequency.</p>
+<p>Bandwidth can be extended by cascading additional quarter-wave sections, producing a multi-section “ladder” hybrid. In a two-section realization the middle section is set to <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msqrt><mrow><mn>2</mn></mrow></msqrt><mspace width="0.167em" /><msub><mi>Z</mi><mn>0</mn></msub></mrow></math> while the outer sections use <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mo stretchy="false">&#x00028;</mo><mn>1</mn><mo>&#x0002B;</mo><msqrt><mrow><mn>2</mn></mrow></msqrt><mo stretchy="false">&#x00029;</mo><mspace width="0.167em" /><msub><mi>Z</mi><mn>0</mn></msub></mrow></math>. The added sections flatten the amplitude and phase response over a wider fractional bandwidth at the cost of increased board area and a more complex impedance schedule.</p>
+<p>A frequent system-level use of 90-degree hybrids is power combining for amplifiers. The input signal is split, each path is amplified by a separate, lower-power device, and the amplified signals are recombined by a second hybrid. When the two amplifier paths are well matched, the hybrid recovers nearly the full combined power while preserving good input and output match and improving overall noise performance and VSWR.</p>
+<h3 id="the-rat-race-coupler">The Rat-Race Coupler</h3>
+<p>The rat-race (or hybrid-ring) coupler replaces the rectangular branch geometry with a closed annular ring whose circumference is <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mn>1.5</mn><mi>&#x003BB;</mi></mrow></math>. The ring is partitioned into one <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mn>3</mn><mo>&#x0002F;</mo><mn>4</mn><mi>&#x003BB;</mi></mrow></math> arc and three <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mn>1</mn><mo>&#x0002F;</mo><mn>4</mn><mi>&#x003BB;</mi></mrow></math> arcs. When a signal is injected at one port, equal-amplitude outputs appear at the two adjacent ports with a precise 180° phase difference; the remaining port is isolated.</p>
+<p>Because the two outputs are inherently out of phase, the rat-race coupler is an excellent choice for baluns that drive differential antennas or balanced mixers. The structure is relatively tolerant of moderate substrate variations and can be realized on standard FR-4 at lower microwave frequencies, although the large physical size of the ring becomes a practical limitation above a few gigahertz.</p>
+<h3 id="directional-backward-wave-couplers">Directional (Backward-Wave) Couplers</h3>
+<p>Directional couplers rely on distributed electromagnetic coupling between two parallel traces that run side-by-side for a quarter-wavelength. A signal traveling from port 1 to port 2 induces a coupled wave that propagates in the opposite direction and exits at port 4 (the coupled port). Port 3 is the isolated port.</p>
+<p>Design begins with a target coupling coefficient <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>k</mi></mrow></math> obtained from the desired coupling in decibels:
+<math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><mrow><mi>k</mi><mo>&#x0003D;</mo><msup><mn>10</mn><mrow><mo>&#x02212;</mo><msub><mi>C</mi><mrow><mrow><mi mathvariant="normal">d</mi><mi mathvariant="normal">B</mi></mrow></mrow></msub><mo>&#x0002F;</mo><mn>20</mn></mrow></msup><mo>&#x0002E;</mo></mrow></math>
+A 6 dB coupler corresponds to <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>k</mi><mo>&#x02248;</mo><mn>0.5</mn></mrow></math>; a 12 dB coupler yields <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>k</mi><mo>&#x02248;</mo><mn>0.25</mn></mrow></math>. Once <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>k</mi></mrow></math> is known, the even- and odd-mode impedances of the coupled-line pair are calculated:
+<math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><mrow><msub><mi>Z</mi><mrow><mrow><mi mathvariant="normal">e</mi><mi mathvariant="normal">v</mi><mi mathvariant="normal">e</mi><mi mathvariant="normal">n</mi></mrow></mrow></msub><mo>&#x0003D;</mo><msub><mi>Z</mi><mn>0</mn></msub><msqrt><mrow><mfrac><mrow><mn>1</mn><mo>&#x0002B;</mo><mi>k</mi></mrow><mrow><mn>1</mn><mo>&#x02212;</mo><mi>k</mi></mrow></mfrac></mrow></msqrt><mo>&#x0002C;</mo><mspace width="2em" /><msub><mi>Z</mi><mrow><mrow><mi mathvariant="normal">o</mi><mi mathvariant="normal">d</mi><mi mathvariant="normal">d</mi></mrow></mrow></msub><mo>&#x0003D;</mo><msub><mi>Z</mi><mn>0</mn></msub><msqrt><mrow><mfrac><mrow><mn>1</mn><mo>&#x02212;</mo><mi>k</mi></mrow><mrow><mn>1</mn><mo>&#x0002B;</mo><mi>k</mi></mrow></mfrac></mrow></msqrt><mo>&#x0002E;</mo></mrow></math>
+These two modal impedances uniquely determine the required trace width and edge-to-edge gap for a given substrate height and dielectric constant.</p>
+<p>On ordinary FR-4 the geometry needed for tight coupling quickly becomes impractical. A 6 dB design demands a gap on the order of 0.042 mm—below the reliable resolution of most commercial PCB processes. Relaxing the specification to 12 dB opens the gap to approximately 0.53 mm, a spacing that is readily manufactured.</p>
+<p>Even-mode impedance is controlled primarily by the substrate thickness (thinner substrates lower <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msub><mi>Z</mi><mrow><mrow><mi mathvariant="normal">e</mi><mi mathvariant="normal">v</mi><mi mathvariant="normal">e</mi><mi mathvariant="normal">n</mi></mrow></mrow></msub></mrow></math>), while odd-mode impedance is dominated by the inter-trace gap (smaller gaps lower <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msub><mi>Z</mi><mrow><mrow><mi mathvariant="normal">o</mi><mi mathvariant="normal">d</mi><mi mathvariant="normal">d</mi></mrow></mrow></msub></mrow></math>). Because the two modes experience different effective dielectric constants, the phase velocities are unequal; this dispersion produces a small deviation between the theoretical coupling calculated from the modal impedances and the coupling observed in a full-wave field solver. The discrepancy grows with frequency and is one of the principal reasons that microstrip directional couplers are usually verified and fine-tuned in EM simulation rather than fabricated from closed-form equations alone.</p>
+<h3 id="design-resources-and-practical-notes">Design Resources and Practical Notes</h3>
+<p>A free and continually updated reference for branch-line ratios, bandwidth estimates, and power-division calculations is microwaves101.com. The site’s calculators implement the classic analytic expressions and serve as a convenient starting point before electromagnetic verification.</p>
+<p>When selecting a substrate, remember that both the absolute dielectric constant and its uniformity across the board affect electrical length and modal impedance. Higher-frequency designs generally migrate from FR-4 to lower-loss materials (Rogers, Isola, or Taconic laminates) to reduce dispersion and conductor loss. Regardless of material, the final layout should be simulated with a full-wave solver that accounts for the mixed air/dielectric fields of microstrip, finite ground-plane effects, and the actual copper thickness and surface roughness of the chosen process.</p>
+<p>By mastering the impedance schedules of the 90-degree hybrid, the ring geometry of the rat-race, and the even-/odd-mode design equations of the directional coupler, an engineer can synthesize compact, high-performance passive networks directly in copper. These printed structures remain among the most efficient and cost-effective tools available for signal distribution and sampling on RF and microwave printed-circuit boards.</p>
+        </article>
+<aside class="post-toc" data-post-toc>
+          <span class="post-toc__label">On this page</span>
+          <ol>
+          <li><a href="#the-90-degree-hybrid">The 90-Degree Hybrid</a></li>
+          <li><a href="#the-rat-race-coupler">The Rat-Race Coupler</a></li>
+          <li><a href="#directional-backward-wave-couplers">Directional (Backward-Wave) Couplers</a></li>
+          <li><a href="#design-resources-and-practical-notes">Design Resources and Practical Notes</a></li>
+          </ol>
+        </aside>
+      </div>
+    </div>
+  </section>
+
+  <section class="section--tight">
+    <div class="wrap">
+      <div class="post-pager">
+<a class="post-pager__link is-prev" href="4_rf_power_dividers.html"><span class="post-pager__dir">← Previous</span><span class="post-pager__title">Splitting Power on a PCB: T-Junctions, Wilkinsons, and the Physics That Forces the Choice</span></a>
+        <a class="post-pager__link is-next" href="6_rf_filter.html"><span class="post-pager__dir">Next →</span><span class="post-pager__title">PCB RF Filter Design Using Transmission-Line Equivalents</span></a>
+      </div>
+    </div>
+  </section>
+
+  <section class="section--tight" style="padding-bottom:clamp(64px,9vw,116px)">
+    <div class="wrap">
+      <div class="cta reveal">
+        <h2>Found something like this on your own board?</h2>
+        <p class="lede">
+          A stub that looks like a mistake, a split that isn't, a resonance nobody accounted for —
+          this is exactly what a Tier 2 simulation sprint checks before tape-out, not after a failed scan.
+        </p>
+        <div class="btn-row">
+          <a class="btn" href="../contact.html">Get a fixed-price quote</a>
+          <a class="btn btn--ghost" href="../services.html#tier2">See what a sprint covers</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer class="site-footer footer">
+  <div class="wrap">
+    <div class="footer__grid">
+      <div class="footer__brand">
+        <a class="brand" href="../index.html">
+          <img src="../images/logo-icon.png" alt="Machshev Labs" class="brand__mark" width="33" height="28">
+          Machshev Labs
+        </a>
+        <p>Computational electromagnetics for hardware startups. EMI/EMC, signal and power integrity, and FCC pre-compliance without the enterprise license.</p>
+      </div>
+      <div>
+        <h4>Services</h4>
+        <ul>
+          <li><a href="../services.html#tier2">SI/PI &amp; EMI sprints</a></li>
+          <li><a href="../services.html#tier3">FCC pre-compliance</a></li>
+          <li><a href="../services.html#tier1">Pre-flight check (roadmap)</a></li>
+          <li><a href="../services.html#pricing">Pricing</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Free tools</h4>
+        <ul>
+          <li><a href="../resources.html#impedance">Trace impedance</a></li>
+          <li><a href="../resources.html#resonance">Plane resonance</a></li>
+          <li><a href="../resources.html#fcc">FCC limit converter</a></li>
+          <li><a href="../resources.html#autopsies">EMI autopsies</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Blog</h4>
+        <ul>
+          <li><a href="../blog.html">All posts</a></li>
+          <li><a href="1_rf_fundamentals.html">Start here: Fundamentals</a></li>
+          <li><a href="6_rf_filter.html">Latest: Filters</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Company</h4>
+        <ul>
+          <li><a href="../about.html">About</a></li>
+          <li><a href="../about.html#approach">How we work</a></li>
+          <li><a href="../contact.html">Contact</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer__bar">
+      <span>© <span data-year>2026</span> Machshev Labs LLC</span>
+      <span class="spacer"></span>
+      <span>Not an accredited test laboratory</span>
+      <a href="#">Privacy</a>
+      <a href="#">Terms</a>
+    </div>
+  </div>
+</footer>
+
+<script src="../assets/js/main.js"></script>
+</body>
+</html>

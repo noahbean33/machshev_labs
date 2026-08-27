@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>PCB RF Filter Design Using Transmission-Line Equivalents — Machshev Labs</title>
+<meta name="description" content="In microwave and RF printed-circuit-board design, discrete surface-mount inductors and capacitors become impractical above a few gigahertz. Parasitic package inductance, self-resonance, and the…">
+<meta name="theme-color" content="#06080c">
+<link rel="icon" href="../images/favicon.png" type="image/png">
+<link rel="stylesheet" href="../assets/css/styles.css">
+</head>
+<body>
+
+<header class="site-header">
+  <div class="wrap">
+    <nav class="nav" aria-label="Primary">
+      <a class="brand" href="../index.html">
+        <img src="../images/logo-icon.png" alt="Machshev Labs" class="brand__mark" width="33" height="28">
+        Machshev Labs<span class="brand__sub">EMI · SI/PI · FCC</span>
+      </a>
+      <button class="nav__toggle" type="button" aria-expanded="false" aria-label="Toggle navigation"><span></span></button>
+      <ul class="nav__links">
+        <li><a href="../services.html">Services</a></li>
+        <li><a href="../services.html#pricing">Pricing</a></li>
+        <li><a href="../resources.html">Free tools</a></li>
+        <li><a href="../blog.html" aria-current="page">Blog</a></li>
+        <li><a href="../about.html">About</a></li>
+      </ul>
+      <div class="nav__cta">
+        <a class="btn btn--sm" href="../contact.html">Get a fixed-price quote</a>
+      </div>
+    </nav>
+  </div>
+</header>
+
+<main>
+
+  <section class="page-head">
+    <div class="wrap">
+      <a class="arrow-link" href="../blog.html" style="margin-bottom:18px">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M11 6l-6 6 6 6"/></svg>
+        All posts
+      </a>
+      <div class="post-meta">
+        <span class="badge badge--pass">Filters</span>
+        <span>Reference 06 of 6</span>
+        <span>·</span>
+        <span>3 min read</span>
+      </div>
+      <h1 style="max-width:26ch">PCB RF Filter Design Using Transmission-Line Equivalents</h1>
+      <p class="lede">In microwave and RF printed-circuit-board design, discrete surface-mount inductors and capacitors become impractical above a few gigahertz. Parasitic package inductance, self-resonance, and the physical size of the components relative to wavelength make them unsuitable. Designers therefore synthesize the required reactive elements directly from sections of microstrip or stripline transmission line. The electrical behavior of a short length of line is dual to that of a lumped inductor or capacitor, depending on its characteristic impedance <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msub><mi>Z</mi><mn>0</mn></msub></mrow></math>, electrical length <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>&#x003B8;</mi><mo>&#x0003D;</mo><mi>&#x003B2;</mi><mi>&#x02113;</mi></mrow></math>, and termination (open or short).</p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="wrap">
+      <div class="post-layout">
+        <article class="post-body">
+<h3 id="transmission-line-transforms-for-reactive-elements">Transmission-Line Transforms for Reactive Elements</h3>
+<p>The input impedance of a lossless transmission-line stub is classical:</p>
+<p><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><mrow><msub><mi>Z</mi><mtext>in,&#x000A0;short</mtext></msub><mo>&#x0003D;</mo><mi>j</mi><msub><mi>Z</mi><mn>0</mn></msub><mi>tan</mi><mi>&#x003B8;</mi><mo>&#x0002C;</mo><mspace width="2em" /><msub><mi>Z</mi><mtext>in,&#x000A0;open</mtext></msub><mo>&#x0003D;</mo><mo>&#x02212;</mo><mi>j</mi><msub><mi>Z</mi><mn>0</mn></msub><mi>cot</mi><mi>&#x003B8;</mi><mo>&#x0002E;</mo></mrow></math></p>
+<p>Consequently the following useful equivalents appear for <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>&#x003B8;</mi><mo>&#x0003C;</mo><msup><mn>90</mn><mo>&#x02218;</mo></msup></mrow></math>:</p>
+<ul>
+<li>
+<p><strong>Shunt inductor.</strong> A short-circuited stub presents a purely inductive reactance<br />
+  <math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><mrow><msub><mi>X</mi><mi>L</mi></msub><mo>&#x0003D;</mo><msub><mi>Z</mi><mn>0</mn></msub><mi>tan</mi><mi>&#x003B8;</mi><mo>&#x0002E;</mo></mrow></math>
+  The higher the characteristic impedance and the closer <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>&#x003B8;</mi></mrow></math> approaches <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msup><mn>90</mn><mo>&#x02218;</mo></msup></mrow></math>, the larger the inductance.</p>
+</li>
+<li>
+<p><strong>Shunt capacitor.</strong> An open-circuited stub presents a capacitive reactance<br />
+  <math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><mrow><msub><mi>X</mi><mi>C</mi></msub><mo>&#x0003D;</mo><msub><mi>Z</mi><mn>0</mn></msub><mi>cot</mi><mi>&#x003B8;</mi><mo>&#x0002E;</mo></mrow></math>
+  Low-<math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msub><mi>Z</mi><mn>0</mn></msub></mrow></math> (wide) stubs are preferred when large capacitance is required.</p>
+</li>
+<li>
+<p><strong>Series inductor.</strong> A short high-impedance series section (<math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>&#x003B8;</mi><mo>&#x0003C;</mo><msup><mn>45</mn><mo>&#x02218;</mo></msup></mrow></math>) approximates a series inductance<br />
+  <math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><mrow><msub><mi>X</mi><mi>L</mi></msub><mo>&#x0003D;</mo><msub><mi>Z</mi><mn>0</mn></msub><mi>sin</mi><mi>&#x003B8;</mi><mo>&#x0002E;</mo></mrow></math>
+  For electrically short lines <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>sin</mi><mi>&#x003B8;</mi><mo>&#x02248;</mo><mi>&#x003B8;</mi></mrow></math> (radians), recovering the familiar <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>L</mi><mo>&#x0003D;</mo><mo stretchy="false">&#x00028;</mo><msub><mi>Z</mi><mn>0</mn></msub><mo>&#x0002F;</mo><mi>&#x003C9;</mi><mo stretchy="false">&#x00029;</mo><mi>&#x003B8;</mi></mrow></math>.</p>
+</li>
+<li>
+<p><strong>Parasitic shunt capacitance.</strong> Every series microstrip segment also couples to the ground plane beneath it. The same short high-<math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msub><mi>Z</mi><mn>0</mn></msub></mrow></math> section therefore carries an equivalent shunt capacitive reactance<br />
+  <math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><mrow><msub><mi>X</mi><mi>C</mi></msub><mo>&#x0003D;</mo><mfrac><mrow><msub><mi>Z</mi><mn>0</mn></msub></mrow><mrow><mi>sin</mi><mi>&#x003B8;</mi></mrow></mfrac><mo>&#x0002E;</mo></mrow></math>
+  This parasitic capacitance must be absorbed into the filter prototype or compensated by layout adjustments.</p>
+</li>
+</ul>
+<p>These four relations allow a lumped-element low-pass or high-pass prototype to be mapped onto a purely distributed layout.</p>
+<h3 id="resonant-sections-and-filter-topologies">Resonant Sections and Filter Topologies</h3>
+<p>When the electrical length reaches special fractions of a wavelength, the stubs themselves become resonant tanks:</p>
+<ul>
+<li>A short-circuited quarter-wave line (<math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>&#x003B8;</mi><mo>&#x0003D;</mo><msup><mn>90</mn><mo>&#x02218;</mo></msup></mrow></math>) behaves as a parallel resonant circuit whose equivalent inductance satisfies<br />
+  <math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><mrow><msub><mi>Z</mi><mn>0</mn></msub><mo>&#x0003D;</mo><mfrac><mrow><mi>&#x003C0;</mi></mrow><mrow><mn>4</mn></mrow></mfrac><mi>&#x003C9;</mi><mi>L</mi><mo>&#x0002E;</mo></mrow></math></li>
+<li>A half-wave open or shorted line acts as a series resonant circuit with reactance slope <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mfrac><mrow><mi>&#x003C0;</mi></mrow><mrow><mn>2</mn></mrow></mfrac><msub><mi>Z</mi><mn>0</mn></msub></mrow></math>.</li>
+</ul>
+<p><strong>Low-pass filters</strong> are realized with narrow (high-<math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msub><mi>Z</mi><mn>0</mn></msub></mrow></math>) series segments for the series inductors and wide radial or “bow-tie” open stubs for the shunt capacitors. The radial geometry broadens the capacitive bandwidth and reduces the effect of the open-end fringing fields.</p>
+<p><strong>High-pass filters</strong> invert the topology: series capacitance is introduced by gaps or interdigitated fingers, while shunt inductance is supplied by shorted stubs.</p>
+<p><strong>Band-pass filters</strong> are most commonly built from cascaded quarter-wave coupled-line sections that function as impedance inverters (K-inverters). The coupling coefficient between adjacent resonators is controlled by the gap and the overlapping length. Straight coupled-line geometries consume considerable board length; folding each resonator into a “U” shape produces the compact <strong>hairpin</strong> filter. Hairpin resonators retain the same resonant frequency and coupling rules while occupying roughly half the linear distance of their straight counterparts. Interdigitated finger capacitors or edge-coupled hairpins further tighten the layout when board real-estate is critical.</p>
+<p>Because the mapping from prototype element values to physical dimensions involves transcendental equations and mutual coupling, hand calculation rapidly becomes impractical beyond third-order filters. Electromagnetic simulation or dedicated synthesis tools are therefore standard.</p>
+<h3 id="practical-design-flow-and-recommended-tools">Practical Design Flow and Recommended Tools</h3>
+<ol>
+<li>Start from a classical lumped prototype (Butterworth, Chebyshev, elliptic) scaled to the desired center frequency and impedance.</li>
+<li>Replace each <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>L</mi></mrow></math> and <math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><mi>C</mi></mrow></math> by the appropriate transmission-line equivalent using the transforms above.</li>
+<li>Optimize line widths, lengths, and gaps in a full-wave simulator to recover the target response, accounting for dispersion, conductor loss, and radiation.</li>
+<li>Verify sensitivity to etch tolerance and substrate thickness variation.</li>
+</ol>
+<p>Useful software and reference sources include:
+- Altium Designer’s RF design and impedance calculators,
+- QUCS (open-source schematic and filter synthesis),
+- RF Café and Microwaves101 online calculators and application notes,
+- Brian Wadell’s <em>Transmission Line Design Handbook</em> for closed-form microstrip equations and discontinuity models.</p>
+<h3 id="closing-remarks">Closing Remarks</h3>
+<p>Distributed filter design on PCB is fundamentally an exercise in controlled impedance and electrical length. Once the four basic transforms—shorted-stub inductance, open-stub capacitance, series high-<math xmlns="http://www.w3.org/1998/Math/MathML" display="inline"><mrow><msub><mi>Z</mi><mn>0</mn></msub></mrow></math> inductance, and the accompanying parasitic capacitance—are mastered, essentially any classical filter response can be realized without discrete components. Hairpin and interdigitated topologies simply represent space-efficient geometric rearrangements of the same underlying transmission-line elements. With modern layout tools and modest electromagnetic simulation, these structures become routine building blocks for RF front-ends, local-oscillator filtering, and harmonic suppression on multilayer boards.</p>
+        </article>
+<aside class="post-toc" data-post-toc>
+          <span class="post-toc__label">On this page</span>
+          <ol>
+          <li><a href="#transmission-line-transforms-for-reactive-elements">Transmission-Line Transforms for Reactive Elements</a></li>
+          <li><a href="#resonant-sections-and-filter-topologies">Resonant Sections and Filter Topologies</a></li>
+          <li><a href="#practical-design-flow-and-recommended-tools">Practical Design Flow and Recommended Tools</a></li>
+          <li><a href="#closing-remarks">Closing Remarks</a></li>
+          </ol>
+        </aside>
+      </div>
+    </div>
+  </section>
+
+  <section class="section--tight">
+    <div class="wrap">
+      <div class="post-pager">
+<a class="post-pager__link is-prev" href="5_rf_coupler.html"><span class="post-pager__dir">← Previous</span><span class="post-pager__title">RF and Microwave PCB Couplers: Design Principles and Practical Considerations</span></a>
+        <span></span>
+      </div>
+    </div>
+  </section>
+
+  <section class="section--tight" style="padding-bottom:clamp(64px,9vw,116px)">
+    <div class="wrap">
+      <div class="cta reveal">
+        <h2>Found something like this on your own board?</h2>
+        <p class="lede">
+          A stub that looks like a mistake, a split that isn't, a resonance nobody accounted for —
+          this is exactly what a Tier 2 simulation sprint checks before tape-out, not after a failed scan.
+        </p>
+        <div class="btn-row">
+          <a class="btn" href="../contact.html">Get a fixed-price quote</a>
+          <a class="btn btn--ghost" href="../services.html#tier2">See what a sprint covers</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer class="site-footer footer">
+  <div class="wrap">
+    <div class="footer__grid">
+      <div class="footer__brand">
+        <a class="brand" href="../index.html">
+          <img src="../images/logo-icon.png" alt="Machshev Labs" class="brand__mark" width="33" height="28">
+          Machshev Labs
+        </a>
+        <p>Computational electromagnetics for hardware startups. EMI/EMC, signal and power integrity, and FCC pre-compliance without the enterprise license.</p>
+      </div>
+      <div>
+        <h4>Services</h4>
+        <ul>
+          <li><a href="../services.html#tier2">SI/PI &amp; EMI sprints</a></li>
+          <li><a href="../services.html#tier3">FCC pre-compliance</a></li>
+          <li><a href="../services.html#tier1">Pre-flight check (roadmap)</a></li>
+          <li><a href="../services.html#pricing">Pricing</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Free tools</h4>
+        <ul>
+          <li><a href="../resources.html#impedance">Trace impedance</a></li>
+          <li><a href="../resources.html#resonance">Plane resonance</a></li>
+          <li><a href="../resources.html#fcc">FCC limit converter</a></li>
+          <li><a href="../resources.html#autopsies">EMI autopsies</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Blog</h4>
+        <ul>
+          <li><a href="../blog.html">All posts</a></li>
+          <li><a href="1_rf_fundamentals.html">Start here: Fundamentals</a></li>
+          <li><a href="6_rf_filter.html">Latest: Filters</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Company</h4>
+        <ul>
+          <li><a href="../about.html">About</a></li>
+          <li><a href="../about.html#approach">How we work</a></li>
+          <li><a href="../contact.html">Contact</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer__bar">
+      <span>© <span data-year>2026</span> Machshev Labs LLC</span>
+      <span class="spacer"></span>
+      <span>Not an accredited test laboratory</span>
+      <a href="#">Privacy</a>
+      <a href="#">Terms</a>
+    </div>
+  </div>
+</footer>
+
+<script src="../assets/js/main.js"></script>
+</body>
+</html>

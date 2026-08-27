@@ -543,6 +543,37 @@
     });
   }
 
+  /* -------------------------------------------------- blog post toc ----- */
+
+  var tocLinks = document.querySelectorAll("[data-post-toc] a");
+  if (tocLinks.length && "IntersectionObserver" in window) {
+    var tocByHash = {};
+    tocLinks.forEach(function (a) { tocByHash[a.getAttribute("href")] = a; });
+
+    var setActive = function (hash) {
+      tocLinks.forEach(function (a) { a.classList.remove("is-active"); });
+      var link = tocByHash[hash];
+      if (link) link.classList.add("is-active");
+    };
+
+    var headings = Array.prototype.slice.call(tocLinks)
+      .map(function (a) { return document.getElementById(a.getAttribute("href").slice(1)); })
+      .filter(Boolean);
+
+    var tocObserver = new IntersectionObserver(function (entries) {
+      // Pick the entry nearest the top of the viewport among those
+      // currently intersecting; falls back to the last heading passed.
+      var visible = entries.filter(function (e) { return e.isIntersecting; });
+      if (visible.length) {
+        visible.sort(function (a, b) { return a.boundingClientRect.top - b.boundingClientRect.top; });
+        setActive("#" + visible[0].target.id);
+      }
+    }, { rootMargin: "-88px 0px -70% 0px", threshold: 0 });
+
+    headings.forEach(function (h) { tocObserver.observe(h); });
+    if (headings.length) setActive("#" + headings[0].id);
+  }
+
   /* -------------------------------------------------------- footer yr --- */
 
   var yr = document.querySelector("[data-year]");
