@@ -1,0 +1,233 @@
+
+Noah's Digital Jefferies Tube
+
+
+
+
+The Electronics Safety Checklist Nobody Hands You on Day One
+A Working Engineer’s Guide to Shock, Fire, and Thermal Runaway Prevention, From Schematic to Production
+Noah's Digital Jefferies Tube
+Jul 12, 2026
+
+EEVsmoke #2 - Magic Smoke Captured!
+
+
+Most safety compliance content is written for compliance engineers filling out a technical file after the design is frozen. This isn’t that. This is what I actually want on my desk while I’m still routing the PCB and picking the BMS topology, organized the way an EE actually works through a design: energy source classification first, then shock prevention, then fire prevention, then battery-specific hazards, then the production screening that catches everything design review missed.
+
+If you’re building anything that plugs into mains, carries a lithium cell, or ships to someone who isn’t an EE, this is the order to work through it in.
+
+1. Classify Every Energy Source Before You Touch the PCB
+The modern safety framework, IEC 62368-1, replaced the old prescriptive standards (IEC 60950-1, IEC 60065) with a physics-based model: injury happens when energy above a certain magnitude transfers from a source to a body or combustible material. Your job starts with mapping every energy source in the design, not with picking creepage distances off a table.
+
+Checklist:
+
+Identify every electrical, thermal, and power energy source in the schematic. Don’t skip anything that looks benign; a “small” auxiliary rail can still be a Class 2 or 3 source.
+
+Classify each source:
+
+Class 1: ≤30 Vrms / 60 Vdc, ≤0.5 mA, touch temps ≤48°C plastic / 43°C metal. No safeguards required.
+
+Class 2: ≤50 Vrms / 120 Vdc, ≤5 mA, touch temps ≤58°C plastic / 48°C metal. Requires at least one basic safeguard.
+
+Class 3: anything above Class 2. Requires double or reinforced safeguards, and must stay inaccessible under single-fault conditions.
+
+Classify your actual user population, because the safeguard requirement is a function of both the energy class and who’s expected to touch it:
+
+Ordinary persons (your typical customer): must be protected from Class 2 and 3 sources, normal operation and single fault both.
+
+Instructed persons (trained or supervised): can access Class 2, must be protected from Class 3.
+
+Skilled persons: can work on energized Class 3 sources with minimal built-in safeguards.
+
+Build the technical file as you go, not at the end: energy source map, safeguard analysis, BOM with certified safety-critical parts, test reports, risk assessments for anything non-standard, and the actual user-facing warnings and instructions.
+
+2. Shock Prevention: Creepage, Clearance, and Discharge
+This is the spacing math that’s easy to get lazy about because the CAD tool won’t stop you from routing a trace too close to a high-voltage net.
+
+Clearance is the through-air path between two conductive parts. It’s your defense against a transient overvoltage arcing across the gap. Creepage is the along-the-surface path. It’s your defense against long-term surface tracking from humidity, dust, and contamination.
+
+Checklist:
+
+Know your Overvoltage Category before you look up a single number. Category I is equipment with its own transient suppression. Category II is anything pluggable into building wiring. Category III is fixed building-wiring equipment. Category IV is at the utility distribution level.
+
+Know your Pollution Degree (how dirty/humid the operating environment actually is) and your PCB substrate’s Material Group, which comes from its Comparative Tracking Index. Standard FR-4 usually lands in a lower CTI group than people assume, which means it needs more creepage than they budgeted for.
+
+Pull your minimum clearance and creepage numbers from the actual working voltage, overvoltage category, pollution degree, and CTI group, not from a number you remember from a previous project with different parameters.
+
+If you’re above 2000 m altitude, apply the clearance correction factor. Thinner air has less dielectric strength, and a spacing that was fine at sea level isn’t fine on a mountain.
+
+Use routed slots to buy creepage distance without expanding the board footprint. A slot ≥1 mm wide lets the creepage path follow the groove down one side and up the other instead of jumping straight across.
+
+Don’t rely on a field-wired earth ground. Primary-to-earth circuits need basic insulation at minimum, because a lost or reversed ground is a single fault you have to design around, not assume away.
+
+If you want a simpler global policy instead of computing every barrier individually, an 8 mm creepage/clearance rule across all isolation boundaries gets you to Class II-equivalent safety everywhere. It costs board space; it buys you not having to re-derive spacing for every new voltage rail.
+
+Design the capacitor discharge path. After unplug, input voltage must decay below 60 V within 2 seconds under normal conditions, and below 120 V within 2 seconds even with a bleeder resistor open-circuited. That second requirement means one bleeder resistor is not compliant on its own. Use two in parallel so a single failure still leaves a working discharge path.
+
+3. Fire Prevention at the Filter and Overcurrent Stage
+Class X vs Class Y capacitors. Class X sits line-to-neutral and filters differential noise. If it fails short, worst case is fire, not shock, so it’s allowed to fail short or open. Class Y sits line-to-ground, directly bridging to the accessible chassis. If it fails short, the enclosure goes live at mains voltage. Class Y capacitors have to be built to fail open only, using ceramic or metallized film dielectrics engineered for that failure mode specifically.
+
+Checklist:
+
+Never substitute an X-rated cap where a Y-rated cap belongs. The reverse substitution (Y in place of X) is fine, since Y specs are the tighter ones; X in place of Y is not, because X capacitors aren’t rated for the line-to-ground failure mode.
+
+Calculate your maximum allowable Y-capacitance from worst-case leakage current, not typical-case. For a Class II handheld device, that’s a 0.25 mA touch current limit at your worst-case mains voltage and frequency. Work backward from that to a nominal capacitance, then derate for tolerance and grid spikes. Don’t just copy a 2.2 nF value from another design without redoing the math for your actual leakage budget.
+
+Coordinate your transient protection stages in the right order. A GDT alone on a power line will sustain its own arc off the normal operating voltage once triggered; it has to sit in series with an MOV so the MOV clamps first and quenches the GDT’s follow-current once the transient passes.
+
+Use thermally-protected MOVs (TMOVs/SMOVs) with an integrated thermal disconnect. Standard MOVs degrade over repeated surge cycles and eventually develop a leakage path that self-heats into a fire at nominal voltage. The internal thermal link is what disconnects that path before ignition.
+
+Size your fuse against actual inrush I²t, not just steady-state current. Nuisance tripping from capacitive charge-up at turn-on is a symptom of under-analyzed inrush, not a defective fuse.
+
+Never substitute a fusible resistor for a certified safety fuse. Fusible resistors don’t have controlled arc-quenching and will smoke or sustain open flame under progressive overload. Pay for the fuse with the silica arc-quenching filler.
+
+If you’re designing a telecom or Ethernet interface, coordinate a fast telecom fuse at the port entry with a low-capacitance bidirectional overvoltage protector (SIDACtor or equivalent) to survive an inter-building power-cross event without the semiconductor failing catastrophically first.
+
+Check fuse arc voltage against your downstream component ratings, not just against nominal system voltage. A wire-element fuse can generate an arc voltage up to 3x a notched-ribbon element under the same fault, and that transient gets impressed directly on anything downstream, including your MOV/TVS. If your downstream parts are only rated for nominal voltage, a fuse opening event can take them out anyway.
+
+Specify enclosure and internal mount materials by actual UL 94 rating at the thinnest wall section you’re using, not the rating on the datasheet’s default sample thickness. A resin that’s V-0 at 1.5 mm can drop to V-2 at 0.75 mm. Pull the UL Yellow Card for your actual wall thickness before you commit to a resin.
+
+4. Battery and Thermal Runaway Protection
+This is the section that actually kills people and burns down buildings when it’s wrong, and it’s the section most teams under-invest in because a single-cell mechanical safety device feels like it should be enough. It isn’t, once you put cells in series.
+
+Checklist:
+
+Don’t rely on cell-level PTC and CID devices as your system-level safety story. In multi-cell series strings, PTC devices can see voltage across them that exceeds their withstand rating during a fault, causing the PTC itself to break down and ignite. CIDs in a series string can fail asynchronously; the slowest-activating cell’s CID ends up arcing when it finally opens, igniting the pressurized electrolyte vapor inside.
+
+Set your charger voltage ceiling with real margin, add series diodes to block reverse current in high-voltage strings, and validate overcharge behavior under worst-case system load. Don’t validate at the cell level and assume the pack inherits the result.
+
+Build your BMS around temperature rate-of-change (dT/dt), not just absolute thresholds. A cell climbing 10°C in under a minute is a warning sign well before it crosses any absolute limit.
+
+Put NTC thermistors directly against cells and at high-current busbar junctions. A single sensor on the control board is blind to localized heating from contact resistance, which is one of the more common real-world triggers.
+
+Choose your balancing topology with its actual failure mode in mind, not just its efficiency:
+
+Passive balancing: low efficiency, but failure modes are benign (a stuck-on bleed transistor just causes a slow, easily-detected over-discharge). Lower functional safety burden, easier to certify.
+
+Active balancing (capacitive or inductive): high efficiency, but a stuck-on switch or firmware timing fault can push unregulated current into a cell and overcharge it directly. Higher ASIL classification, more validation and FMEA work required.
+
+Manage BMS quiescent current. A high always-on draw can drain cells below their low-voltage cutoff during storage, causing internal copper-shunting that isn’t visible until the pack is recharged and a compromised cell shorts internally. Build in a real deep-sleep mode at microamp-level draw.
+
+Design in physical thermal propagation barriers between cells and modules; don’t treat the BMS as your only line of defense. Materials like phlogopite mica, silica aerogel, and flame-retardant silicone foam need to survive direct flame-jet exposure and corrosive off-gassing, not just insulate against ambient heat. Confirm your barrier material stays effective under humidity exposure over the product’s life; untreated fiber insulators can lose over half their thermal performance once they’ve absorbed moisture.
+
+Match your gas sensor placement to the actual gas physics. DMC/EMC solvent vapors are heavier than air and show up first; sensors need to sit low, 6–12 inches off the enclosure floor. Hydrogen is lighter than air and shows up later; sensors need to sit at the highest point in the enclosure. Getting this backwards delays detection at exactly the stage where you still have time to act.
+
+5. Production Screening: Catching What Design Review Missed
+Design validation proves the design is correct. It doesn’t catch the unit that got a cold solder joint on the line. That’s what Environmental Stress Screening is for, and it needs to run on 100% of production, not a sample.
+
+Checklist:
+
+Thermal cycle production units between rated extremes at 5–10°C/minute to stress solder joints, wire terminations, and seals.
+
+Run thermal shock testing (rapid transfer between extremes, e.g. -40°C to +125°C, multiple cycles) to expose cracked boards and weak mechanical interfaces that slower cycling might not catch.
+
+Vibration test across the expected frequency range to catch loose connectors, weak solder joints, and loose fasteners before they leave the building.
+
+Humidity test (high RH, elevated temp, extended duration) to verify conformal coating and IC package integrity. This is what catches the sealing gap that turns into field corrosion six months later.
+
+Use HALT during the design phase to find the actual mechanical and electrical breaking points by deliberately exceeding spec, then use those limits to define a HASS profile for production that precipitates latent defects fast without needing the full HALT stress level on every unit.
+
+Complete dielectric withstand (hipot) and ground bond testing on every Class I and Class II unit before it ships. This is non-negotiable and it’s the cheapest test on this list relative to what it catches.
+
+The Actual Point
+None of this is exotic engineering. Every item on this list is documented, testable, and has been the subject of a real recall, a real fire, or a real NASA failure investigation at some point. The failures that make the news, whether it’s a power bank on an airplane or a pack that burns down someone’s garage, almost never come from missing a table lookup. They come from treating one layer of this stack (usually cell-level certification, or a filter capacitor datasheet) as if it covers the whole system. It doesn’t. Go through this in order, from schematic to production line, and you close the actual gap instead of the one on the compliance checklist.
+
+1 Like
+Discussion about this post
+Write a comment...
+
+
+Texas Instruments' Earnings Just Exposed AI's Copper Problem
+Q2 2026 data center revenue doubled, and the reason is a 132-kW rack running out of amps
+Aug 10 • Noah's Digital Jefferies Tube
+
+
+
+
+
+
+The PCB Schematic: Where Good Boards Are Won or Lost
+A schematic does two jobs at once.
+Jul 8 • Noah's Digital Jefferies Tube
+
+
+
+
+
+
+Hot Chips 2026: Architectures for the Agentic Computing Era
+Architectures for the Agentic Computing Era
+Aug 24 • Noah's Digital Jefferies Tube
+
+
+
+
+
+
+NVIDIA’s $3.5 Billion MediaTek Bet: Owning the Wire After Giving Up the Chip
+On August 31, 2026, NVIDIA put $3.5 billion into MediaTek convertible bonds and converted what had been a components relationship into a shared…
+Aug 31 • Noah's Digital Jefferies Tube
+
+
+
+
+
+
+How Oscillate Photonics Killed the SESAM and Shrank a $150,000 Laser to a USB-C Brick
+A femtosecond laser used to mean a room.
+Jul 23 • Noah's Digital Jefferies Tube
+
+
+
+
+
+
+Hardware Cost Doesn’t Live in the Design. It Lives in the Feedback Loop.
+There’s a moment every EE student goes through.
+Jun 23 • Noah's Digital Jefferies Tube
+
+
+
+
+
+
+The Sand Contract: Build vs. Buy as a Theory of Where Entropy Lives
+Build vs. Buy as a Theory of Where Entropy Lives
+Jun 18 • Noah's Digital Jefferies Tube
+
+
+
+
+
+
+What Everyone Should Know Before Arguing With Their Electrical Engineer
+Most cross-disciplinary friction on hardware teams isn’t a personality problem, It’s a worldview problem.
+Jul 6 • Noah's Digital Jefferies Tube
+
+
+
+
+
+
+Efinix: The Company Building the Next Generation of FPGAs
+In June 2026, trade press reported that Efinix had lined up capacity at TSMC’s Japan fabs to keep pace with demand from its edge AI business.
+Jul 21 • Noah's Digital Jefferies Tube
+
+
+
+
+
+
+The PCB Layout Playbook: From Blank Grid to Manufactured Board
+Every board failure traces back to a decision made earlier in the process than anyone wants to admit.
+Jul 8 • Noah's Digital Jefferies Tube
+
+
+
+
+
+
+© 2026 Noah Bean · Privacy ∙ Terms ∙ Collection notice
+Start your Substack
+Get the app
+Substack is the home for great culture

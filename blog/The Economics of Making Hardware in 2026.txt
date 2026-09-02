@@ -1,0 +1,159 @@
+
+Noah's Digital Jefferies Tube
+
+
+
+
+The Economics of Making Hardware in 2026
+Noah's Digital Jefferies Tube
+Aug 29, 2026
+
+Everything You Need to Know About Computer Hardware
+
+
+Ten years ago Dave Jones worked out the arithmetic of selling your own hardware and arrived at a simple heuristic: price a product at 2.5 times its cost of goods sold, or the venture is a hobby that occasionally returns cash rather than a business with a defensible margin structure. That arithmetic has not changed. What has changed, comprehensively, are the inputs that feed it. A COGS calculation that was a stable number computed once in 2016 is now a volatile range subject to policy shocks, and treating it as a constant is the single most common way a hardware venture that looks solvent on a spreadsheet turns out to be insolvent at the customs border.
+
+The arithmetic, and why the multiplier lands where it does
+Cost of goods sold is every dollar required to convert a schematic into a functional unit sitting in inventory: bill of materials, reel overrun on parts bought in quantities larger than needed, bare board fabrication, SMT assembly and its associated setup charges, firmware programming, packaging, the shipping of parts to and from an assembler, an allowance for defective units, and an allowance for units lost in transit that have to be replaced without argument.
+
+Selling direct to the consumer, gross margin is defined as (retail price minus COGS) divided by retail price. A 2.5x multiplier on COGS produces a 60% gross margin, and at a volume of 1,000 units a year on a $50 COGS product, that margin nets $75,000 in annual profit.
+
+Routing the same product through a reseller changes the governing equation from margin to markup. A distributor prices from their cost, not from yours: retail equals reseller cost multiplied by one plus the markup rate. A standard reseller markup of 60% means the distributor will pay you retail divided by 1.6. On a $125 retail product that comes to $78.12. Your COGS has not moved from $50, so per-unit profit falls from $75 selling direct to roughly $28 selling wholesale, while the reseller captures $47 on a product they neither designed nor built.
+
+The shape of that tradeoff is easiest to see by walking the multiplier up from cost. At a 2.0x multiplier, the $50 COGS product retails at $100, earning $50 a unit and a 50% margin sold direct, but only $12.50 a unit and a 20% margin sold through the reseller, since the distributor’s 60% markup leaves almost nothing once their cut is subtracted. At 2.5x, retail rises to $125: $75 a unit and 60% margin direct, versus $28.12 a unit and 36% margin wholesale. At 3.0x, retail reaches $150, and the wholesale figures improve to $43.75 a unit and 47% margin. Only at 4.0x, a $200 retail price, does the wholesale margin catch up to where the direct margin sat back at 2.0x: $75 a unit and 60% margin, matching the reseller’s own take almost exactly.
+
+That progression is the actual justification for 2.5x as a floor rather than an arbitrary round number. At that multiplier the creator earns roughly half of what the reseller earns per unit. Below it, the creator earns less than half, and the business case for continuing to manufacture the product weakens with every point the multiplier drops. Matching the reseller’s margin exactly requires a 4x multiplier, and at 4x the retail price is usually high enough to price the product out of its own addressable market. The multiplier is therefore a compromise between two constraints that pull in opposite directions: the creator’s need for a sustainable margin, and the market’s ceiling on what it will pay for a given category of product.
+
+That structure, the ratio between direct and wholesale economics, is durable because it follows from the definitions of margin and markup rather than from any particular year’s cost environment. What has become genuinely unstable since 2016 is COGS itself, and the mechanism behind that instability is worth tracing in some detail, because it is not a single shock but three independent structural shifts arriving at once.
+
+The removal of de minimis, and why customs friction is now a fixed cost rather than a variable one
+From 2016 through most of 2025, a package valued under $800 crossed into the United States duty-free with expedited, informal clearance under Section 321 of the Tariff Act of 1930. That exemption was a large part of why sourcing components and small assembly runs from Shenzhen felt frictionless for the better part of a decade: a hardware engineer could order a board revision, a bag of connectors, or a short assembly run without a customs broker, a tariff schedule, or a processing delay entering the calculation at all.
+
+That exemption is gone. It was suspended for shipments from China and Hong Kong in May 2025, expanded to every country of origin that August, and permanently repealed by statute shortly after. Every commercial package entering the United States now requires a ten-digit Harmonized Tariff Schedule classification and clears under one of two regimes: an ad valorem duty calculated from the part’s actual tariff code and country of origin, or, as a transitional mechanism scheduled to phase out in early 2026, a flat specific duty of $80 to $200 per item keyed to the origin country’s tariff bracket. Layered on top of the duty itself is the Merchandise Processing Fee, which as of October 2025 carries a minimum of roughly $33.58 per formal entry and a cap near $651.50, plus whatever a customs broker charges to file the entry. The net effect is that a $150 prototype order can land closer to $250 before a single component has been counted toward the BOM.
+
+The magnitude of this exposure is not uniform across a design, because tariff rate is a function of tariff classification and country of origin rather than of price. Section 301 adds anywhere from 7.5% to 100% on top of standard rates depending on the HTS code in question, and a bare printed circuit board’s exposure depends on its physical construction. A two-layer or four-layer FR4 board sourced from China can, using current exemption codes, land in the low teens as a percentage of value; a six-layer, flex, or non-FR4 board from the same factory can land closer to 37.5%. Routing the identical design through a Malaysian fabricator can bring total duty down to roughly 10% flat, at the cost of a less mature local component ecosystem and a longer lead time to establish the supplier relationship in the first place. A design decision as narrow as layer count or board material now carries a tariff consequence of the same order of magnitude as a manufacturing cost decision, which is a category of coupling that essentially did not exist in the 2016 cost model.
+
+The effect compounds at low volume, where fixed customs and shipping costs are amortized over the smallest possible denominator. Engineers running five-piece prototype orders have reported landed costs on the order of ten times the raw board price once shipping and duties are included, a two-dollar board arriving with roughly twenty-five dollars of shipping and duty attached. Combining multiple small orders into a single shipment to average down that fixed cost helps less than intuition suggests, because freight is billed by weight tier and the per-shipment processing fees do not scale down proportionally with order size.
+
+Component allocation as a structural rather than cyclical constraint
+The 2020 to 2022 global semiconductor shortage was, at the time, widely treated as a cyclical anomaly the industry would eventually work through and return to a pre-shortage baseline of just-in-time procurement. By 2026 that return has not happened, and the reason is structural rather than cyclical: fabrication capacity on the legacy process nodes that produce standard microcontrollers, passives, and IoT-class parts has been progressively reallocated toward the advanced nodes and high-bandwidth memory that AI infrastructure demands, because that capacity commands a substantially higher margin per wafer. The consequence for a hardware maker sourcing ordinary, non-cutting-edge components is that supply for exactly those parts has tightened even as overall semiconductor output has grown, with memory prices in some categories spiking 80 to 90% and lead times on standard parts extending past a year during acute periods.
+
+The rational response to a structural allocation constraint is different from the response to a temporary shortage. A temporary shortage is bridged with expediting fees and patience. A structural constraint is bridged by holding inventory, and the industry has responded accordingly: a buffer of 60 to 90 days of critical component stock is now treated as a baseline operating requirement rather than a conservative excess. Holding that inventory is not free. It is working capital committed before a single unit has been sold, it carries its own risk of component obsolescence if a design revision or an end-of-life notice arrives before the stock is consumed, and it needs to be modeled as an explicit financing cost rather than folded into the reel-overrun line the way it was in 2016.
+
+The weakening case for the reseller channel, and the weakening case for crowdfunding as a substitute
+Ceding 60% of retail markup to a distributor was, in 2016, a defensible trade for a maker who genuinely could not reach a customer base any other way. That constraint has loosened considerably. A Shopify storefront, Amazon FBA fulfillment, and an audience built through a YouTube channel or a newsletter now provide a route to a customer base with a fraction of the setup that a distributor relationship required a decade ago, which strengthens the case for direct sale independent of anything else discussed here.
+
+What has weakened in parallel is the crowdfunding mechanism that used to function as a substitute for that audience-building work. In a large-sample study of Kickstarter projects and backers, Wharton’s Ethan Mollick found that roughly 9% of successfully funded projects fail to deliver any reward at all, that about 8% of total pledged dollars go to projects that fail in this way, and that backers on a failed project receive a refund only around 13% of the time. The failure rate is not evenly distributed across campaign size. It is highest at the smallest campaigns, which lack the buffer capital to absorb an unanticipated supply shock, and elevated again at the largest, most overfunded campaigns, which frequently cannot scale production fast enough to fill an order volume the creator did not plan a supply chain around. The common thread across both failure modes is not fraud but a COGS estimate built on the frictionless assumptions of the previous decade, one that did not anticipate the tariff exposure or the component lead time it would eventually collide with.
+
+Reconstructing the multiplier for 2026
+None of this invalidates the 2.5x rule as arithmetic. What it invalidates is the assumption that COGS is a number a founder computes once at the design stage and carries forward for the life of the product. A COGS model built for 2026 needs to be structured as three explicit components rather than one aggregate figure:
+
+Baseline manufacturing cost: parts, bare board fabrication, SMT assembly, programming, and packaging, priced at the factory’s stated rate.
+
+Regulatory and tariff exposure: a line item derived from the actual HTS classification and country of origin of every major component and subassembly, rather than an amount discovered after the invoice from customs arrives.
+
+Capital carry: the financing cost of the buffer inventory now required to survive allocation-driven shortages on ordinary components.
+
+The multiplier should then be applied against the upper bound of that range rather than its midpoint, because tariff and supply exposure are asymmetric risks that skew costs upward rather than downward. For a design with substantial China-origin content and any dependency on constrained memory or passives, a multiplier closer to 3.0x to 3.5x is a more realistic floor than 2.5x once these costs are priced in at the design stage rather than absorbed as an unplanned expense after production begins.
+
+Selling direct remains the better default when it is achievable, more decisively so than it was in 2016, because the infrastructure for reaching a customer base without a distributor has only improved. But reaching a customer and surviving tariff and supply volatility on inputs have become two genuinely separate problems, and the second of the two barely existed as a serious constraint a decade ago. A pricing model that solves only the first of these will report a healthy margin on paper right up until a tariff reclassification or a component allocation shift proves otherwise.
+
+Discussion about this post
+Write a comment...
+
+
+The Electronics Safety Checklist Nobody Hands You on Day One
+A Working Engineer’s Guide to Shock, Fire, and Thermal Runaway Prevention, From Schematic to Production
+Jul 12 • Noah's Digital Jefferies Tube
+
+1
+
+
+
+
+
+Texas Instruments' Earnings Just Exposed AI's Copper Problem
+Q2 2026 data center revenue doubled, and the reason is a 132-kW rack running out of amps
+Aug 10 • Noah's Digital Jefferies Tube
+
+
+
+
+
+
+The PCB Schematic: Where Good Boards Are Won or Lost
+A schematic does two jobs at once.
+Jul 8 • Noah's Digital Jefferies Tube
+
+
+
+
+
+
+Hot Chips 2026: Architectures for the Agentic Computing Era
+Architectures for the Agentic Computing Era
+Aug 24 • Noah's Digital Jefferies Tube
+
+
+
+
+
+
+NVIDIA’s $3.5 Billion MediaTek Bet: Owning the Wire After Giving Up the Chip
+On August 31, 2026, NVIDIA put $3.5 billion into MediaTek convertible bonds and converted what had been a components relationship into a shared…
+Aug 31 • Noah's Digital Jefferies Tube
+
+
+
+
+
+
+How Oscillate Photonics Killed the SESAM and Shrank a $150,000 Laser to a USB-C Brick
+A femtosecond laser used to mean a room.
+Jul 23 • Noah's Digital Jefferies Tube
+
+
+
+
+
+
+Hardware Cost Doesn’t Live in the Design. It Lives in the Feedback Loop.
+There’s a moment every EE student goes through.
+Jun 23 • Noah's Digital Jefferies Tube
+
+
+
+
+
+
+The Sand Contract: Build vs. Buy as a Theory of Where Entropy Lives
+Build vs. Buy as a Theory of Where Entropy Lives
+Jun 18 • Noah's Digital Jefferies Tube
+
+
+
+
+
+
+What Everyone Should Know Before Arguing With Their Electrical Engineer
+Most cross-disciplinary friction on hardware teams isn’t a personality problem, It’s a worldview problem.
+Jul 6 • Noah's Digital Jefferies Tube
+
+
+
+
+
+
+Efinix: The Company Building the Next Generation of FPGAs
+In June 2026, trade press reported that Efinix had lined up capacity at TSMC’s Japan fabs to keep pace with demand from its edge AI business.
+Jul 21 • Noah's Digital Jefferies Tube
+
+
+
+
+
+
+© 2026 Noah Bean · Privacy ∙ Terms ∙ Collection notice
+Start your Substack
+Get the app
+Substack is the home for great culture

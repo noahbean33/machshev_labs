@@ -1,0 +1,252 @@
+
+Noah's Digital Jefferies Tube
+
+
+
+
+The Signal Is Always Wrong Now
+How PCI Express stopped trying to fix the channel and redesigned everything around the assumption that it’s broken.
+Noah's Digital Jefferies Tube
+Jun 05, 2026
+
+
+
+
+PCIE https://www.tomshardware.com/reviews/pcie-definition,5754.html
+In 7.8 picoseconds, light travels 2.3 millimeters. That is the Unit Interval of PCIe 7.0, the entire window of time a receiver has to look at an incoming signal and decide what it means. If the two wires of a differential pair are etched even a millimeter and a half apart in length on the PCB, the signal arrives out of phase with itself and the link fails. You are now doing speed-of-light math as a manufacturing tolerance check. This is what it looks like when an industry has been running toward a wall for twenty years and finally hits it.
+
+But the wall wasn’t the destination. The interesting thing happened two generations earlier, when the industry looked at where this was heading and made a decision so counterintuitive it amounts to an engineering philosophy change: they stopped trying to make the signal correct. They redesigned everything around the assumption that it’s wrong.
+
+The Era When Errors Were Embarrassing
+For the first two decades of high-speed serial interconnects, the governing philosophy was simple: the physical layer is a clean conduit. A logic ‘1’ is a high voltage, a logic ‘0’ is a low voltage, and the job of the channel is to deliver one to the receiver without turning it into the other. Errors happened, a power supply spike, a noise transient, occasionally a cosmic ray, but they were anomalies, statistical outliers so rare they barely mattered. PCIe 5.0, running at 32 gigatransfers per second and ratified in 2019, targeted a raw Bit Error Rate of 10⁻¹², one error per trillion bits. In operational terms, that’s a link that effectively doesn’t make mistakes.
+
+The error handling strategy matched: detect the mistake with a CRC, send a NAK, retransmit. The system worked because it almost never had to.
+
+This entire regime depended on keeping the “eye” open, the eye being the voltage margin at the receiver, the gap between where a ‘1’ ends and a ‘0’ begins. By PCIe 5.0, that eye was already uncomfortably narrow. The physics squeezing it shut had been building for years.
+
+
+
+
+Eye Diagram https://www.tek.com/en/documents/application-note/anatomy-eye-diagram
+The fundamental frequency of an NRZ signal, standard binary signaling, one bit per voltage transition, is half the data rate. At 32 GT/s, you’re working at 16 GHz. Copper at 16 GHz behaves badly. Two phenomena are to blame. The first is the skin effect: high-frequency current refuses to travel through the bulk of a conductor, instead crowding onto the outer skin. The effective cross-section shrinks, resistance rises, signal attenuates. The second is dielectric loss: the PCB substrate absorbs electromagnetic energy from the signal and converts it to heat. Together, these effects mean that the higher the frequency, the shorter the distance you can send a signal before it disappears into the noise floor. PCIe 5.0 could only survive this by abandoning standard FR-4 laminate entirely, migrating to exotic low-loss materials like Panasonic Megtron 6, an order-of-magnitude improvement in dissipation factor, coaxed just enough margin back into the channel to make the spec work.
+
+The equalization was pushing its limits too. Decision Feedback Equalization where the receiver looks at past bits to predict and cancel the interference they cast on the current bit had grown complicated and power-hungry. Every generation asked it to do more with less margin.
+
+The Bribe
+The target for PCIe 6.0 was 64 GT/s. A doubling. If you tried to reach that target with NRZ, you’d need a Nyquist frequency of 32 GHz and at 32 GHz, the signal loss on even the best copper PCBs is catastrophic. The signal vanishes after a few inches. You cannot solve that with better laminate or more equalization taps.
+
+PAM4 (Pulse Amplitude Modulation with four levels) is the bribe paid to physics to get around this. Instead of two voltage levels, PAM4 uses four. Each symbol carries two bits: 00, 01, 10, 11. Two bits per symbol means you can double the data rate without doubling the frequency. PCIe 6.0 runs at 16 GHz Nyquist, the same as Gen 5, while delivering 64 GT/s. Critically, it can run on the same channels, backplanes, and cables. You got the bandwidth without buying new copper.
+
+The cost is signal-to-noise ratio. In NRZ, the receiver distinguishes between two levels spanning the full voltage swing. In PAM4, that same swing is divided into three stacked “eyes,” each eye roughly one-third the height of the NRZ eye. The math is unforgiving: this collapses the effective SNR by approximately 9.5 dB. Almost a factor of ten in noise immunity, gone.
+
+The consequence is stark. The raw BER of a PAM4 link at these frequencies is around 10⁻⁶. One error per million bits. The link that used to make one mistake per trillion bits now makes a million mistakes in the same span. This is not a minor degradation. This is six orders of magnitude. It’s the difference between a bridge that fails once a century and one that fails every thirty seconds.
+
+Accepting the Broken Link
+In the old world, a BER of 10⁻⁶ would be a catastrophic failure mode, not a design target. You would never ship a product with those numbers. But PCI-SIG looked at the PAM4 penalty and made a deliberate choice: we accept this. We will not try to close the eye back up. We will instead build a system that survives the errors it cannot prevent.
+
+This is the inversion. For twenty years, the engineering goal was signal integrity by keeping the physical layer clean enough that the layers above it didn’t have to think about errors. PCIe 6.0 surrendered that goal and pushed the problem upward into mathematics. Errors are not anomalies anymore. They are scheduled. The link is continuously broken and continuously repaired, faster than any external observer can detect.
+
+Forward Error Correction is why this works. FEC encodes transmitted data with redundancy structured so that a receiver can reconstruct the original even if some fraction arrives wrong. Reed-Solomon codes, first published in 1960, are the standard approach: given a block of data, compute check symbols; the receiver detects and corrects errors up to a defined limit. It’s the same math that lets a scratched CD play back cleanly.
+
+But FEC has a structural requirement: it operates on fixed-size blocks. You cannot apply Reed-Solomon mathematics to variable-length data without either wasting computation on padding or breaking the algebraic structure. And that requirement ran directly into fifteen years of PCIe packet architecture.
+
+PCIe had always used variable-length Transaction Layer Packets. A TLP could be a small read request or a large DMA write. The variable length was efficient with no wasted bytes, but FEC can’t work with it so the format had to change.
+
+PCIe 6.0 introduced the Flit: a Fixed 256-byte Flow Control Unit. Every transmission, without exception, is a 256-byte Flit. Inside that fixed container: 236 bytes of TLP payload, 6 bytes of data link layer overhead, 8 bytes of CRC, and 6 bytes of FEC. The math is built into the packet. There is no separate sync header encoding scheme anymore which is why Gen 6 is described as “1b/1b encoding.” There’s no line code; the bandwidth is fully used by the application, with the error correction folded in structurally.
+
+The FEC itself was carefully constrained. Ethernet also uses PAM4, and its FEC implementations add hundreds of nanoseconds of decode latency which is unacceptable for a load-store bus used for CPU memory access. PCI-SIG designed Lightweight FEC: capable of correcting a single symbol error per Flit, with an encode/decode penalty of approximately 2 nanoseconds. When errors are within the correctable limit, they are silently fixed. When a catastrophic burst overwhelms the FEC, the CRC catches the failure and the Flit is replayed. The old reactive retransmission model still exists, but now as the last resort, not the first.
+
+The Flit Is Not Just a PCIe Decision
+Here is what the PCIe story leaves out: the 256-byte Flit didn’t just solve a signal integrity problem. It became the shared transport infrastructure for an entirely separate protocol stack that had been waiting for exactly this foundation.
+
+Compute Express Link (CXL) is a coherent interconnect standard that runs on top of the PCIe physical layer. It has been iterating in parallel with PCIe for years, each CXL version locked to a PCIe generation. CXL 1.x and 2.0 ran on PCIe 5.0 at 32 GT/s. When PCIe 6.0 introduced PAM4 and the Flit, CXL 3.0 followed immediately, inheriting both.
+
+CXL’s protocol stack is divided into three sub-protocols multiplexed over the same physical wires. CXL.io is the mandatory base layer, functionally identical to standard PCIe, handling device discovery, enumeration, configuration, and non-coherent DMA. It’s why a CXL device can be managed by an existing OS kernel without modification. CXL.cache allows accelerators to cache host memory locally: the device pulls cache lines from system memory across the link, reducing repeated traversals and the bandwidth they consume. CXL.mem inverts the direction, it’s how a host CPU reaches into memory physically attached to a CXL device, mapping that memory into its own address space as a coherent resource.
+
+These three protocols share the wire through an ARB/MUX layer that sits between the sub-protocol transaction layers and the physical layer. The ARB/MUX prioritizes time-critical cache and memory transactions while keeping I/O traffic compliant with PCIe ordering rules. It’s a traffic arbiter running on top of the same physical medium.
+
+All three sub-protocols ride the Flit.
+
+CXL’s link layer had already been using fixed-size flow control units before Gen 6, CXL 1.x used a 68-byte Flit for cache and memory traffic, because coherent protocols have the same algebraic constraint as FEC: you need fixed-size blocks to reason about credit accounting and ordering. When PCIe 6.0 mandated a fixed Flit for the entire transport, it aligned the PCIe packet format with what CXL had already needed architecturally. The signal integrity requirement and the coherency protocol requirement converged on the same solution independently, and the 256-byte Flit is where they met.
+
+The Pattern Repeats One Layer Up
+The signal integrity inversion didn’t stop at the physical layer. CXL 3.0 reproduced it one level up in the stack, at the protocol level, and the numbers are striking.
+
+The standard 256-byte Flit requires store-and-forward behavior: the receiver must wait for the entire block to arrive before CRC verification can complete and consumption can begin. For a coherent load-store bus, that wait is not free. CXL 3.0 introduced a Latency-Optimized Flit mode to recover it. LOpt breaks the 256-byte Flit into two 128-byte sub-transfers, each protected by an independent CRC. The receiver verifies and begins consuming the first half while the second half is still arriving. Latency savings: 2 to 5 nanoseconds.
+
+The cost: the Failure in Time rate, expected failures per 10⁹ hours, rises from 5×10⁻⁸ in standard mode to 0.026 in LOpt mode. That is roughly a 500,000-fold increase in failure probability, accepted deliberately in exchange for single-digit nanosecond recovery. Link efficiency drops from 0.94 to 0.92.
+
+The Flit’s Side Effect: Power Management
+The fixed Flit structure unlocked something the variable-TLP model never could: genuinely dynamic lane management. In previous generations, changing link width dropping from x16 to x4 during an idle period to save power required stopping the link, renegotiating, and retraining. The latency penalty was high enough that systems rarely bothered. Lanes sat powered at full width regardless of load.
+
+With Flits, the data is a stream of 256-byte blocks striped across active lanes. The PCIe 6.0 L0p state allows the controller to shut down individual lanes in the background and adjust the striping arithmetic without touching the link training state. An AI accelerator can drop from x16 to x4 during a compute-bound phase and return to full bandwidth in nanoseconds. The same structural decision that enabled FEC also enabled granular power control.
+
+Gen 7: The Bill Comes Due
+PCIe 7.0, finalized in mid-2025, keeps PAM4. It doubles the data rate again to 128 GT/s. The Flit architecture is retained. The philosophical decision stands.
+
+What changes is the frequency. 128 GT/s with PAM4 means a Nyquist frequency of 32 GHz. The free lunch from Gen 6 is gone. We are now at double the frequency of PCIe 5.0, and copper physics charges double the penalty.
+
+At 32 GHz, the electromagnetic wavelength in a PCB dielectric is 5 to 6 millimeters. Physical features that were invisible at lower frequencies, the diameter of a via, the pitch of a connector pin, the weave pattern of the fiberglass substrate, now appear as impedance discontinuities at wavelength-scale dimensions. The skin depth of the current is under 0.4 micrometers. If the copper foil surface is rougher than that, current winds over the microscopic hills and valleys of the copper texture, traveling a longer effective path, attenuating faster. PCIe 7.0 mandates Hyper Very Low Profile copper, essentially mirror-finish foil, as a substrate requirement.
+
+The fiberglass weave is its own problem. Standard PCB cloth creates periodic density variations. A trace routed over a glass bundle travels through a different dielectric constant than a trace over a resin gap. At 32 GHz, this difference is large enough to cause measurable phase skew between the P and N conductors of a differential pair. The intra-pair skew budget is on the order of a picosecond. The periodic variation in the glass weave can hit that budget, and there’s no simple fix, you’re fighting the fundamental structure of the material.
+
+Retimers become effectively mandatory. Unlike a redriver, which amplifies both signal and noise, a retimer is a mixed-signal chip that fully recovers the data, synthesizes a clean clock, and regenerates a fresh PAM4 signal. It’s a full digital reconstruction at every hop. A Gen 7 server motherboard may need four to eight of them to route signals from the CPU to expansion slots, each one consuming board space, power, and BOM cost.
+
+The equalization strategy also inverts. PCIe 5.0 and 6.0 leaned heavily on Decision Feedback Equalization at the receiver: look backward at received bits, model the intersymbol interference they cause, cancel it out. At 7.8 ps per Unit Interval, the feedback loop of a multi-tap DFE physically cannot close fast enough. The constraint is precise: the feedback path from decision to cancellation must complete within one UI. At 7.8 ps, that requires a combinational path that beats the switching speeds available in any production silicon process node. The physics is hard. So Gen 7 shifts the burden to the transmitter: a 29-tap Feed-Forward Equalizer pre-distorts the signal before it leaves the chip, canceling the channel’s expected response before the signal even enters it. The intelligence moved from receiver to transmitter.
+
+This is a second philosophical inversion within the broader one. First the industry accepted that the signal would be wrong and built math to fix it. Now it’s accepting that the receiver can’t react fast enough and moved the compensation upstream. The transmitter has to know the channel well enough to pre-compensate for it. The correction precedes the problem it’s correcting.
+
+What CXL 4.0 Does With Gen 7 Bandwidth
+The Gen 7 physics hardship only makes sense if something genuinely needs 128 GT/s per lane badly enough to pay that bill. CXL 4.0 is the answer.
+
+CXL 4.0 aligns with PCIe 7.0 the same way CXL 3.0 aligned with PCIe 6.0: it inherits the physical layer and builds coherency architecture on top. The key architectural innovation is Bundled Ports. A Bundled Port aggregates multiple physical PCIe links, each running at full Gen 7 x16 width, into a single logical attachment. Software sees one endpoint. Traffic is sprayed dynamically across all physical links in the bundle. A single logical CXL connection can reach 1.5 TB/s or more in sustained bandwidth. For the software stack, the complexity of the underlying physical aggregation is invisible.
+
+The addressing architecture changes underneath it. Standard PCIe uses Bus-Device-Function addressing, a hierarchical model that tops out at roughly 256 devices per bus segments, adequate for a server chassis, inadequate for a fabric. CXL 3.0 introduced Port-Based Routing as a replacement: ID-based addressing that supports up to 4,096 nodes in a single fabric. That transition is the difference between a hierarchy and a network. At 4,096 nodes, you are not routing between slots on a motherboard. You are routing between racks.
+
+The memory architecture that sits on top of PBR is where the disaggregation claim becomes concrete. Global Fabric Attached Memory allows device-attached memory to be partitioned and assigned to different compute nodes as workload demands change, the memory controller on the CXL device appears to the host CPU as a CPU-less NUMA node, accessible via standard load and store instructions. No special API. No DMA engine. The OS memory manager sees it as memory. Global Integrated Memory goes further: multiple host CPUs mapping the same physical memory region simultaneously, with back-invalidate coherency semantics ensuring that when one host modifies a cache line, all other hosts holding copies are invalidated. This is not pooling, but genuine sharing, multiple processors in the same coherency domain over a fabric.
+
+The Linux kernel has been tracking this. Kernel 6.0 introduced basic CXL device discovery and CXL.io support. Subsequent versions added memory hotplug with dynamically attaching and detaching CXL memory without a reboot and Dynamic Capacity Devices, a CXL 3.0 construct that allows memory to be allocated and deallocated at fine granularity in real time.
+
+The market-effects number that makes the bandwidth case: LLM inference offloading KV cache to shared CXL memory benchmarks at 6.5x speedup compared to 100G RDMA-based solutions. The KV cache for a large model during inference is not a small object, it scales with context length and batch size and can reach hundreds of gigabytes. Keeping that data coherently accessible across multiple accelerators without RDMA copy overhead, at CXL memory latencies, is the difference between a bottleneck and a solved problem. That is what 1.5 TB/s of coherent fabric bandwidth is for. That is why the Gen 7 physics bill is worth paying.
+
+IX. The Box Goes Away
+With PCIe 7.0 finalized, PCI-SIG has announced PCIe 8.0, targeting 256 GT/s around 2028. PAM4 at 256 GT/s requires a Nyquist frequency of 64 GHz. At 64 GHz, trace loss on any practical PCB laminate is prohibitive. The working assumption for Gen 8 is that copper traces on a motherboard are not in scope for long reaches, signals will exit the CPU package directly into shielded Twinax flyover cables that physically bypass the board surface, rejoining it only at the connector. That’s how much of the channel budget the PCB itself consumes.
+
+There is quiet industry consensus that 256 GT/s is the last copper generation. Physics offers no more runway after that.
+
+PCIe 7.0 acknowledged this with the Optical Aware Retimer specification, the first time the PCIe standard formally recognized non-electrical transport. The problem with optical interconnects in a PCIe context is that fiber has different latency and training behaviors than copper. A standard PCIe controller has timing assumptions baked into its link training state machine, and an optical link violates them. The Optical Aware Retimer resolves this by spoofing the electrical training to the host CPU while independently managing the optical link on the far side, a protocol shim that makes the medium transparent to the controller. From the CPU’s perspective, the link trained normally. What it trained through may be fifty meters of fiber.
+
+The downstream consequence is architectural, not just physical. The server as a chassis, CPU and GPU in the same box, connected by copper PCIe because copper can’t span more than a few feet, is an artifact of a range constraint, not a natural unit of computation. Remove the range constraint and the “server” becomes a rack, then a row of racks. Separate shelves for CPUs, for GPU accelerators, for CXL memory expanders, for flash storage, each tens of meters apart, all speaking PCIe and CXL. Compute disaggregates from storage disaggregates from the accelerator pool. Resources become fungible. A workload that needs 400 GB of coherent memory for thirty seconds can have it, then release it, and the fabric reallocates it to a different host without physically moving hardware.
+
+This is where the CXL and PCIe threads converge into a single architectural claim. The Flit enabled FEC, which enabled PAM4, which enabled 64 GT/s without new copper. The Flit also enabled CXL’s coherency protocols, which enabled fabric addressing, which enabled GFAM and GIM. Optical PCIe removes the distance constraint that kept all of this confined to a chassis. At that point, the boundary of a “system” is defined by the fabric topology, not the sheet metal.
+
+What It Means
+The arc of PCIe 5.0 through 7.0 is a case study in what happens when an industry hits a physics constraint hard enough that incremental optimization stops working. The response wasn’t to abandon the protocol, but to rebuild the assumptions underneath it, layer by layer.
+
+The signal used to be clean by design. Now it’s clean by math. The receiver used to react to the channel. Now the transmitter predicts it. The packet used to be variable, shaped by the data. Now it’s fixed, shaped by the error correction. The medium used to be copper by default. Soon it will be copper by exception.
+
+The 7.8 picoseconds is not just a number. It’s the residue of twenty years of deferring the physics bill, finally coming due all at once.
+
+Works cited
+(PDF) CXL (Compute Express Link) Technology — ResearchGate, accessed May 4, 2026, https://www.researchgate.net/publication/372040720_CXL_Compute_Express_Link_Technology
+Micron’s Perspective on Impact of CXL on DRAM Bit Growth Rate, accessed May 4, 2026, https://assets.micron.com/adobe/assets/urn:aaid:aem:b2e25f63-85a2-44c9-b46f-717830deefa5/renditions/original/as/cxl-impact-dram-bit-growth-white-paper.pdf
+CXL 4.0 Infrastructure Planning Guide: Memory Pooling for AI at Scale — Introl, accessed May 4, 2026, https://introl.com/blog/cxl-4-0-infrastructure-planning-guide-memory-pooling-2025
+Compute Express Link (CXL): A New Coherency Protocol Over PCIe …, accessed May 4, 2026, https://www.keysight.com/ch/de/assets/3122-1353/application-notes/Compute-Express-Link-CXL-A-New-Coherency-Protocol-Over-PCIe.pdf
+Industry’s First CXL 3.0 Verification Solution | Synopsys Blog, accessed May 4, 2026, https://www.synopsys.com/blogs/chip-design/cxl-3-0-verification-solution-synopsys.html
+De-mystifying CXL: An Overview | Synopsys Blog, accessed May 4, 2026, https://www.synopsys.com/blogs/chip-design/unraveling-cxl-technology-overview.html
+What’s the Difference from PCIe 3.0 to PCIe 6.0? — imgix, accessed May 4, 2026, https://base.imgix.net/files/base/ebm/electronicdesign/document/2020/07/PCi_layout.5f0720dede3a2.pdf
+CXL 4.0, Bandwidth First: What Designers Are Solving for Next | Synopsys, accessed May 4, 2026, https://www.synopsys.com/blogs/chip-design/cxl-4-bandwidth-first-what-designers-are-solving-next.html
+CXL 3.0 Scales the Future Data Center — Verification — Cadence Blogs, accessed May 4, 2026, https://community.cadence.com/cadence_blogs_8/b/fv/posts/cxl-3-0-scales-the-future-data-center
+Introducing Compute Express Link® (CXL®) 4.0: Significant Improvements in Bandwidth, Connectivity, Memory Maintenance, accessed May 4, 2026, https://computeexpresslink.org/wp-content/uploads/2025/11/CXL_4.0-White-Paper_FINAL.pdf
+White Papers — Compute Express Link, accessed May 4, 2026, https://computeexpresslink.org/resource-type/white-papers/
+CXL 4.0 and the Interconnect Wars: How AI Memory Is Reshaping Data Center Architecture, accessed May 4, 2026, https://introl.com/blog/cxl-4-specification-interconnect-wars-ai-memory-december-2025
+An Overview Of CXL Mode Alternate Protocol Negotiation, accessed May 4, 2026, https://semiengineering.com/an-overview-of-cxl-mode-alternate-protocol-negotiation/
+CXL Memory Performance for In-Memory Data Processing — Hasso-Plattner-Institut, accessed May 4, 2026, https://hpi.de/oldsite/fileadmin/user_upload/fachgebiete/rabl/publications/2025/p2370-weisgut.pdf
+Leveraging the PCIe for CXL Mode Link Up Using Alternate Protocol Negotiation Technique, accessed May 4, 2026, https://community.cadence.com/cadence_blogs_8/b/fv/posts/leveraging-the-pcie-for-cxl-mode-link-up-using-alternate-protocol-negotiation-technique
+Exploring and Evaluating Real-world CXL: Use Cases and System Adoption — arXiv, accessed May 4, 2026, https://arxiv.org/html/2405.14209v3
+Compute Express Link: Homepage, accessed May 4, 2026, https://computeexpresslink.org/
+Introducing the CXL 3.X Specification — Compute Express Link, accessed May 4, 2026, https://computeexpresslink.org/wp-content/uploads/2025/02/CXL_Q1-2025-Webinar-Presentation_FINAL.pdf
+“Introducing the CXL 4.0 Specification” Webinar Q&A Recap — Compute Express Link, accessed May 4, 2026, https://computeexpresslink.org/blog/introducing-the-cxl-4-0-specification-webinar-qa-recap-4386/
+How CXL Transforms Server Memory Infrastructure — Compute Express Link, accessed May 4, 2026, https://computeexpresslink.org/wp-content/uploads/2025/10/CXL_Q3-2025-Webinar_FINAL.pdf
+CXL Memory Use Cases: Insights into Expansion and Pooling, accessed May 4, 2026, https://files.futurememorystorage.com/proceedings/2025/20250806_CXLT-203-1_Kim_Updated.pdf
+Protecting Data over PCIe & CXL in Cloud Computing | Synopsys IP, accessed May 4, 2026, https://www.synopsys.com/articles/security-ide-ip.html
+
+Discussion about this post
+Write a comment...
+
+
+The Electronics Safety Checklist Nobody Hands You on Day One
+A Working Engineer’s Guide to Shock, Fire, and Thermal Runaway Prevention, From Schematic to Production
+Jul 12 • Noah's Digital Jefferies Tube
+
+1
+
+
+
+
+
+Texas Instruments' Earnings Just Exposed AI's Copper Problem
+Q2 2026 data center revenue doubled, and the reason is a 132-kW rack running out of amps
+Aug 10 • Noah's Digital Jefferies Tube
+
+
+
+
+
+
+The PCB Schematic: Where Good Boards Are Won or Lost
+A schematic does two jobs at once.
+Jul 8 • Noah's Digital Jefferies Tube
+
+
+
+
+
+
+Hot Chips 2026: Architectures for the Agentic Computing Era
+Architectures for the Agentic Computing Era
+Aug 24 • Noah's Digital Jefferies Tube
+
+
+
+
+
+
+NVIDIA’s $3.5 Billion MediaTek Bet: Owning the Wire After Giving Up the Chip
+On August 31, 2026, NVIDIA put $3.5 billion into MediaTek convertible bonds and converted what had been a components relationship into a shared…
+Aug 31 • Noah's Digital Jefferies Tube
+
+
+
+
+
+
+How Oscillate Photonics Killed the SESAM and Shrank a $150,000 Laser to a USB-C Brick
+A femtosecond laser used to mean a room.
+Jul 23 • Noah's Digital Jefferies Tube
+
+
+
+
+
+
+Hardware Cost Doesn’t Live in the Design. It Lives in the Feedback Loop.
+There’s a moment every EE student goes through.
+Jun 23 • Noah's Digital Jefferies Tube
+
+
+
+
+
+
+The Sand Contract: Build vs. Buy as a Theory of Where Entropy Lives
+Build vs. Buy as a Theory of Where Entropy Lives
+Jun 18 • Noah's Digital Jefferies Tube
+
+
+
+
+
+
+What Everyone Should Know Before Arguing With Their Electrical Engineer
+Most cross-disciplinary friction on hardware teams isn’t a personality problem, It’s a worldview problem.
+Jul 6 • Noah's Digital Jefferies Tube
+
+
+
+
+
+
+Efinix: The Company Building the Next Generation of FPGAs
+In June 2026, trade press reported that Efinix had lined up capacity at TSMC’s Japan fabs to keep pace with demand from its edge AI business.
+Jul 21 • Noah's Digital Jefferies Tube
+
+
+
+
+
+
+© 2026 Noah Bean · Privacy ∙ Terms ∙ Collection notice
+Start your Substack
+Get the app
+Substack is the home for great culture

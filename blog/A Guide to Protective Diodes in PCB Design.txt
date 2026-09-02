@@ -1,0 +1,183 @@
+
+Noah's Digital Jefferies Tube
+
+
+
+
+A Guide to Protective Diodes in PCB Design
+Noah's Digital Jefferies Tube
+Aug 30, 2026
+
+How diodes work: an introductory tutorial
+
+
+An ESD strike into a connector pin rises from zero to its peak current in under a nanosecond. Over that interval a PCB trace stops behaving like a wire and starts behaving like an inductor, and a rule of thumb worth keeping in your head is that a millimeter of surface-layer copper contributes on the order of 1 nH. Route your TVS diode three centimeters from the connector through a via stub, and V = L di/dt does the rest: the induced voltage at the downstream IC can exceed the diode’s clamping voltage before the diode has finished turning on. You can spend the extra forty cents on the best TVS diode on the distributor’s site and still watch the part it was protecting die, because the transient never really saw the diode, only the inductor its layout turned it into.
+
+That’s the piece most component-selection writeups leave out: choosing the right diode covers maybe a third of the job, while the rest comes down to knowing which physical phenomenon you’re actually defending against and routing the board so the diode gets a chance to act before the threat bypasses it.
+
+What the datasheet numbers are telling you
+TVS diode selection comes down to five parameters, and each one maps to a specific failure mode if you get it wrong.
+
+Reverse standoff voltage (V_RWM) is the highest continuous voltage the diode tolerates without conducting. Set it too close to your rail and the diode starts leaking current during normal operation; too low and it clips legitimate signal swings. It needs to sit above the full operating range of the line, not just the nominal voltage.
+
+Breakdown voltage (V_BR) marks the point where the diode transitions into avalanche conduction, setting up everything that follows.
+
+Clamping voltage (V_C) is the number that actually matters during a strike: the voltage across the diode at its rated peak pulse current (I_PP). This has to stay below the absolute maximum rating of whatever you’re protecting, with margin, because I_PP is a worst-case spec and real transients vary.
+
+Junction capacitance (C_J) determines whether the diode quietly shunts your high-speed signal to ground along with the transient. A USB 2.0 line wants capacitance under roughly 1.5 pF; anything protecting multi-gigabit differential pairs wants it well under 1 pF. TI’s TPD1E04U04, for example, holds capacitance to about 0.5 pF while clamping to roughly 9 V at a 16 A TLP pulse, which is the kind of tradeoff you’re hunting for on high-speed lines.
+
+Dynamic resistance (R_dyn) is the slope of the V-I curve once the diode is in avalanche. Lower is better, because it keeps the clamping voltage from creeping upward as the surge current climbs.
+
+None of these numbers exist in isolation. A diode with a beautifully low clamping voltage and an equally low capacitance is a bad choice if its package can’t dissipate the energy of the transient you’re actually expecting, which brings up the question of what kind of transient you’re designing for in the first place.
+
+Three standards, three different physics problems
+Circuit protection leans on three IEC 61000-4 test standards, often talked about as if they were interchangeable flavors of “surge testing,” but they model three different physical events with different energy content and timescales, and that difference dictates what kind of diode architecture actually works.
+
+IEC 61000-4-2 models human-contact ESD: an extremely fast current spike with a rise time of 0.7 to 1 ns, most of its energy gone within 30 ns, and a total decay around 100 ns, all carrying high voltage but very little total energy. A protection diode here needs to turn on almost instantly and stay out of the way electrically the rest of the time, which is why ESD-rated TVS diodes chase sub-picofarad capacitance and nanosecond response.
+
+IEC 61000-4-5 models the opposite extreme: indirect lightning and heavy inductive switching on power distribution, with an open-circuit voltage pulse rising over 1.2 microseconds and decaying over 50 microseconds, roughly two orders of magnitude slower than an ESD event, carrying vastly more total energy. A diode built to survive this needs thermal mass and junction area, not capacitance in the femtofarad range. This is where you see DO-214AB packages like the SMCJ series, sized to dump 1,500 W of peak pulse power, showing up on power rails and telecom lines rather than on data pins.
+
+IEC 61000-4-4 sits in a different category still, testing rapid bursts of transients from switching contactors and relays rather than a single event. A diode here needs to recover quickly enough between pulses that it doesn’t accumulate thermal stress over a repetitive burst.
+
+The practical consequence: a diode optimized for one of these regimes is often a poor fit for another. An ultra-low-capacitance ESD diode has neither the junction area nor the package thermal mass to survive a lightning-induced surge on a power line, and a beefy surge suppressor will load down a high-speed data line with capacitance it can’t tolerate.
+
+Why static curve tracers can’t characterize any of this
+You can’t measure a diode’s nanosecond-scale turn-on behavior with a curve tracer, so the industry uses Transmission Line Pulse (TLP) testing instead. A TLP generator charges a transmission line to a known voltage and discharges it through the device under test as a clean rectangular pulse, typically 100 ns wide. The instrument captures voltage and current, averages them over a window in the middle of the pulse (commonly 70-90 ns in) to get a stable I-V point, and checks leakage current afterward to catch the onset of degradation before it becomes a visible failure. Step the pulse amplitude up repeatedly and you get the full avalanche-region V-I curve, from which R_dyn falls out as the slope. Very Fast TLP pushes pulse widths down under 10 ns specifically to characterize the voltage overshoot that matters for advanced, thin-oxide CMOS nodes, where the standard 100 ns TLP pulse is already too slow to catch the worst-case transient response.
+
+USB-C: two protection regimes on the same connector
+USB Type-C is a genuinely hard protection problem because it forces both regimes onto the same physical interface, with high-speed differential pairs that want sub-picofarad TVS diodes sitting right next to USB Power Delivery lines that routinely sit at up to 20 V DC during charging, a level most ultra-low-capacitance ESD diodes aren’t rated to block in their normal operating state.
+
+Two techniques handle this in practice. On the data lines, a steering diode bridge (a set of low-capacitance signal diodes feeding a single more robust internal TVS) lets the low-capacitance diodes handle everyday signal integrity while directing any real transient into a diode built to absorb it, keeping the visible capacitance on the signal path low without giving up surge capability. On VBUS itself, a diode fast enough for ESD and rated to sit at 20 V DC is still sized for a brief transient, so a sustained fault, like a physical short between VBUS and an adjacent low-voltage data pin, calls for a discrete overvoltage protection switch downstream of the connector. That switch detects the sustained condition and disconnects the rail, working alongside the TVS diodes as a second layer of protection.
+
+The race condition nobody mentions until it bites you
+Here’s the failure mode that catches experienced engineers off guard: an external TVS diode and the internal ESD protection built into the IC it’s protecting are not independent. They’re two clamps in parallel, and during a transient, whichever one turns on first takes the current.
+
+If the internal on-chip protection has a lower trigger voltage than the external TVS diode, and the incoming pulse has a comparatively slow rise time, the internal diode can start conducting first. If the external TVS diode is slow to snap into full avalanche conduction and take over the current load, the internal protection ends up absorbing energy it was never sized for, and the IC itself burns out in place of the diode meant to protect it. Simulation work under the System-Efficient ESD Design (SEED) methodology shows the current forced into the internal diode can run twice as high for long-rise-time pulses where this race condition prevents the external TVS from activating in time.
+
+The fix is almost perverse in its simplicity: add a small, deliberate impedance, either a bit of trace inductance or a low-value series resistor, between the external TVS diode and the IC. That impedance slows the current just enough to let the voltage at the TVS node climb into full avalanche conduction before much current reaches the chip, and it can cut the current through the internal diode by more than half. It’s one of the few cases in PCB design where you’re intentionally adding parasitic impedance rather than fighting it.
+
+Layout rules that determine whether any of this matters
+Everything above is moot if the board layout defeats it, and a handful of rules cover most of what goes wrong:
+
+Place the TVS diode as physically close to the connector as the mechanical design allows. Every millimeter of trace between the entry point and the diode is roughly a nanohenry working against you.
+
+Route the signal trace directly through the diode’s pads. Don’t branch off to a stub feeding the diode pad; the transient’s di/dt is high enough that it will take the low-impedance path straight to the IC and effectively ignore a high-impedance stub, no matter how good the diode on the other end of it is.
+
+Avoid vias between the signal line and the diode. If a via on the ground return is unavoidable, use several in parallel to divide up the inductance rather than relying on one.
+
+If you’re deliberately managing a SEED-style race condition, place the TVS first and add the intentional series impedance afterward, between the diode and the protected IC, not the other way around.
+
+The other diode: Schottky rectifiers and thermal runaway
+Schottky diodes solve a completely different problem: forward voltage drop and reverse recovery time in rectification, freewheeling, and reverse-polarity protection, rather than transient suppression. Because conduction happens through a metal-semiconductor junction rather than a p-n junction, there’s essentially no stored minority carrier charge, which gives Schottky diodes forward drops in the 0.2-0.5 V range (versus 0.6-1.1 V for a standard silicon diode) and turn-off times limited only by junction capacitance rather than carrier recombination.
+
+The tradeoff is reverse leakage current, and it’s a nastier tradeoff than it first appears because leakage scales exponentially with junction temperature. A Schottky diode leaking a few microamps at room temperature can leak tens of milliamps at 125°C, and since the power dissipated in reverse bias is just the blocking voltage times the leakage current, rising temperature increases dissipation, which raises temperature further. If the rate of increase in power dissipation with temperature ever exceeds the reciprocal of the system’s total thermal resistance, that feedback loop doesn’t stabilize and runs away toward destruction. The failure that follows usually gets blamed on some mystery transient, when the real cause is a heatsinking decision that was undersized for the worst case all along.
+
+This is the reason layout for high-current Schottky rectifiers is really a thermal design exercise: a solid copper pour under the cathode tab, a dense array of thermal vias down to internal ground planes, sized against worst-case ambient temperature rather than a comfortable bench-test number. When the mechanical envelope can’t support enough copper to keep ahead of the exponential, the practical fix usually means switching to a different device instead of chasing a bigger heatsink. Trench MOS Barrier Schottky (TMBS) diodes etch vertical trenches into the substrate that deplete the drift region under reverse bias, flattening the electric field profile across the junction through what’s called the RESURF effect, rather than letting it concentrate at the electrode edge the way a planar Schottky does. That flatter field is what lets TMBS parts hold a much wider safe operating area at elevated temperature, and it’s why silicon carbide and other wide-bandgap devices keep showing up in high-temperature automotive and dense power-conversion designs, where the leakage-driven runaway problem gets structurally smaller as the material and device architecture improve.
+
+Inductive kickback: flyback diodes versus active clamping
+Any time you switch an inductive load, current can’t change instantaneously, so an inductor forced open by a switching MOSFET responds by reversing polarity and generating a voltage that will happily exceed the switch’s breakdown rating if nothing catches it. A passive flyback diode across the load gives that current somewhere to go, but the tradeoff is a slow decay, since the only thing opposing the current during freewheeling is the diode’s own forward drop, which in a relay or fuel injector shows up as sluggish mechanical release. Adding a Zener in series with the flyback diode raises the effective voltage opposing the decaying current and speeds up demagnetization without giving up the basic flyback topology.
+
+For isolated switch-mode supplies, that slow decay costs real efficiency: a passive RCD snubber simply burns the leakage inductance energy as heat in a resistor. Active clamp flyback topologies replace that resistor with a second MOSFET and a clamp capacitor, routing the leakage energy back into the power path instead of dissipating it, and picking up zero-voltage switching on both the clamp switch and the main switch along the way. It’s a more complex control problem, with timing that depends on the transformer’s turns ratio and the relationship between input and reflected output voltage, but the payoff is an inductive kickback you recover instead of one you merely tolerate.
+
+The pattern underneath all of this
+Every section above is really the same argument applied to a different part of the board: the physics of the transient (its rise time, its energy, its repetition rate) determines what device architecture can survive it, and the layout determines whether the device you chose ever actually sees the transient in time to matter. Component selection gets most of the attention because it’s the part you can do from a datasheet at your desk, while layout, the part nobody puts on a component selection checklist, is where field failures actually come from. If you’re chasing down an ESD-related RMA and the part number on the BOM already looks correct, the trace between that part and the connector is usually where to look next.
+
+Discussion about this post
+Write a comment...
+
+
+The Electronics Safety Checklist Nobody Hands You on Day One
+A Working Engineer’s Guide to Shock, Fire, and Thermal Runaway Prevention, From Schematic to Production
+Jul 12 • Noah's Digital Jefferies Tube
+
+1
+
+
+
+
+
+Texas Instruments' Earnings Just Exposed AI's Copper Problem
+Q2 2026 data center revenue doubled, and the reason is a 132-kW rack running out of amps
+Aug 10 • Noah's Digital Jefferies Tube
+
+
+
+
+
+
+The PCB Schematic: Where Good Boards Are Won or Lost
+A schematic does two jobs at once.
+Jul 8 • Noah's Digital Jefferies Tube
+
+
+
+
+
+
+Hot Chips 2026: Architectures for the Agentic Computing Era
+Architectures for the Agentic Computing Era
+Aug 24 • Noah's Digital Jefferies Tube
+
+
+
+
+
+
+NVIDIA’s $3.5 Billion MediaTek Bet: Owning the Wire After Giving Up the Chip
+On August 31, 2026, NVIDIA put $3.5 billion into MediaTek convertible bonds and converted what had been a components relationship into a shared…
+Aug 31 • Noah's Digital Jefferies Tube
+
+
+
+
+
+
+How Oscillate Photonics Killed the SESAM and Shrank a $150,000 Laser to a USB-C Brick
+A femtosecond laser used to mean a room.
+Jul 23 • Noah's Digital Jefferies Tube
+
+
+
+
+
+
+Hardware Cost Doesn’t Live in the Design. It Lives in the Feedback Loop.
+There’s a moment every EE student goes through.
+Jun 23 • Noah's Digital Jefferies Tube
+
+
+
+
+
+
+The Sand Contract: Build vs. Buy as a Theory of Where Entropy Lives
+Build vs. Buy as a Theory of Where Entropy Lives
+Jun 18 • Noah's Digital Jefferies Tube
+
+
+
+
+
+
+What Everyone Should Know Before Arguing With Their Electrical Engineer
+Most cross-disciplinary friction on hardware teams isn’t a personality problem, It’s a worldview problem.
+Jul 6 • Noah's Digital Jefferies Tube
+
+
+
+
+
+
+Efinix: The Company Building the Next Generation of FPGAs
+In June 2026, trade press reported that Efinix had lined up capacity at TSMC’s Japan fabs to keep pace with demand from its edge AI business.
+Jul 21 • Noah's Digital Jefferies Tube
+
+
+
+
+
+
+© 2026 Noah Bean · Privacy ∙ Terms ∙ Collection notice
+Start your Substack
+Get the app
+Substack is the home for great culture

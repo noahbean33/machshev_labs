@@ -1,75 +1,46 @@
-**PCB RF Filter Design Using Transmission-Line Equivalents**
+Ben Jordan, Altium OnTrack Whiteboard series (Episode 6, now under Altium Academy), roughly 36 minutes on how RF filters are actually realized in PCB copper. It's a follow-on to Episode 5 (couplers) and leans on Episode 3 (stubs) and Episode 1 (transmission line theory).
 
-In microwave and RF printed-circuit-board design, discrete surface-mount inductors and capacitors become impractical above a few gigahertz. Parasitic package inductance, self-resonance, and the physical size of the components relative to wavelength make them unsuitable. Designers therefore synthesize the required reactive elements directly from sections of microstrip or stripline transmission line. The electrical behavior of a short length of line is dual to that of a lumped inductor or capacitor, depending on its characteristic impedance \(Z_0\), electrical length \(\theta = \beta\ell\), and termination (open or short).
+## The core idea: line segments as lumped elements
 
-### Transmission-Line Transforms for Reactive Elements
+Everything in the episode rests on the stub duality from Episode 3. A quarter-wave shorted stub looks like an open at the center frequency; a quarter-wave open stub looks like a dead short. Below quarter wave, the segments behave as reactances you can design with:
 
-The input impedance of a lossless transmission-line stub is classical:
+| Structure | Condition | Equivalent | Transform (as spoken) |
+|---|---|---|---|
+| Shunt stub, shorted to ground | θ < 90° | Shunt L | X_L = ωL = Z₀ tan θ |
+| Shunt stub, open circuit | θ < 90° | Shunt C | X_C = 1/ωC = Z₀ cot θ |
+| Series line segment | θ < 45° (λ/8) | Series L | X_L = Z₀ sin θ |
+| Same segment's coupling to plane | θ < 45° | Shunt C | X_C = Z₀ / sin θ |
 
-\[
-Z_\text{in, short} = j Z_0 \tan\theta, \qquad
-Z_\text{in, open} = -j Z_0 \cot\theta.
-\]
+He stresses the shunt behavior only exists because there's a ground plane under the trace. Void the plane and the segment isn't a proper transmission line at all: different impedance, capacitance to whatever else is nearby, none of these transforms apply.
 
-Consequently the following useful equivalents appear for \(\theta < 90^\circ\):
+For a long trace, he suggests chopping it into λ/8 sections, applying the transform to each, and lumping the results in parallel. That reproduces the series-L/shunt-C ladder model of a transmission line from any textbook, which is the point.
 
-- **Shunt inductor.** A short-circuited stub presents a purely inductive reactance  
-  \[
-  X_L = Z_0 \tan\theta.
-  \]
-  The higher the characteristic impedance and the closer \(\theta\) approaches \(90^\circ\), the larger the inductance.
+He also gives the resonator transforms (crediting RF Cafe for the chart): quarter-wave shorted stub = parallel resonant tank, Z₀ = (π/4)ωL; quarter-wave open stub = series LC, Z₀ = (4/π)ωL; half-wave segment = series resonant LC with Z₀ = (π/2)-scaled reactance. The auto-transcription mangles some of these ("pi on four," "for on pi"), so the exact algebra in the middle section is worth verifying against the chart rather than the captions.
 
-- **Shunt capacitor.** An open-circuited stub presents a capacitive reactance  
-  \[
-  X_C = Z_0 \cot\theta.
-  \]
-  Low-\(Z_0\) (wide) stubs are preferred when large capacitance is required.
+## Demonstration boards, each with VNA data
 
-- **Series inductor.** A short high-impedance series section (\(\theta < 45^\circ\)) approximates a series inductance  
-  \[
-  X_L = Z_0 \sin\theta.
-  \]
-  For electrically short lines \(\sin\theta \approx \theta\) (radians), recovering the familiar \(L = (Z_0/\omega)\theta\).
+- **Bandpass**: series line segments separated by quarter-wave shorted shunt stubs. At DC it's a short to ground, at center frequency the stubs go open and pass, above that they turn inductive again and produce the high-side rolloff.
+- **Notch**: a single quarter-wave open stub, very narrow. Broadening it means adding capacitance, which leads to the radial stub, often laid down as a bowtie pair straddling the line instead of one large stub on one side.
+- **Low-pass**: thin (therefore inductive) trace segments in series alternating with groups of radial stubs acting as large shunt capacitors. Classic series-L/shunt-C ladder.
 
-- **Parasitic shunt capacitance.** Every series microstrip segment also couples to the ground plane beneath it. The same short high-\(Z_0\) section therefore carries an equivalent shunt capacitive reactance  
-  \[
-  X_C = \frac{Z_0}{\sin\theta}.
-  \]
-  This parasitic capacitance must be absorbed into the filter prototype or compensated by layout adjustments.
+## Filter type synthesis
 
-These four relations allow a lumped-element low-pass or high-pass prototype to be mapped onto a purely distributed layout.
+High-pass comes from series capacitance (two coupled conductors are naturally a high-pass element) plus shunt inductance to ground. Bandpass combines series and parallel L and C, with reactances chosen at corner frequencies F1 and F2, and damping chosen for the passband ripple you're willing to accept. He name-checks Chebyshev, Bessel, Butterworth, and elliptic responses but explicitly declines to teach the synthesis math.
 
-### Resonant Sections and Filter Topologies
+## Getting series capacitance in copper
 
-When the electrical length reaches special fractions of a wavelength, the stubs themselves become resonant tanks:
+Two methods: a gap in the transmission line (works, somewhat lossy), or an interdigitated capacitor with many coupled fingers, which raises coupling and lowers loss. He cites Wadell's *Transmission Line Design Handbook* for the closed-form equations and notes it's hard to find a copy.
 
-- A short-circuited quarter-wave line (\(\theta = 90^\circ\)) behaves as a parallel resonant circuit whose equivalent inductance satisfies  
-  \[
-  Z_0 = \frac{\pi}{4}\omega L.
-  \]
-- A half-wave open or shorted line acts as a series resonant circuit with reactance slope \(\frac{\pi}{2}Z_0\).
+## Coupled-line and hairpin filters
 
-**Low-pass filters** are realized with narrow (high-\(Z_0\)) series segments for the series inductors and wide radial or “bow-tie” open stubs for the shunt capacitors. The radial geometry broadens the capacitive bandwidth and reduces the effect of the open-end fringing fields.
+Pulling forward the directional coupler from Episode 5: two lines running parallel for a quarter wavelength couple both capacitively and magnetically, and are fairly broadband. Cascade those coupled sections end to end and each resonator (effectively half-wave, built as adjoining quarter-wave coupled strips) resonates at the passband center. That's the standard coupled-line bandpass.
 
-**High-pass filters** invert the topology: series capacitance is introduced by gaps or interdigitated fingers, while shunt inductance is supplied by shorted stubs.
+His demo board is exactly this, laid out as a long line canted at a slight angle so it runs connector to connector. He compares the VNA sweep against the synthesis tool's predicted response and gives a shout-out to Sierra Circuits ("Amit") for turning the boards in eight hours for an RF class he was teaching.
 
-**Band-pass filters** are most commonly built from cascaded quarter-wave coupled-line sections that function as impedance inverters (K-inverters). The coupling coefficient between adjacent resonators is controlled by the gap and the overlapping length. Straight coupled-line geometries consume considerable board length; folding each resonator into a “U” shape produces the compact **hairpin** filter. Hairpin resonators retain the same resonant frequency and coupling rules while occupying roughly half the linear distance of their straight counterparts. Interdigitated finger capacitors or edge-coupled hairpins further tighten the layout when board real-estate is critical.
+Fold each coupled section back on itself, leaving enough line that it doesn't couple to itself, and you get the hairpin filter. Same circuit, concertina'd into less board area, with the input line typically feeding the first hairpin directly. More sections means steeper skirts, same tradeoff as any passive ladder.
 
-Because the mapping from prototype element values to physical dimensions involves transcendental equations and mutual coupling, hand calculation rapidly becomes impractical beyond third-order filters. Electromagnetic simulation or dedicated synthesis tools are therefore standard.
+## Tooling and resources
 
-### Practical Design Flow and Recommended Tools
+No convenient closed form exists for these structures. Piecewise L/C decomposition gets you decent results but the coupling factors make it tedious, so in practice you use software. He uses Qucs (transcribed as "Kooks") for filter synthesis, which outputs the required segment lengths, then builds the coupled-line segments as Altium components so they can be represented on a schematic. For optimization he recommends a proper field solver. Resource pointers: microwaves101.com, RF Cafe, free calculators from semiconductor vendors, and he mentions a ham operator selling a purpose-built program for around $200. He floats writing an Altium Designer script to automate the numerical work as a good project for someone ambitious.
 
-1. Start from a classical lumped prototype (Butterworth, Chebyshev, elliptic) scaled to the desired center frequency and impedance.
-2. Replace each \(L\) and \(C\) by the appropriate transmission-line equivalent using the transforms above.
-3. Optimize line widths, lengths, and gaps in a full-wave simulator to recover the target response, accounting for dispersion, conductor loss, and radiation.
-4. Verify sensitivity to etch tolerance and substrate thickness variation.
-
-Useful software and reference sources include:
-- Altium Designer’s RF design and impedance calculators,
-- QUCS (open-source schematic and filter synthesis),
-- RF Café and Microwaves101 online calculators and application notes,
-- Brian Wadell’s *Transmission Line Design Handbook* for closed-form microstrip equations and discontinuity models.
-
-### Closing Remarks
-
-Distributed filter design on PCB is fundamentally an exercise in controlled impedance and electrical length. Once the four basic transforms—shorted-stub inductance, open-stub capacitance, series high-\(Z_0\) inductance, and the accompanying parasitic capacitance—are mastered, essentially any classical filter response can be realized without discrete components. Hairpin and interdigitated topologies simply represent space-efficient geometric rearrangements of the same underlying transmission-line elements. With modern layout tools and modest electromagnetic simulation, these structures become routine building blocks for RF front-ends, local-oscillator filtering, and harmonic suppression on multilayer boards.
+He closes by framing the whole thing as qualitative intuition rather than a design course, and teases antennas as a future topic.

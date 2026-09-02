@@ -1,0 +1,228 @@
+
+Noah's Digital Jefferies Tube
+
+
+
+
+Everything Is Waiting for a Tick: How Hardware Clocks Actually Work
+Noah's Digital Jefferies Tube
+Jul 06, 2026
+
+
+
+
+A firmware engineer writes #define F_CPU 16000000 in a header file. An overclocker bumps a PLL multiplier in the BIOS. The hardware obeys. That single number, dictating the execution speed of billions of logic gates, is hiding an enormous amount of physical reality underneath it.
+
+Pull that abstraction apart and the clock signal stops looking like a trivial digital heartbeat. It’s the end product of a chain of engineering decisions, each layer compensating for something the layer above it wanted to ignore. From a vibrating sliver of quartz to a picosecond-managed metal mesh spanning a modern CPU die, every technique in this stack exists because someone upstream got to pretend physics wasn’t there.
+
+Why the Clock Exists at All
+Digital logic gates are built from transistors, and transistors carry parasitic capacitance. When the inputs to a block of combinational logic change, the outputs don’t snap to the new state. They go through a period of instability while charge redistributes through the circuit, and during that window the outputs are garbage. Sample them early and you capture noise.
+
+The clock exists to solve exactly this. An edge-triggered flip-flop only samples its input on the active clock edge, after enough time has passed for the upstream logic to settle. Two constraints formalize the deal:
+
+Setup time is the minimum interval before the clock edge during which the data input has to sit still. Miss it and the flip-flop can enter a metastable state instead of capturing a clean value. This is what sets the ceiling on frequency:
+
+
+Hold time is the minimum time data must stay stable after the edge. A hold violation means the data changed too fast and stomped on the latch before it finished capturing. You can’t fix a hold violation by slowing the clock down. It’s structural, baked into the physical path lengths of that specific chip.
+
+Because the clock period is what determines how much time logic gets to settle, cranking up frequency compresses that window directly. Logic chains that used to be fine become too slow, and the fix is to cut them shorter by inserting pipeline registers, trading latency for throughput. This is where pipelining actually comes from.
+
+Where Frequency Comes From: The Physics of Oscillation
+A clock signal has to originate somewhere, and every electronic oscillator shares the same bones: an energy storage element that resonates, plus an amplifier to keep injecting energy against losses. The Barkhausen criterion states the condition for sustained oscillation: loop phase shift equal to 2πn radians, loop gain equal to exactly unity at steady state. The circuit amplifies thermal noise, and the one frequency component that satisfies the phase condition grows exponentially until the amplifier saturates and clamps the amplitude.
+
+The simplest resonator is an LC tank, an inductor and capacitor trading energy back and forth at a frequency set by their values. The catch is Q. LC tanks sit around Q ≈ 100, and low Q means the frequency wanders with temperature, supply variation, and parasitic drift in L and C. Fine for a lot of things. Useless for anything that has to talk to the outside world.
+
+Quartz fixes this. The piezoelectric effect in quartz (SiO₂) couples mechanical deformation to electric field in both directions: stress the lattice and you get voltage, apply voltage and the lattice deforms. Drive a precisely cut quartz blank with an alternating voltage and it vibrates mechanically at a frequency set by its geometry, with a Q between 10,000 and 100,000. The resonance peak is so sharp that external perturbations barely move it.
+
+The workhorse for high-frequency references is the AT-cut, sliced at a specific angle relative to the crystal lattice. It oscillates in a thickness-shear mode, and its frequency-versus-temperature curve is cubic with a near-zero slope right around 25°C. That’s not a coincidence. It’s why the AT-cut became the industry default: a crystal sitting on a bench, or inside a product running at ambient temperature, sits right at the flattest part of its own thermal response.
+
+At the other end, RC oscillators built directly into MCU silicon skip the external component entirely. The tradeoff is accuracy, ±1 to 3% over temperature. Fine for a watchdog timer or core logic idling along. Completely unacceptable for UART, USB, or Ethernet, where bit-rate matching has to be tight enough that the receiver’s sampling window doesn’t drift off the transmitted edge.
+
+Silicon MEMS oscillators have come on strong over the last decade. A micromachined resonator etched into silicon vibrates in a bulk mode and gets sensed electrostatically instead of piezoelectrically. MEMS parts are lighter and dramatically more shock- and vibration-resistant, less mass means less inertial response to a mechanical jolt, and they can be co-packaged with temperature-compensation logic to hit ±10 to 25 ppm. The tradeoff shows up in close-in phase noise: raw quartz still wins at low offsets from the carrier because its Q is inherently higher and it doesn’t rely on an internal PLL to scale frequency up. For high-speed serial links, where phase noise in the 1 to 100 kHz band actually matters, quartz keeps the edge. For commodity clocking on an industrial product that might get dropped on a factory floor, MEMS is the easy call.
+
+From Sine Wave to Square Wave
+Common misconception: the crystal outputs a square wave. It doesn’t. It oscillates sinusoidally, and the conversion to a digital signal happens inside the sustaining amplifier. It’s not a separate step.
+
+The standard topology is the Pierce oscillator. A CMOS inverter acts as the active amplifying element. A large feedback resistor, typically in the megaohms, ties output back to input and biases the inverter into its linear transition region near Vdd/2. At that operating point the inverter isn’t behaving like a logic gate at all. It’s a high-gain analog inverting amplifier.
+
+
+
+
+The crystal and its two load capacitors form the frequency-selective feedback network. Thermal noise at the crystal’s resonant frequency gets amplified, pushed through the crystal, amplified again, and the oscillation builds from there. As amplitude grows, the inverter runs out of voltage headroom each half-cycle and slams against the supply rails. The sine wave never gets deliberately “shaped” into a square wave. It gets amplified until it becomes one. High gain plus voltage rails is a comparator by accident. Buffer stages downstream sharpen the edges further before the signal hits internal logic.
+
+That process buries an unavoidable tradeoff. A square wave is a sum of odd harmonics, f, 3f, 5f, and on up. Real circuits have finite bandwidth and act as low-pass filters, so only the lower harmonics survive, which is why a real clock edge has finite rise time instead of an instant jump. At 25 MHz with 3 ns edges, the transition eats a small sliver of the 40 ns period and the waveform looks clean. At 200 MHz with those same 3 ns edges, they now consume 60% of the 5 ns half-period, and the waveform degrades toward something closer to a triangle.
+
+The obvious fix is faster edges. But faster edges mean higher-frequency harmonics riding the PCB traces, and those traces behave like antennas at these frequencies. Strong enough harmonics and the product fails regulatory emissions testing. Drive the edges too slow instead, and the signal lingers in the threshold region long enough that supply noise during that window shifts exactly when the threshold gets crossed, which shows up as timing jitter. Every clock output driver on a production board is a deliberate compromise between EMI compliance and timing margin, worked out in advance.
+
+How Crystal Blanks Get Tuned at the Factory
+An AT-cut crystal’s resonant frequency scales inversely with the blank’s physical thickness. Hitting parts-per-million accuracy means controlling that geometry to a brutal degree.
+
+The process starts conservative on purpose: blanks are lapped to slightly below target frequency, meaning slightly too thick. Removing material is easy. Adding it back is not. Coarse lapping gets the blank into the neighborhood, and two techniques handle the fine adjustment from there.
+
+To trim frequency down, a thin metal film, usually gold or silver, gets sputtered onto the crystal face. Adding mass lowers resonant frequency, and the equipment monitors frequency continuously during deposition, stopping the moment the target is hit. Real-time closed-loop control on a mechanical resonator.
+
+To trim frequency up, a laser ablates microscopic amounts of metal off the electrode surface, cutting mass and raising frequency. In advanced processes this happens through a port in the nearly sealed package while the oscillator is actively running, so the manufacturer measures and trims simultaneously under real operating conditions.
+
+Operating frequency also depends on the external capacitance attached to the crystal, specified as the load capacitance C_L on every datasheet. The manufacturer calibrates to hit nameplate frequency at that specific C_L. Swap in different capacitors on your board and you’re running permanently detuned. The trim capacitors in a Pierce oscillator circuit exist purely to compensate for your board’s own parasitic capacitance. There’s no universal correct value; it depends on your layout.
+
+Fresh crystals drift for the first weeks to months of operation as surface contamination desorbs and mounting stresses relax. Precision parts, TCXOs and OCXOs, get baked at 85 to 125°C before final calibration specifically to burn through that early-life drift curve faster. Calibrate after aging, not before, or you’re locking in a frequency that walks off within a week.
+
+For stability over temperature, a TCXO adds a thermistor and a varactor diode. The thermistor reads ambient temperature, a compensation curve (characterized and stored per individual crystal during manufacturing) generates a correction voltage, and the varactor shifts the load capacitance to cancel the crystal’s thermal drift in real time. An OCXO skips electronic compensation entirely and just heats the crystal to a fixed temperature above ambient, typically 85°C, holding it there with a thermostat. Keep the crystal parked at the flat inflection point of its own S-curve permanently, and temperature compensation becomes unnecessary.
+
+PLLs: Getting from the Crystal to Your Target Frequency
+The crystal gives you one stable, fixed frequency set by its geometry: 25 MHz, 50 MHz, 100 MHz. Your system wants something else entirely. A microprocessor wants 5 GHz. A USB controller wants exactly 480 MHz. An FPGA design wants 312.5 MHz for DDR interface timing. The phase-locked loop is the bridge between quartz physics and whatever arbitrary number the system actually needs.
+
+A PLL is a closed-loop control system built from four blocks: a reference divider (÷R), a phase-frequency detector (PFD), a loop filter, and a voltage-controlled oscillator (VCO), with a feedback divider (÷N) closing the loop. Once locked, the output is:
+
+
+where M is an extra output divider that brings the VCO’s operating range, typically constrained to a band like 600 MHz to 1.6 GHz depending on topology, down to the final target frequency.
+
+The PFD compares the phase of the divided reference against the divided VCO output and spits out error pulses proportional to the phase difference. Those pulses drive a charge pump into the loop filter, an RC network that integrates the error into a smooth control voltage steering the VCO. When the loop locks, phase error goes to zero and the output settles.
+
+The loop filter’s bandwidth is the central design tradeoff. Wide bandwidth tracks the reference fast, cleans up low-frequency VCO noise, and locks quickly, but reference jitter passes straight through to the output. Narrow bandwidth rejects reference noise and lets the VCO act as a flywheel smoothing short-term instability, but now high-frequency VCO phase noise dominates instead. Which one you want depends entirely on which noise source is worse in your system.
+
+Fractional-N PLLs reach frequencies integer division alone can’t touch, by rapidly toggling the feedback divider between N and N+1. A delta-sigma modulator controls the dithering so the time-averaged division ratio lands on a precise fraction. The cost is quantization noise and reference spurs. The delta-sigma modulator pushes this noise up to higher frequencies where the loop filter can attenuate it, but the noise floor still rises overall. Fine for most system clocking. A real problem for low-phase-noise applications like radar or precision ADC clocking.
+
+Here’s the practical consequence for system design: a PLL cannot recover jitter sitting outside its own loop bandwidth. If your motherboard BCLK is noisy at a 1 MHz offset from carrier, and your CPU’s on-die DPLL has a loop bandwidth of 500 kHz, that noise sails through unattenuated. Garbage in, garbage out, at whatever frequencies the loop simply can’t reach.
+
+PCBs: Keeping the Clock Alive Between ICs
+Before any of the above matters, the clock signal has to survive the PCB itself. A raw quartz crystal loop runs at high impedance, which means it couples capacitively to anything nearby. The ground rule: minimize trace length between crystal and IC, keep an unbroken ground pour directly beneath the crystal, and keep every unrelated signal out of the crystal’s routing zone. Very few layout rules in PCB design are this unforgiving about “close enough.”
+
+A series resistor, 22 to 100 Ω, on the inverter output pin damps drive current so the crystal doesn’t get overdriven. Overdrive accelerates aging, can physically fracture the quartz, and can excite overtone oscillation, the crystal running at 3× or 5× its fundamental instead of its specified frequency.
+
+Packaged XO modules, the 4-pin metal cans, sidestep most of this by integrating the entire oscillator circuit internally. The output is a buffered CMOS square wave; connect power, ground, and output, done. The tradeoff is that XO modules are sensitive to supply noise, since their internal amplifier shares that same supply rail. A 100 nF ceramic cap at the power pin is non-negotiable, and a ferrite bead isolating the oscillator from switching supply planes is standard practice anywhere signal integrity matters.
+
+When one clock source has to drive multiple ICs, simple trace bifurcation falls apart. Every additional load adds input capacitance that degrades edge rates, and any length mismatch between branches introduces skew. The fix is a dedicated clock fanout buffer, which takes the master clock and actively drives multiple matched-impedance outputs. Texas Instruments’ CDCE family is a common pick; for differential clocks, something like the CDCLVP series handles LVDS distribution.
+
+FPGAs: Dedicated Clock Infrastructure
+FPGAs keep clock routing completely separate from data routing. Route a clock through the standard LUT interconnect matrix and it takes variable, unpredictable paths to different flip-flops, producing skew nobody can control. The dedicated global clock (GCLK) and regional clock (RCLK) networks exist specifically to guarantee matched delay across the whole domain.
+
+Getting onto those networks means going through explicit clock buffer primitives: BUFG for the global network, BUFR for a single clock region with built-in integer division, BUFGCE when the clock needs gating with an enable signal. Put a clock on a regular signal route and hope the tools sort it out, and you’re asking for a timing closure nightmare.
+
+The MMCM and PLL hard tiles baked into every modern FPGA handle frequency synthesis on-chip. Set the desired output frequencies and phase offsets, let the Clocking Wizard solve the N/R/M arithmetic, and get multiple phase-aligned clocks out of a single reference. The tools report achieved frequency and estimated jitter. The VCO range is constrained (roughly 600 MHz to 1.44 GHz for a Xilinx 7-series MMCM, depending on speed grade), so the arithmetic has to stay inside that window.
+
+A common RTL mistake is generating divided clocks with a counter and a toggle register. That signal lives on the data routing fabric, carries poorly characterized skew, and creates a second clock domain that the timing tools struggle to analyze cleanly. The right move in most cases is a clock enable: keep all logic on one fast primary clock, pulse a CE signal every N cycles instead. Flip-flops update logically at the slower rate while staying physically synchronized to the primary edge. Timing tools natively understand multicycle paths gated by a CE signal, which collapses what would otherwise be a multi-domain headache into a single, analyzable domain.
+
+When two genuinely asynchronous clocks share a design, signals crossing between them violate setup and hold constraints probabilistically. Any transition landing inside the receiving flip-flop’s metastability window leaves the output hovering at an indeterminate voltage, neither logic 1 nor logic 0, until it eventually resolves. Take longer than one clock period to resolve, and the garbage propagates downstream. The fix is architectural: double-register synchronizers buy time for the metastable state to settle before the signal reaches real logic. The MTBF of this crossing scales exponentially with the resolution time available, and at high clock frequencies two registers may not cut it, pushing designs to three or four stages to hold billions-of-years MTBF. Static timing tools cannot analyze CDC paths at all. These failures stay silent until hardware testing, which is exactly why CDC bugs are among the nastiest to survive simulation.
+
+Production CPUs: Clocking at Die Scale
+A production x86 CPU receives a 100 MHz BCLK from the motherboard over a differential HCSL pair, and that motherboard clock generator is itself locked to a 25 MHz crystal. This modest reference enters the package and immediately feeds a set of on-die PLLs.
+
+Modern CPUs don’t run on one clock domain. They run on dozens. A Raptor Lake die has independent PLLs for each P-core cluster, the E-core complex, the GPU, the memory controller, PCIe, the display engine, and the I/O subsystem. Each can change frequency independently, which is what lets the power management microcontroller run per-domain DVFS: boost one core while throttling another, drop the GPU while the CPU sprints, gate entire domains when idle.
+
+These on-die PLLs have mostly gone all-digital (ADPLLs). Loop filter and VCO get implemented in standard logic cells instead of custom analog. That makes them portable across process nodes, allows near-instantaneous frequency switching (the roughly 1 ms transitions behind Intel’s Speed Shift), and sidesteps analog leakage concerns at advanced nodes. The cost is somewhat higher phase noise compared to a well-tuned analog PLL, an acceptable trade at CPU clock frequencies and jitter tolerances.
+
+Distributing a 5 GHz clock with picosecond-level skew across a 200 mm² die is one of the harder problems in VLSI. A single driver feeding a single tree can’t do it; wire RC delay and on-chip variation (process and thermal gradients across the die) would blow past any acceptable skew budget at the leaves. The solution is hierarchical. The PLL output drives a global clock mesh in the upper metal layers, wide low-resistance interconnect spanning the whole domain with many injection points. The mesh electrically shorts thousands of driver outputs together, so local variation averages out and global skew approaches zero. Below the mesh, local clock trees handle distribution down to individual flip-flop clusters. Tree for efficiency locally, mesh for skew globally.
+
+The power bill is real. The mesh’s enormous capacitance charges and discharges every single cycle, and in some designs the clock distribution network alone eats up to 40% of total chip dynamic power. Integrated clock gate (ICG) cells scattered through the local trees cut clock propagation to idle logic entirely, dropping dynamic power in that subtree to zero. Without aggressive clock gating, thermal management at modern transistor counts would be a lost cause.
+
+Finally, no two dice off the same wafer are electrically identical. Microscopic doping variation makes every transistor slightly different from its neighbor. Manufacturers scatter ring oscillators, odd numbers of inverters wired in a loop, across the die. Their free-running frequency directly reflects local transistor speed, tracking both process variation and real-time operating temperature. Factory testing measures these rings, profiles the full speed and leakage characteristics of each die, and assigns eFuse limits accordingly. The i9 and the i5 are often the exact same silicon. The eFuses just encode how far that particular die made it through testing.
+
+The Through-Line
+Every technique in this stack solves the same problem: the layer above wanted to ignore something about physics, and the layer below had to eat the cost.
+
+The PLL compensates for the rigid frequency constraints of quartz geometry. The output driver’s edge rate compensates for the EMI-versus-jitter tradeoff the PCB imposes. The clock mesh compensates for on-chip process variation a simple tree can’t survive. The synchronizer chain compensates for the probabilistic chaos of asynchronous data crossing a domain boundary.
+
+The abstraction holds up. Writing #define F_CPU and trusting the hardware is legitimate engineering; the compensation chain underneath is real and it works. But knowing where that chain runs thin, where it breaks, and what the physics actually looks like underneath it: that’s the difference between using hardware and understanding it.
+
+The next layer down from here is SerDes, high-speed serial links where the clock isn’t distributed separately at all. Timing information gets embedded in the data transitions themselves and has to be extracted on the fly by a clock-data recovery (CDR) circuit. The separate clock trace disappears entirely. That’s a different article.
+
+Discussion about this post
+Write a comment...
+
+
+The Electronics Safety Checklist Nobody Hands You on Day One
+A Working Engineer’s Guide to Shock, Fire, and Thermal Runaway Prevention, From Schematic to Production
+Jul 12 • Noah's Digital Jefferies Tube
+
+1
+
+
+
+
+
+Texas Instruments' Earnings Just Exposed AI's Copper Problem
+Q2 2026 data center revenue doubled, and the reason is a 132-kW rack running out of amps
+Aug 10 • Noah's Digital Jefferies Tube
+
+
+
+
+
+
+The PCB Schematic: Where Good Boards Are Won or Lost
+A schematic does two jobs at once.
+Jul 8 • Noah's Digital Jefferies Tube
+
+
+
+
+
+
+Hot Chips 2026: Architectures for the Agentic Computing Era
+Architectures for the Agentic Computing Era
+Aug 24 • Noah's Digital Jefferies Tube
+
+
+
+
+
+
+NVIDIA’s $3.5 Billion MediaTek Bet: Owning the Wire After Giving Up the Chip
+On August 31, 2026, NVIDIA put $3.5 billion into MediaTek convertible bonds and converted what had been a components relationship into a shared…
+Aug 31 • Noah's Digital Jefferies Tube
+
+
+
+
+
+
+How Oscillate Photonics Killed the SESAM and Shrank a $150,000 Laser to a USB-C Brick
+A femtosecond laser used to mean a room.
+Jul 23 • Noah's Digital Jefferies Tube
+
+
+
+
+
+
+Hardware Cost Doesn’t Live in the Design. It Lives in the Feedback Loop.
+There’s a moment every EE student goes through.
+Jun 23 • Noah's Digital Jefferies Tube
+
+
+
+
+
+
+The Sand Contract: Build vs. Buy as a Theory of Where Entropy Lives
+Build vs. Buy as a Theory of Where Entropy Lives
+Jun 18 • Noah's Digital Jefferies Tube
+
+
+
+
+
+
+What Everyone Should Know Before Arguing With Their Electrical Engineer
+Most cross-disciplinary friction on hardware teams isn’t a personality problem, It’s a worldview problem.
+Jul 6 • Noah's Digital Jefferies Tube
+
+
+
+
+
+
+Efinix: The Company Building the Next Generation of FPGAs
+In June 2026, trade press reported that Efinix had lined up capacity at TSMC’s Japan fabs to keep pace with demand from its edge AI business.
+Jul 21 • Noah's Digital Jefferies Tube
+
+
+
+
+
+
+© 2026 Noah Bean · Privacy ∙ Terms ∙ Collection notice
+Start your Substack
+Get the app
+Substack is the home for great culture

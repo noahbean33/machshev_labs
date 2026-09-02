@@ -1,0 +1,220 @@
+
+Noah's Digital Jefferies Tube
+
+
+
+
+The Five Rules of RF Design: A Practical Reference
+Noah's Digital Jefferies Tube
+Aug 30, 2026
+
+📡 Simplify RF Design with the Smith Chart 📊
+
+
+Digital design intuition breaks down the moment your signal’s wavelength gets close to the physical dimensions of your board. A trace that behaved like a simple wire connecting two points on a schematic now behaves like a transmission line with its own characteristic impedance, and every discontinuity along that line reflects part of your signal back toward the source. That single fact accounts for nearly every rule below: none of them are stylistic preferences; each one exists because a specific piece of electromagnetic behavior punishes you the moment you skip it.
+
+The five rules get you through most designs into the low gigahertz range, but past that several of them stop being literal truths and become starting points that need a more rigorous model underneath, and I’ll flag where that happens as we go.
+
+The Five Rules of RF Design
+1. Use a four-layer PCB
+Put RF signals on the top layer, an unbroken ground plane on layer two, an unbroken power plane on layer three, and everything else (digital I/O, control lines, low-speed peripherals) on the bottom.
+
+The ground plane placement matters more than any other stackup decision you’ll make. At RF frequencies, return current doesn’t wander wherever it pleases through the ground network; it follows the path of least impedance, which is the mirror image of the signal trace directly above it. If that plane has a slot, a split, or a routed-through cutout, the return current has to detour around it. That detour adds loop inductance, changes the trace’s characteristic impedance at that exact point, and turns the gap into an efficient accidental antenna. A four-layer stack with a continuous ground reference immediately beneath your RF layer keeps the return path tight and the impedance profile predictable across the whole trace.
+
+Layer count solves half the problem, and the dielectric between those layers solves the other half, which at multi-gigahertz frequencies usually turns out to be the bigger lever of the two.
+
+Standard FR-4 is a woven-glass epoxy composite, and its electrical properties move around more than most digital engineers expect. Its dielectric constant swings between roughly 4.2 and 4.8 depending on resin content, glass weave style, temperature, and even the operating frequency, which means different frequency components of a wideband signal propagate at slightly different phase velocities and arrive distorted. Its loss tangent runs 0.015 to 0.030, converting enough signal energy into heat to cost you roughly 0.8 dB of insertion loss per inch at 10 GHz, a number that eats through a receiver chain’s gain budget fast. FR-4 has a second problem built into its construction: the glass weave itself carries a higher dielectric constant than the surrounding resin, so two traces in a differential pair can end up routed over slightly different local dielectric environments depending on where they fall relative to the weave pattern. That mismatch, known as the glass weave effect, introduces phase skew between the pair and shows up as common-mode noise, which is exactly the kind of degradation that ruins a phased array or a 5G beamforming front end.
+
+Hydrocarbon-ceramic laminates such as Rogers RO4350B exist to fix this: a dielectric constant held to 3.48 give or take 0.05 across a wide frequency range (Rogers actually recommends designing to 3.55 to 3.66 to account for copper roughness and test-fixture air gaps), and a loss tangent around 0.0037 at 10 GHz, which works out to about 0.18 dB per inch instead of 0.8. It also runs cooler under active RF components, dissipating heat at 0.69 W/m·K versus FR-4’s 0.25 to 0.30, expands less in the Z-axis under thermal cycling (a CTE close to copper’s own, which matters for via reliability), and survives more aggressive reflow cycles thanks to a glass transition temperature north of 280°C versus FR-4’s 130 to 170°C.
+
+Hydrocarbon-ceramic laminates such as Rogers RO4350B exist to fix this: a dielectric constant held to 3.48 give or take 0.05 across a wide frequency range (Rogers actually recommends designing to 3.55 to 3.66 to account for copper roughness and test-fixture air gaps), and a loss tangent around 0.0037 at 10 GHz, which works out to about 0.18 dB per inch instead of 0.8. It also handles heat and moisture better across the board: a thermal conductivity of 0.69 W/m·K versus FR-4’s 0.25 to 0.30 lets it spread heat away from active RF components, a Z-axis CTE around 32 ppm/°C versus FR-4’s 50 to 70 keeps it close enough to copper’s own expansion rate to protect via barrels during thermal cycling, moisture absorption of just 0.05% versus FR-4’s 0.10 to 0.20% keeps humidity from creeping into the dielectric constant and adding loss, and a glass transition temperature north of 280°C versus FR-4’s 130 to 170°C lets it survive more aggressive reflow cycles.
+
+None of that comes free, though: Rogers material typically costs five to ten times as much as FR-4, which is why most real boards use a hybrid stackup, Rogers on the outer layers carrying the RF, standard FR-4 or a mid-loss material like Megtron 4 on the inner layers carrying digital and power. The catch sits at the boundary between the two materials, where FR-4 expands more than the Rogers laminate under heat, leaving aggressive via aspect ratios crossing that boundary (much past 8:1) prone to barrel cracking during reflow. You can’t bond the two materials with generic FR-4 prepreg either; a matched bonding film like RO4450F is required at the transition, because otherwise you get an abrupt dielectric discontinuity right at the boundary that wrecks the impedance of any trace crossing it.
+
+2. Use highly integrated components
+Building a discrete LC matching network from scratch means your performance now depends on component tolerance, footprint parasitic inductance, pad geometry, and manufacturing variance across component lots. Get any of those wrong and you’re pulling out a network analyzer to retune every board that comes off the line.
+
+Monolithic RFICs, single-chip baluns, and SAW or BAW filters push that complexity onto a die where it was characterized once, in volume, by people whose entire job is getting it right. You’re trading a small cost premium and a tighter set of design choices for repeatable performance you don’t have to individually validate on every unit.
+
+3. Stick to 50 ohms everywhere
+Fifty ohms is a compromise between the impedance that minimizes signal loss in coaxial cable (around 77 ohms for an air dielectric) and the impedance that maximizes power handling (around 30 ohms), not an arbitrary industry habit. Landing near the middle became the de facto standard for connectors, cable, test equipment, and IC I/O, which means as long as you hold every input, output, and transmission line to that same number, everything downstream interconnects without a matching network at every boundary.
+
+Any mismatch shows up as reflected energy: return loss, standing waves, and in the worst case, reflected power finding its way back into an amplifier that wasn’t designed to absorb it.
+
+That standardization holds for passive interconnect, cables, connectors, filters, splitters, anything where you want clean insertion loss and no reflections at the boundary, but it stops holding the moment you cross into active devices, where treating it as literal is a common mistake.
+
+A power amplifier under large-signal drive is a nonlinear device, which means the small-signal S-parameters on its datasheet don’t predict its actual behavior at the power levels you’re running it at. Getting the true optimum load impedance requires load pull: sweeping the complex impedance presented to the transistor’s output across the Smith chart, mechanically or with active impedance injection, and plotting contours of constant power, constant efficiency, and constant distortion. The impedance that comes out of that exercise, the one that actually delivers maximum output power or efficiency, is almost never 50 ohms. Your job as the board designer is to build an output matching network that transforms the 50-ohm system impedance into whatever complex conjugate impedance the load pull data demands at the transistor’s exact reference plane.
+
+Low-noise amplifiers have the mirror-image problem: an LNA’s job is amplifying a microvolt-level signal while adding as little noise as possible, so its input should be matched for minimum noise figure rather than maximum power transfer. Source pull sweeps impedance at the input the same way load pull sweeps it at the output, generating constant-noise-figure circles instead of constant-power ones, and the resulting optimum noise match usually lands at a different point on the Smith chart than the conjugate power match would give you. Force an LNA to a literal 50-ohm input match and you get better power transfer and a worse noise figure, which defeats the purpose of the receiver chain.
+
+So “stick to 50 ohms everywhere” is correct as a system-level integration rule. At the level of an individual active device, it’s a reference impedance you match to on both sides, not a target you match the device itself to.
+
+4. Follow manufacturer recommendations
+A component’s datasheet reference design already accounts for the parasitic compensation, layout-dependent matching, thermal behavior, and EMI performance that the manufacturer validated in their own lab. Copy it exactly: via placement, ground stitching pattern, orientation of directional or asymmetric parts like couplers and baluns. At gigahertz frequencies, layout asymmetries that would be irrelevant on a digital board become measurable performance differences. If you deviate from the reference layout, you’re re-doing validation work the manufacturer already did for you, usually without their test equipment.
+
+5. Route your RF traces first
+Route RF nets before anything else touches the board, with the ground plane requirement above already locked in, and keep them physically isolated from digital and power routing. Length matters because insertion loss, phase delay, and radiated emissions all grow with trace length, so the goal is the shortest direct path relative to your operating wavelength, not just “short” in absolute terms. Every RF trace should be treated as a transmission line from the start rather than something you route casually and fix later; auto-routers and last-minute reroutes are how RF traces end up snaking under digital buses and picking up coupled noise you’ll spend hours chasing during bring-up.
+
+Isolation here means more than steering the auto-router around other nets. In practice it usually means physically fencing the RF path with grounded vias, and getting that calculation wrong quietly undoes everything else in this list.
+
+Component Selection and Routing Tactics
+Calculate trace widths
+Trace width for an RF signal is solved for a target characteristic impedance, usually 50 ohms, given your stackup’s dielectric constant, dielectric height between the trace and its reference plane, and copper weight, rather than chosen for current capacity the way a power trace would be. Tools like the Saturn PCB toolkit, KiCad’s built-in PCB calculator, or any microstrip/stripline calculator will take those substrate parameters from your fab’s specification sheet and return the exact width you need.
+
+Do this calculation before you finalize your stackup, not after. If your dielectric height forces an impractically narrow trace that won’t fit under a component’s pad pitch, you need to adjust the stackup, not fudge the width and accept an impedance mismatch.
+
+Most of those calculators, and a lot of PCB tools by default, are running the IPC-2141A formula underneath:
+
+Z0 = [87 / sqrt(er + 1.41)] x ln[5.98H / (0.8W + T)]
+
+where H is the dielectric height to the reference plane, W is the trace width, and T is the copper thickness. It’s a clean, lightweight formula, and it’s also only valid over a limited geometric range. Push the trace-width-to-dielectric-height ratio past about 7.5 and the equation returns a nonsensical negative impedance. For anything running into the multi-gigahertz range where you need that kind of extreme geometry, or for tightly coupled differential pairs where the edge-to-edge gap drops below half the dielectric height, IPC-2141A’s accuracy degrades in ways that won’t show up until you’re staring at unexplained return loss on a VNA. The fix is either a real field solver, 2D boundary-element or 3D finite-element, or a closed-form model built for the wider range, like the Hammerstad and Jensen formulas, which hold accuracy better than 1.5% across a width-to-height ratio from 0.001 to 1000. If you’re designing a differential LO feed and want tight coupling for common-mode rejection, which is exactly the geometry where IPC-2141A starts to break, validate it with a field solver rather than trusting the calculator’s output blind.
+
+Choose the right transmission line topology
+Trace width gets you the impedance number, but the geometry you choose to hit that number changes how well the signal stays confined to where you put it.
+
+Microstrip, a surface trace over an unbroken ground plane one layer down, is the default because it’s easy to route and easy to probe. It’s also a quasi-TEM structure: the electric field travels partly through the substrate below and partly through the air above the trace, and air has a dielectric constant of 1 while your substrate doesn’t, so the trace sees an effective dielectric constant that’s a blend of the two. At high enough frequencies that blend causes modal dispersion, and because the top of the trace is exposed, microstrip radiates and picks up interference more readily than the alternatives.
+
+Stripline buries the conductor entirely, sandwiched symmetrically between two ground planes. That gives pure TEM propagation with no modal dispersion, because the field sits in one homogeneous dielectric the whole way, and the surrounding shielding gives excellent immunity to radiation and crosstalk. You pay for it with higher insertion loss for a given trace width, a harder fabrication process, and the need for vertical via transitions any time the signal has to reach a surface-mounted part.
+
+Grounded coplanar waveguide splits the difference: the signal trace stays on the surface layer, but it’s flanked by ground pours on that same layer in addition to the ground plane below. That tightens field confinement into the narrow gaps beside the trace, which gives strong isolation between adjacent traces and less dispersion at millimeter-wave frequencies. Modern GCPW variants with dual-ground structures and dense via fencing can hold usable bandwidth out to 70 GHz, which is why it has become the default choice for a lot of mmWave front-end work.
+
+Fence and transition your vias, or lose the isolation you just designed
+Via fencing works by forming a conductive wall along both sides of the RF trace, or around an entire RF sub-circuit, that behaves like the wall of a rectangular waveguide: it confines the propagating field and stops the dielectric stack from acting as an unintentional parallel-plate waveguide that leaks energy sideways into the board. The spacing between fence vias has to be calculated against the wavelength inside your dielectric, the guided wavelength, not the free-space wavelength, since the two aren’t the same number:
+
+lambda_g = c / (f x sqrt(eff dielectric constant))
+
+The rule of thumb is a maximum spacing of one-tenth the guided wavelength for basic shielding and one-twentieth for anything with a tight isolation requirement. At 10 GHz, where the free-space wavelength is around 30 mm, the tighter rule typically works out to a physical via spacing near 1.5 mm. Push to 30 GHz and that collapses to about 0.5 mm, which starts running into standard drill limits, and past 90 GHz single-row fencing stops being sufficient at all, requiring staggered double-row fences instead. The fence also needs to sit at least three times the dielectric height away from the trace edge; place it closer and the fence vias couple directly to the trace and drag its impedance down, reintroducing the exact reflection problem the fence was supposed to prevent.
+
+Vertical transitions carry their own hidden cost, inductance: any via connecting a surface microstrip to a buried stripline, or carrying a signal up to an antenna feed, has loop inductance from its own barrel and pad geometry, typically half a nanohenry to a full nanohenry for something like a 10-mil via through a 62-mil board. That number looks irrelevant next to a digital trace, but reactance scales with frequency, and at 10 GHz a single nanohenry presents roughly 63 ohms of series reactance, which is a serious mismatch against a 50-ohm line. The fix is to design the transition as a small coaxial structure: a calculated ring of ground return vias placed immediately around the signal via, with the antipad (the clearance hole in the ground plane) sized precisely, too large and the transition reads as too inductive, too small and it reads as too capacitive. Above roughly 5 GHz, uncompensated vias fail outright and you need 3D EM simulation to tune the via ring and antipad geometry for a flat 50-ohm response. At the extreme end, some mmWave designs skip the via barrel entirely and couple energy between layers through slotlines etched into a shared ground plane, avoiding the inductive via altogether, with demonstrated performance out past 78 GHz.
+
+Manage the parasitics your own footprints create
+Even a perfectly matched 50-ohm trace hits trouble the moment it reaches a real component pad. An SMT footprint, whether it belongs to an amplifier, a DC blocking capacitor, or a connector pin, is almost always wider than the trace feeding it, and that extra copper area sitting parallel to the ground plane below acts as an unplanned parallel-plate capacitor shunting the signal to ground. The bigger the footprint and the thinner your dielectric, the worse that discontinuity gets, and the result is a local dip in characteristic impedance right where the component sits.
+
+Defected ground structures fix this from the ground layer instead of the top layer: etch a cutout in the ground plane directly beneath the oversized pad, effectively pushing the reference plane down to the next ground layer in the stack. That does two things at once: removing the direct vertical path to ground reduces the parasitic capacitance from the pad, while forcing the return current to detour around the cutout adds back a bit of loop inductance. Since characteristic impedance is roughly the square root of inductance over capacitance, you can dial the cutout dimensions to bring the local impedance back to 50 ohms. This matters most at edge-launch connectors like SMA or U.FL, where the center pin is already a significant capacitive discontinuity; without ground plane tuning underneath the launch, hitting better than -15 dB return loss at multi-gigahertz frequencies is genuinely difficult.
+
+Don’t let solder mask undo the substrate you paid for
+Solder mask gets treated as electrically invisible in most introductory RF guides, and it measurably isn’t: standard liquid photoimageable solder mask has a dielectric constant in the 3.3 to 4.5 range, and coating a microstrip in it replaces the air above the trace, which has a dielectric constant of 1, with that denser material. Since a microstrip’s field lines travel partly through that air, adding mask raises the trace’s effective dielectric constant, which lowers its characteristic impedance. A single mil of standard mask can pull a 50-ohm line down by 1 to 3 ohms, a rounding error at lower frequencies and a real problem in a tightly toleranced mmWave array.
+
+The bigger issue is loss rather than impedance: typical solder mask has a loss tangent around 0.025 at 1 GHz, close to an order of magnitude worse than RO4350B, and at 10 GHz that can add another 0.05 to 0.15 dB of insertion loss per inch. Spend the money on a low-loss substrate and then blanket the top layer in ordinary solder mask, and you’ve given a meaningful chunk of that improvement back. The standard fix above roughly 5 GHz is a solder mask keepout directly over the RF traces and their adjacent ground gaps, leaving bare copper protected instead with an ENIG or immersion silver finish. It leaves the trace more exposed to handling damage during assembly, but it’s the only way to keep the field propagating through air and substrate instead of a lossy polymer you didn’t account for.
+
+Watch amplifier limits
+Every RF amplifier has a 1dB compression point: the input or output power level at which the amplifier’s actual gain has dropped 1dB below its small-signal linear gain. Below that point, gain is constant and the output is a scaled, undistorted copy of the input. Above it, the amplifier is compressing into nonlinear behavior, generating harmonic and intermodulation distortion that can violate a spectral mask, desensitize a nearby receiver, or, if you’re pushing an LNA well past its rating, damage the part outright.
+
+Design with margin below P1dB, not right up against it, especially for modulated waveforms like OFDM that have a high peak-to-average power ratio. The average power might sit comfortably under the compression point while instantaneous peaks blow straight through it.
+
+Bias tees
+Most active RF components need DC bias delivered onto the same line carrying the RF signal, without the DC path loading the RF path or RF leaking backward into the power supply. Two components handle this:
+
+Component RF Application Functional Behavior Capacitor DC blocking capacitor Passes high-frequency RF, blocks DC Inductor RF choke Passes DC, blocks RF from escaping into the supply
+
+Sizing either one requires checking self-resonant frequency, not just the nominal reactance formula. A DC blocking capacitor needs low reactance at your operating frequency to look like a short to RF, but above its self-resonant frequency a capacitor stops looking capacitive and starts looking inductive, which defeats the purpose entirely. The same problem hits the choke from the other direction: it needs high reactance to block RF from reaching the supply, but parasitic winding capacitance gives every inductor its own self-resonant frequency above which it looks capacitive instead. Pick parts rated for use at your specific band, not just parts with an impressive nominal value.
+
+Design to your fabricator’s actual tolerances
+Every calculation up to this point assumes ideal geometry: a trace with vertical sidewalls, a dielectric of exactly the thickness on the spec sheet, uniform copper. Real fabrication doesn’t deliver any of that, and RF designs are unforgiving about the gap between the model and the part that comes out of the oven.
+
+Chemically etched copper comes out trapezoidal, wider at the base than at the top, because the etchant attacks the sides of the trace as it works down through the thickness. Over-etch or under-etch by half a mil, well within normal fab tolerance, and you’ve measurably changed the gap capacitance on a tightly coupled differential pair or a GCPW structure. The practical fix is pulling your fabricator’s actual copper profile and prepreg thickness into the impedance calculation instead of the idealized rectangular cross-section most layout tools assume by default.
+
+IPC-2221’s clearance and creepage rules matter more here than on a typical digital board. Clearance is the shortest path through air between two conductors; creepage is the shortest path along the surface of the dielectric between them. An unmatched power amplifier output can develop standing-wave voltages well above what the DC rail would suggest, and insufficient creepage under that voltage leads to anodic filamentation and eventual carbon-tracking shorts along the board surface. Check creepage explicitly around any bias tee, PA output, or antenna feed instead of assuming the margins that work on your digital rails carry over.
+
+Conclusion
+These five rules aren’t guidelines to interpret loosely based on how confident you feel, and everything in the tactics section above is what happens when you take them seriously instead of literally: a four-layer stackup holds until the dielectric itself becomes the dominant loss mechanism, fifty ohms holds until you’re matching an active device instead of a passive interconnect, and routing RF first holds until the via connecting two layers turns into 63 ohms of reactance you didn’t budget for. That doesn’t make the original five rules wrong so much as incomplete, since they’re the model you start from before frequency, geometry, or a real fabrication tolerance forces you to reach for something more precise.
+
+Discussion about this post
+Write a comment...
+
+
+The Electronics Safety Checklist Nobody Hands You on Day One
+A Working Engineer’s Guide to Shock, Fire, and Thermal Runaway Prevention, From Schematic to Production
+Jul 12 • Noah's Digital Jefferies Tube
+
+1
+
+
+
+
+
+Texas Instruments' Earnings Just Exposed AI's Copper Problem
+Q2 2026 data center revenue doubled, and the reason is a 132-kW rack running out of amps
+Aug 10 • Noah's Digital Jefferies Tube
+
+
+
+
+
+
+The PCB Schematic: Where Good Boards Are Won or Lost
+A schematic does two jobs at once.
+Jul 8 • Noah's Digital Jefferies Tube
+
+
+
+
+
+
+Hot Chips 2026: Architectures for the Agentic Computing Era
+Architectures for the Agentic Computing Era
+Aug 24 • Noah's Digital Jefferies Tube
+
+
+
+
+
+
+NVIDIA’s $3.5 Billion MediaTek Bet: Owning the Wire After Giving Up the Chip
+On August 31, 2026, NVIDIA put $3.5 billion into MediaTek convertible bonds and converted what had been a components relationship into a shared…
+Aug 31 • Noah's Digital Jefferies Tube
+
+
+
+
+
+
+How Oscillate Photonics Killed the SESAM and Shrank a $150,000 Laser to a USB-C Brick
+A femtosecond laser used to mean a room.
+Jul 23 • Noah's Digital Jefferies Tube
+
+
+
+
+
+
+Hardware Cost Doesn’t Live in the Design. It Lives in the Feedback Loop.
+There’s a moment every EE student goes through.
+Jun 23 • Noah's Digital Jefferies Tube
+
+
+
+
+
+
+The Sand Contract: Build vs. Buy as a Theory of Where Entropy Lives
+Build vs. Buy as a Theory of Where Entropy Lives
+Jun 18 • Noah's Digital Jefferies Tube
+
+
+
+
+
+
+What Everyone Should Know Before Arguing With Their Electrical Engineer
+Most cross-disciplinary friction on hardware teams isn’t a personality problem, It’s a worldview problem.
+Jul 6 • Noah's Digital Jefferies Tube
+
+
+
+
+
+
+Efinix: The Company Building the Next Generation of FPGAs
+In June 2026, trade press reported that Efinix had lined up capacity at TSMC’s Japan fabs to keep pace with demand from its edge AI business.
+Jul 21 • Noah's Digital Jefferies Tube
+
+
+
+
+
+
+© 2026 Noah Bean · Privacy ∙ Terms ∙ Collection notice
+Start your Substack
+Get the app
+Substack is the home for great culture

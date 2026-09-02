@@ -1,0 +1,191 @@
+
+Noah's Digital Jefferies Tube
+
+
+
+
+Your Fiducials Aren’t Arbitrary: The Reality Behind Pick-and-Place Marks
+Noah's Digital Jefferies Tube
+Aug 29, 2026
+
+Fiducial tips
+
+
+Most board designers treat fiducials the way they treat mounting holes: drop three circles somewhere near the corners, move on, let the fab house sort it out. That habit survives right up until a 0.4mm pitch BGA comes back from assembly with half its balls bridged, and the contract manufacturer’s engineer asks why the global fiducials are symmetric.
+
+The answer to almost every fiducial question traces back to one number: the mechanical positioning accuracy of a standard SMT conveyor and gantry system is about ±0.1mm, and that number hasn’t moved much in twenty years because it’s set by the mechanics of belts, rails, and stepper-driven gantries, not by anything a component vendor is going to fix with a new datasheet. Meanwhile a 0.5mm pitch QFP needs placement accuracy under 0.07mm, and a 0.4mm pitch BGA needs better than 0.05mm. The machine is mechanically incapable of hitting the tolerance the component requires, so every fiducial rule in IPC-7351B and SMEMA 3.1 exists to close that gap optically, since it can’t be closed mechanically.
+
+Fiducials aren’t a checklist item, they’re the only thing standing between a conveyor that’s off by a tenth of a millimeter and a placement head that has to land within fifty microns.
+
+Why This Has to Be Solved With Vision, Not Fixtures
+The obvious engineering instinct is to fix the mechanical problem mechanically, with tighter fixturing, better rail tolerances, more precise conveyor motors. That instinct is a dead end, and it’s worth understanding why before designing around the alternative.
+
+A pick-and-place machine’s vision system works by computing the signal-to-noise ratio of an optical target against the surrounding board. The Rose criterion sets the bar: you need an SNR of at least 5 before an edge-detection algorithm can locate a centroid with confidence, and below that threshold the algorithm starts guessing, which at 50-micron tolerances means missed placements.
+
+A copper pad finished in ENIG, sitting inside a clearance zone stripped of solder mask, silkscreen, and copper pour, gives the vision system a bright, flat, geometrically simple reflector against a dark background, a clean signal by any optical standard. A drilled tooling hole gives you the opposite: a rough, torn edge that scatters light unpredictably depending on the angle of the ring lighting, all noise dressed up as a reference point. This is the actual reason engineers get told never to use tooling holes as fiducials. A mechanical void cannot produce the reflectivity a centroid algorithm needs no matter how precisely it’s drilled, because reflectivity was never something the drilling process was optimizing for.
+
+Once you accept that the problem has to be solved optically, the rest of the fiducial spec stops looking arbitrary and starts looking like a derivation.
+
+The Math That Sets the Fiducial Count
+A single fiducial gives the vision system one data point, an X/Y offset. It has no way to know if the board is rotated, because rotation requires a second reference to compute an angle against. Two fiducials give you that angle, so you can correct translation and rotation (theta) together, which is the minimum for a rigid, perfectly flat board.
+
+Real boards aren’t perfectly flat. Thermal cycling and mechanical handling introduce stretching, shrinking, and twisting that a two-point rotation correction can’t see, and solving for those non-linear distortions takes three points arranged so the machine can triangulate the deformation across the whole plane. That’s why every serious global fiducial scheme calls for three marks in a non-collinear, asymmetrical triangle, placed as far apart as the board allows: maximum spread minimizes the angular error in the rotational calculation, and asymmetry is what prevents the board from having a 180-degree twin position that looks identical to the machine.
+
+That last point is the failure mode that actually destroys full production runs rather than individual units. If your two (or three) global fiducials are placed symmetrically, a board loaded backward onto the conveyor will still successfully locate both fiducials in what looks, to the machine, like the correct position, and there’s no mechanism for it to catch the error from there. It will populate every polarized cap, every diode, every oriented IC backward across the entire run before anyone notices. An asymmetrical layout turns that same mistake into an immediate coordinate-mismatch fault, so the machine stops and flags an operator instead of destroying a batch. If you remember one thing about fiducial placement, make it this: never let your global marks form a symmetric pattern, even under time or space pressure.
+
+The Three-Tier Hierarchy
+Fiducials operate at three different scales, each solving a different part of the precision problem.
+
+Panel fiducials live on the breakaway tooling rails, outside the individual board outlines, and exist to align the whole panel with the stencil printer before any board-level placement happens. If the panel’s paste registration is off, every board on it inherits the error, so this is the first and cheapest place to catch a bulk misalignment. You need a minimum of three to correct for panel-scale translation, rotation, and scaling, and the mark center needs to sit at least 3.85mm from the board edge to clear a typical 3mm conveyor clamp.
+
+Global fiducials sit on the individual board and localize that specific unit within the panel array once it’s in the placement machine. This is the triangle discussed above, and it’s what most engineers mean when they say “fiducials” without qualification. If your board is populated on both sides, you need an independent global set on each side, since the machine doesn’t inherit orientation data across a flip.
+
+Local fiducials are the tier most designers skip, and they’re the ones that actually protect your fine-pitch parts. Global fiducials orient the board as a whole, but over the distance from a corner mark to a center-mounted BGA, micro-stretching in the substrate introduces enough error to matter at 0.4mm pitch. The rule is straightforward: any component at 0.5mm pitch or tighter, including fine-pitch BGAs, QFNs, and RF modules, gets two local fiducials placed diagonally across its footprint, outside the component body. The placement head re-references off these immediately before the final placement stroke, a localized correction the global triangle physically can’t provide at that distance. Put the local fiducial under the part instead of beside it, and you’ve built a mark that becomes invisible the moment the component is placed, which also makes it useless for any post-placement AOI pass.
+
+If you’re routing a flex circuit, the standard triangle degrades further, because polyimide shrinks anisotropically, moving differently in X than in Y as it cures and reflows. The workaround is a cluster of marks spaced closely together in a central region (two diagonal plus one perpendicular), which lets the software calculate an uneven X/Y scaling multiplier from the measured deformation rather than assuming uniform shrinkage. Standard corner-triangle placement on a flex board will silently accumulate error you won’t see until yield drops.
+
+The Geometry, In Numbers You Can Actually Design To
+This is the part usually buried in a standards document nobody opens:
+
+Shape: solid filled circle. Circles are rotationally invariant, so the centroid calculation doesn’t shift based on the board’s entry angle, while crosses, diamonds, and squares introduce edge-aliasing error that circles don’t.
+
+Diameter: 1.0mm to 3.0mm per SMEMA 3.1, with 1.0 to 1.5mm as the practical sweet spot between visibility and board real estate.
+
+Size consistency: every fiducial on a given board must match within 25 microns of diameter, because the vision system applies one set of thresholding parameters across all marks. A 1.0mm fiducial in one corner and a 1.2mm fiducial in another breaks that assumption and degrades recognition on whichever mark doesn’t match the calibration.
+
+Clearance zone: stripped entirely of solder mask, copper, traces, vias, and silkscreen, with a radius at least 2x the fiducial radius (SMEMA minimum) and ideally 3x, so a 1.0mm fiducial should sit inside a 3.0mm clear zone. This margin isn’t padding for its own sake. It’s what absorbs normal solder mask registration shift (typically a few mils) without a crescent of mask creeping onto the copper and wrecking the rotational symmetry the algorithm depends on.
+
+Edge distance: SMEMA’s absolute minimum is 3.85mm from mark center to board edge, to clear conveyor clamp hardware, though designing to 5.0mm buys margin against equipment variance you don’t control if you have the room.
+
+Lock the footprint. Define the fiducial as a locked component in your library so nobody’s fat-fingering the diameter on one instance during a layout push.
+
+The silkscreen trap deserves its own line: white or yellow reference-designator text is highly reflective, and if autoplaced silkscreen creeps into your clearance zone, the vision algorithm will happily lock onto that bright text edge instead of the copper centroid. Check your clearance zones after autoplacement runs, since that’s when the encroachment actually gets introduced.
+
+Surface Finish Is an Optics Decision, Not Just a Cost Line
+Engineers pick surface finish based on cost and solderability and mostly forget it also determines whether the fiducial is even readable, when it should be evaluated as an optical component in its own right.
+
+ENIG is the standard for a reason that’s purely physical: the flat, specular gold surface gives maximum reflection contrast against the matte solder mask, and SMEMA’s 15-micron flatness requirement for a stable Z-reference plane is something ENIG naturally meets. Modern 3D solder paste inspection systems use that flat plane as a Z-axis zero reference for volumetric paste measurement, not just an X/Y target, so a wavy fiducial corrupts more than placement accuracy alone.
+
+HASL fails this for reasons that are mechanically built into the process rather than a lapse in quality control anywhere along the line. The board gets dipped in a 270°C solder bath, then air knives blast off the excess, and that combination leaves a domed, uneven surface that varies 1 to 40 microns in thickness across a single pad. That dome behaves like a convex mirror, scattering coaxial lighting into unpredictable highlights instead of reflecting it back uniformly, which is enough on its own to trick a centroid calculation into reporting a false center. That’s tolerable for boards without fine-pitch parts, but below 0.5mm pitch it works directly against your placement accuracy.
+
+OSP stays flat by following the copper profile underneath it exactly, but because it’s an organic layer rather than a metallic one, its optical performance depends entirely on that bare copper staying clean. It volatilizes off in the reflow oven, has a 6-12 month shelf life before it degrades, and is sensitive enough to contamination that a single fingerprint on a fiducial pad can measurably change its reflectivity. If you’re doing a double-sided reflow, the OSP fiducials on the first side you populate end up optically worse by the time the second pass runs.
+
+Immersion tin and immersion silver land somewhere in between, with good flatness and good reflectivity, but they tarnish faster under humidity or airborne sulfur, and immersion tin can grow whiskers under mechanical stress on flex substrates, which is one more reason flex fiducials deserve extra scrutiny.
+
+The Failures That Actually Show Up on the Line
+A short list of the mistakes that get caught after the board is already loaded into a conveyor, which is the expensive place to find them.
+
+Symmetric global fiducials, covered above and worth repeating because it’s the failure that destroys entire runs instead of individual boards.
+
+Fiducials too close to the board edge. A mark at 2.5mm from the edge gets partially occluded by a conveyor clamp that eats 3-5mm of board perimeter, and the centroid calculation fails on exactly the boards where clamp position varies slightly machine to machine.
+
+Local fiducials placed under the component, which makes them invisible the moment the part lands, useless for AOI, and a wasted placement-stage reference to boot.
+
+Silkscreen or copper pour bleeding into the clearance zone, usually introduced late during autoplacement or copper pour generation, after the fiducial itself was designed correctly.
+
+Using a tooling hole to save board space, which functions the way a lock washer would if you tried to use it as a spring: it does something, but not the job you actually needed done.
+
+None of these are subtle once you know what’s causing them, and every one of them tends to get discovered exactly once, on the first board that hits the assembly line, which is a bad time to be learning any of this for the first time.
+
+The Throughline
+Everything here reduces to the same statement: a pick-and-place machine cannot mechanically achieve the precision a modern component needs, so it achieves it optically instead, and every fiducial rule follows directly from what a vision algorithm needs in order to compute a reliable centroid under real lighting on a real, imperfectly flat board. Get the physics of that right, the reflectivity, the geometry, the placement math, and the IPC and SMEMA numbers stop reading like arbitrary compliance line items and start reading like what they actually are: the tolerance stack of an optical measurement system, written down as a design spec.
+
+Discussion about this post
+Write a comment...
+
+
+The Electronics Safety Checklist Nobody Hands You on Day One
+A Working Engineer’s Guide to Shock, Fire, and Thermal Runaway Prevention, From Schematic to Production
+Jul 12 • Noah's Digital Jefferies Tube
+
+1
+
+
+
+
+
+Texas Instruments' Earnings Just Exposed AI's Copper Problem
+Q2 2026 data center revenue doubled, and the reason is a 132-kW rack running out of amps
+Aug 10 • Noah's Digital Jefferies Tube
+
+
+
+
+
+
+The PCB Schematic: Where Good Boards Are Won or Lost
+A schematic does two jobs at once.
+Jul 8 • Noah's Digital Jefferies Tube
+
+
+
+
+
+
+Hot Chips 2026: Architectures for the Agentic Computing Era
+Architectures for the Agentic Computing Era
+Aug 24 • Noah's Digital Jefferies Tube
+
+
+
+
+
+
+NVIDIA’s $3.5 Billion MediaTek Bet: Owning the Wire After Giving Up the Chip
+On August 31, 2026, NVIDIA put $3.5 billion into MediaTek convertible bonds and converted what had been a components relationship into a shared…
+Aug 31 • Noah's Digital Jefferies Tube
+
+
+
+
+
+
+How Oscillate Photonics Killed the SESAM and Shrank a $150,000 Laser to a USB-C Brick
+A femtosecond laser used to mean a room.
+Jul 23 • Noah's Digital Jefferies Tube
+
+
+
+
+
+
+Hardware Cost Doesn’t Live in the Design. It Lives in the Feedback Loop.
+There’s a moment every EE student goes through.
+Jun 23 • Noah's Digital Jefferies Tube
+
+
+
+
+
+
+The Sand Contract: Build vs. Buy as a Theory of Where Entropy Lives
+Build vs. Buy as a Theory of Where Entropy Lives
+Jun 18 • Noah's Digital Jefferies Tube
+
+
+
+
+
+
+What Everyone Should Know Before Arguing With Their Electrical Engineer
+Most cross-disciplinary friction on hardware teams isn’t a personality problem, It’s a worldview problem.
+Jul 6 • Noah's Digital Jefferies Tube
+
+
+
+
+
+
+Efinix: The Company Building the Next Generation of FPGAs
+In June 2026, trade press reported that Efinix had lined up capacity at TSMC’s Japan fabs to keep pace with demand from its edge AI business.
+Jul 21 • Noah's Digital Jefferies Tube
+
+
+
+
+
+
+© 2026 Noah Bean · Privacy ∙ Terms ∙ Collection notice
+Start your Substack
+Get the app
+Substack is the home for great culture

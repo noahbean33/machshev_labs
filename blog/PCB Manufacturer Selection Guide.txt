@@ -1,0 +1,250 @@
+
+Noah's Digital Jefferies Tube
+
+
+
+
+PCB Manufacturer Selection Guide
+A reference for choosing between PCB fabricators, organized by decision criteria first and vendor-specific detail second.
+Noah's Digital Jefferies Tube
+Aug 15, 2026
+
+PCB Basics - Types, Process, and How PCBs Drive AI Revolution - Lorric
+
+
+Part 1: General Principles for Choosing a Fab
+Before comparing vendors, nail down your own requirements. Most bad fab choices come from picking a vendor by reputation or habit instead of matching vendor capability to what the board actually needs.
+
+1. Identify your volume stage
+Fabs specialize by volume tier, and pricing models diverge sharply between them.
+
+Prototype (1–30 boards): Optimized for turnaround and low absolute cost. Asian megafabs (JLCPCB, PCBWay) and community-panel services (OSH Park) dominate here.
+
+Low-to-mid volume (dozens to low thousands): Where domestic promotional tiers (Advanced Circuits’ discounted per-board pricing) and area-based European pricing (Aisler, Eurocircuits) become competitive.
+
+High volume / production: Cost per unit matters less than process consistency, defect rate, and supply chain reliability. This is where a vendor’s willingness to manually verify fabrication drawings against digital order data (PCBCart) or run structured Approved Vendor List support matters more than headline pricing.
+
+2. Determine your actual technical requirements, not your aspirational ones
+Four things drive both cost and vendor eligibility:
+
+Layer count and stackup. Standard 2–4 layer FR-4 is commoditized. Above 8 layers, especially with tight impedance control, fewer vendors compete and pricing stops being linear with layer count.
+
+Via type. Standard through-hole vias are supported everywhere. Blind and buried vias (needed for HDI escape routing on fine-pitch BGAs) are not universal. JLCPCB, for example, does not currently support them at all. Confirm this before you finalize a layout that assumes HDI capability.
+
+Minimum feature size. Trace/space and drill size floors vary by vendor and by process tier within a vendor. Don’t design at a vendor’s stated minimum; leave margin, since fabs guarantee a tolerance band around nominal, not an exact value.
+
+Materials. Standard FR-4 is cheap and universal. Rogers, PTFE, aluminum-clad, flex, and rigid-flex substrates narrow your vendor pool immediately and can multiply cost 2–5x over FR-4 baseline.
+
+3. Decide how much you actually need domestic or regulated manufacturing
+This is usually the single biggest cost lever, and it’s often decided by compliance rather than preference:
+
+ITAR, defense, aerospace, medical Class 3: Non-negotiable. You need a certified domestic (or in-country) fab. Advanced Circuits and Sierra Circuits are the standard references in the US.
+
+IP protection concerns: If you don’t want your design touching an offshore facility, domestic fabrication is the only real answer, independent of price.
+
+Everything else: Offshore fabs (JLCPCB, PCBWay, PCBCart) offer equivalent electrical and mechanical reliability to domestic options for standard industrial and commercial use cases. The “boutique domestic quality” perception is largely outdated. It shows up mainly in cosmetic finish, not functional reliability.
+
+4. Separate bare-board fabrication from assembly (PCBA)
+These are different competency sets even within the same company. A vendor can be excellent at board fab and inconsistent at assembly, or vice versa. If you need turnkey assembly:
+
+Check component sourcing markup. Offshore assembly often sources parts locally at up to 2x Western distributor pricing.
+
+Check whether the vendor’s basic or pre-loaded component library covers your BOM. Parts outside it trigger “extended part” fees for manual cassette changes.
+
+For higher-reliability builds, check whether inspection is visual-only or includes X-ray/AOI. This matters most for BGAs and hidden joints.
+
+5. Use pre-submission DFM tooling when the cost of a bad run is high
+At prototype pricing on the order of a couple dollars a board, a scrapped run is a rounding error. At domestic or production-volume pricing, it isn’t. Vendors with strong automated pre-submission design review (Advanced Circuits’ FreeDFM, Eurocircuits’ Visualizer) are worth prioritizing specifically when your per-run cost is high enough that a respin actually hurts.
+
+6. Read reviews for polarity, not just average rating
+Several vendors in this space show a consistent pattern: strong, reliable bare-board fabrication paired with inconsistent assembly-side execution, including missing BOM components and communication gaps during failure resolution. A high aggregate rating can still hide a real weakness in one specific service line. Read for what kind of complaint shows up repeatedly, not just how many stars.
+
+Quick decision guide
+If your priority is absolute lowest cost on standard 2–4 layer FR-4, go to JLCPCB. If you need HDI, blind or buried vias, or exotic substrates, go to PCBWay. For high-volume production where manual DFM verification against your order data matters, look at PCBCart. For a tiny board with ENIG finish, no minimum order, and domestic US sourcing, OSH Park fits. For ITAR, Class 3, defense, or aerospace work, use Advanced Circuits or Sierra Circuits. For extreme HDI complexity with guaranteed fast turnaround where budget is secondary, Sierra Circuits is the reference. If you’re EU-based and want to avoid customs and VAT friction while still getting strong pre-submission DFM checking, Eurocircuits or Aisler are the options, Aisler specifically if you want transparent flat-fee pricing without uploading Gerbers first.
+
+Part 2: Vendor Deep Dives
+JLCPCB
+The default choice for cost-optimized prototyping. Runs a highly automated, digitally-imaged production line that shares panel space across thousands of distinct customer designs simultaneously, which is the actual source of the low pricing, not reduced quality control.
+
+Supports 1 to 32 layers. Minimum via hole size is 0.15mm on multilayer and double-sided boards, and 0.3mm on single-layer boards. Minimum via diameter (outer pad) is 0.25mm on multilayer boards and 0.5mm on single-layer boards; via diameter must exceed hole size by at least 0.1mm, with 0.15mm preferred for a robust annular ring. On advanced high-layer-count boards using resin-plugged via technology, minimum trace and space can reach 0.0762mm. Blind and buried vias are not supported at all: every via is a through-hole. Plated slots need a minimum width of 0.5mm on 2-layer boards and 0.35mm on multilayer boards; non-plated slots need a minimum of 1.0mm. Slot length-to-width ratio should stay above 2.5:1 to avoid short-slot defects. Dimensional tolerance runs ±0.1mm on precision jobs and ±0.2mm on regular jobs.
+
+On pricing, five 100x100mm two-layer FR-4 boards run roughly $2 at 30 pieces or fewer, but only within standard parameters. Exceeding 100x100mm removes the promotional pricing entirely. Boards over 550mm in any dimension add a $30 large-board surcharge, and total area over 650 square centimeters triggers large-size pricing that can eliminate the benefit of self-panelizing multiple designs into one file. Layer count interacts sharply with size: an 8-layer design can jump from $2 to $90 just by growing past a small footprint.
+
+Strengths are unmatched cost for standard specs, fast turnaround, and turnkey assembly with lead times reported as roughly twice as fast as local US or EU options at around 60% of the cost. Reliability holds up well in industrial use, including high-temperature and high-humidity deployments with no reported field failures. Weaknesses are the lack of blind/buried via support, which limits HDI use cases, and pricing cliffs around area and layer count that are easy to trip without realizing it during layout.
+
+Best for standard 2–8 layer FR-4 boards, cost-sensitive prototyping, and high-mix low-volume runs.
+
+PCBWay
+Positioned a tier above JLCPCB on capability, specifically for HDI, flex, and specialized-material designs. Also operates as a broader rapid-prototyping hub offering CNC machining and 3D printing alongside PCB fab.
+
+Supports 1 to 64 layers with full HDI capability, including blind and buried vias. Minimum trace and space reaches 2/2 mil (0.05mm). Materials include standard FR-4, high-temp FR-4, aluminum, copper base, Rogers, flex, and rigid-flex. Maximum dimensions reach 600x1200mm for single or double-sided boards and 560x1150mm for multilayer. CNC machining starts at $25 with 7–9 day turnaround, and 3D printing starts at $4.98 with 3–4 day turnaround.
+
+Basic FR-4 prototypes start at $5 for ten 2-layer 100x100mm boards, with turnaround as fast as 24 hours. Non-standard material or process choices escalate quickly and non-linearly: a 40x40mm aluminum board with through-hole components was quoted at $360 for ten pieces because of the manual insulation process required around plug-in holes on a conductive substrate. Removing the through-hole parts in favor of SMT-only dropped the same quote to $26.
+
+Assembly setup starts around $29 with turnaround from 2 days to 3 weeks. Component markup through their sourcing service can run up to 2x standard Western distribution pricing, though assembly labor pricing itself is considered strong value. One documented case ran $14.20 per board to place 81 SMT parts including 0201 packages. Customer service is a real strength here: CAM engineers reportedly pause production to flag ambiguities like polarity, silkscreen errors, or missing soldermask, and often correct minor errors without charge. The service holds a 9.3 out of 10 rating across more than 100,000 reviews.
+
+Weaknesses include the component sourcing markup and bulk pricing discounts that apply per-board rather than to aggregate order totals, which frustrates larger multi-board orders. Occasional soldermask alignment issues have caused shorts to exposed copper.
+
+Best for HDI designs, fine-pitch BGA escape routing, flex or rigid-flex boards, and exotic substrate prototyping.
+
+PCBCart
+Less prototype-focused than JLCPCB or PCBWay, and more of a trusted partner for the transition into medium-to-high volume commercial production. Process capability is comparable to other Asian fabs. Runs of 4-layer, 6 mil trace/space, 2oz copper boards have been reported at scale with zero systemic defects, but the real differentiator is process, not the spec sheet.
+
+Technical staff manually review fabrication drawings against digital order parameters rather than trusting the Gerber output blindly, catching mismatches like boilerplate drawing text specifying 1oz copper against a digitally-ordered 2oz spec before production starts. Lead times run on calendar days rather than business days, which makes scheduling more predictable.
+
+The tradeoff is that PCBCart is less differentiated on raw prototype pricing or turnaround speed compared to JLCPCB or PCBWay. The value proposition is specifically about high-volume production reliability, not iteration speed.
+
+Best for validated designs transitioning from prototype to production volume, where a caught data-entry error is worth more than the fastest possible turnaround.
+
+OSH Park
+A US-based, community panel-sharing service built around no-minimum-order-quantity prototyping with a distinctive “Perfect Purple” soldermask and ENIG finish as standard.
+
+Four service tiers cover most needs. The 2-layer prototype tier offers 6 mil (0.152mm) minimum trace/space, 10 mil (0.254mm) minimum drill, 5 mil (0.127mm) annular ring, runs $5 per square inch, and takes 9–12 days. A 2-layer Super Swift tier holds the same trace/space and drill specs but runs $10 per square inch with a 4–5 day turnaround. The 4-layer prototype tier tightens to 5 mil (0.127mm) trace/space and 4 mil (0.101mm) annular ring, still at 10 mil minimum drill, for $10 per square inch over 9–14 days. The 6-layer prototype tier holds the same 5 mil trace/space and 4 mil annular ring but tightens minimum drill to 8 mil (0.203mm), running $15 per square inch over 12–21 days.
+
+There’s no support for blind or buried vias, filled via-in-pad, or guaranteed castellations. An “After Dark” service offers clear soldermask over black FR-4 substrate at $5 per square inch with a 12–21 day turnaround, and a “2oz-0.8mm” service offers thin boards with doubled copper weight for high-current use.
+
+Pricing is strictly area-based: three copies per order, no setup fees, and free global USPS shipping. A one-square-inch board costs exactly $5 delivered. Because pricing scales linearly with area, this stops being competitive fast. A 150x75mm 2-layer board, at over 17 square inches, runs past $85, where an Asian fab would charge single digits. A “Medium Run” tier with a 100 square inch minimum drops the rate to $1–2 per square inch for larger batches.
+
+Strengths are no minimum order quantity, standard ENIG finish, domestic US sourcing, and pricing that’s mathematically cheaper than offshore fabs for very small boards once international shipping is factored in. Weaknesses are the linear area pricing that punishes larger boards, no HDI or blind/buried via support, and slower turnaround than expedited offshore options.
+
+Best for small hobbyist or professional boards, roughly 20x20mm or smaller, needing domestic sourcing and premium finish without volume commitments.
+
+Advanced Circuits (4PCB)
+A top-tier North American fabricator serving commercial, military, aerospace, and high-reliability industrial customers, with facilities in Colorado, Arizona, and New Hampshire.
+
+Supports 0 to 40 layers, including HDI and Ultra-HDI (UHDI), RF, rigid-flex, and heavy copper multilayer builds. The company is ITAR compliant, holds MIL-PRF-31032 and AS9100 certification, and can build to IPC Class 3 and Class 3/ES standards for life-critical medical and aerospace electronics. Their “FreeDFM” tool is an automated online design review that catches manufacturability issues like soldermask misalignment and silkscreen errors before a production run starts, and “PCB Artist” is their proprietary layout software for streamlining the path from design to fab.
+
+Promotional pricing tiers include a “BareBones” 1–2 layer, 1oz FR-4 option with no soldermask or silkscreen at a 1-day turn; a “$33 Each” tier for 2-layer, 1oz FR-4 boards including mask and silk, up to 60 square inches, 5-day turn, minimum order of 3; a “$66 Each” tier for 4-layer, 1oz FR-4 boards up to 30 square inches, 5-day turn, minimum order of 4; and a “$99 Specials” tier for 2-layer RF or aluminum-clad boards at a 5-day turn.
+
+Reviews split sharply here. Reliability and shipping speed frequently exceed quoted turnaround, the FreeDFM tool gets consistent praise for catching layout mistakes before an expensive run, and customer service is reported to honor pricing even on customer submission errors. The complaints cluster specifically around assembly: Class 3 assemblies built incorrectly with only visual rather than rigorous inspection, missing consigned BOM components followed by additional freight demands, solder bridging, and unresponsive communication during failure resolution. Bare-board fab reputation is strong. Assembly reputation is inconsistent.
+
+Best for ITAR or Class 3 requirements, domestic sourcing, and fast-turn low-volume prototype tiers. Vet the assembly service separately and specifically if you need turnkey builds.
+
+Sierra Circuits
+Positioned at the top of the market for complexity and speed, targeting engineering teams with advanced HDI or microvia requirements and strict deadlines, not cost-sensitive work.
+
+Handles extremely complex HDI layouts, high-density microvias, and tight tolerances that standard quick-turn fabs routinely reject, and carries full ITAR, MIL-PRF-31032, and Class 3/ES certification. It’s widely respected for guaranteed execution on genuinely difficult boards within days, making it the go-to reference when a design has been rejected or flagged as high-risk elsewhere. The tradeoff is that pricing runs high enough to rule out hobbyist or standard commercial R&D use.
+
+Best for enterprise teams with complex HDI or exotic-substrate designs under hard deadlines where failure is not an acceptable outcome.
+
+Eurocircuits
+A European fab and assembly provider, manufacturing out of Germany and Hungary, using a pooled-panel model similar to Asian megafabs but built around European quality and environmental standards along with strong pre-submission verification tooling.
+
+Manufacturability is categorized through “Pattern Class” (track, pad, and gap dimensions) and “Drill Class” (based on production drill size rather than finished hole size), with higher pattern classes gated by the starting copper foil thickness. Their PCB Proto Service covers 2–4 layer standard 1.55mm FR-4, with bare boards in 3 working days and assembled boards in 6; minimum track/space is 0.150mm and minimum plated through-hole is 0.250mm, standardized on green mask and white legend to maximize speed. The STANDARD Pool covers up to 16 layers, with track and gap down to 100µm pooled or 90µm on non-pooled custom panels, at 5 working days bare and 10 assembled. The HDI Pool offers 8-layer boards with 100µm microvias, at 12 working days bare and 17 assembled.
+
+Assembly supports up to 25,000 SMT components or 800 THT components per order, down to 0201 passives and 0.35mm BGA/QFP pitch, sourced from a database of more than 400,000 verified components or customer-supplied parts. Inspection includes solder paste inspection, X-ray for BGAs, and visual microscope review. Their “Visualizer” tool runs a full DRC/DFM check in a virtual manufacturing environment before submission.
+
+Pricing runs higher than Chinese competitors but stays competitive within the EU market. A small complex HDI microvia prototype run priced around €660, reportedly better than legacy competitors like Würth Elektronik. Strengths are the pre-submission verification tooling, the explicit and transparent manufacturability classification system, avoidance of customs and VAT friction for EU-based engineers, and the broad component database for assembly sourcing. The main weakness is that the cost premium over offshore options remains real, offset primarily by logistics and reliability rather than price.
+
+Best for EU-based engineers needing local fab or assembly with strong upfront DFM verification, especially for HDI work.
+
+Aisler
+A software-first, fully EU-based fab emphasizing pricing transparency, fair labor standards, and environmental sustainability.
+
+Pricing works on a flat job fee plus a per-square-centimeter area fee, calculable without uploading Gerbers first. The 2-Layer HASL Budget tier runs a €12.00 job fee plus €0.067 per cm² at 1.6mm thickness. The 2-Layer ENIG Blitz tier, expedited, runs €22.00 plus €0.170 per cm² at the same thickness. The 4-Layer ENIG Budget tier runs €14.00 plus €0.130 per cm² at 1.6mm thickness. The 4-Layer ENIG Blitz tier, expedited, runs €60.00 plus €0.097 per cm² at 0.8mm thickness. A bare prototype stencil runs a €5.00 job fee plus €0.095 per cm².
+
+Aisler’s own cost-optimization guidance is to increase production quantities to distribute setup tasks, minimize unique BOM component count to reduce machine check-in overhead, and design for automated SMT-only assembly to avoid manual soldering labor charges.
+
+Strengths are the most transparent pricing model in this category, budgetable before layout is even finalized, along with modern API integration and strong sustainability and labor positioning. The weakness is a narrower process range than Eurocircuits or the Asian megafabs. This is best suited to standard 2–4 layer work rather than advanced HDI.
+
+Best for EU-based engineers who want predictable, easily-budgeted pricing for standard-tier boards without uploading files for a quote first.
+
+Discussion about this post
+Write a comment...
+
+
+The Electronics Safety Checklist Nobody Hands You on Day One
+A Working Engineer’s Guide to Shock, Fire, and Thermal Runaway Prevention, From Schematic to Production
+Jul 12 • Noah's Digital Jefferies Tube
+
+1
+
+
+
+
+
+Texas Instruments' Earnings Just Exposed AI's Copper Problem
+Q2 2026 data center revenue doubled, and the reason is a 132-kW rack running out of amps
+Aug 10 • Noah's Digital Jefferies Tube
+
+
+
+
+
+
+The PCB Schematic: Where Good Boards Are Won or Lost
+A schematic does two jobs at once.
+Jul 8 • Noah's Digital Jefferies Tube
+
+
+
+
+
+
+Hot Chips 2026: Architectures for the Agentic Computing Era
+Architectures for the Agentic Computing Era
+Aug 24 • Noah's Digital Jefferies Tube
+
+
+
+
+
+
+NVIDIA’s $3.5 Billion MediaTek Bet: Owning the Wire After Giving Up the Chip
+On August 31, 2026, NVIDIA put $3.5 billion into MediaTek convertible bonds and converted what had been a components relationship into a shared…
+Aug 31 • Noah's Digital Jefferies Tube
+
+
+
+
+
+
+How Oscillate Photonics Killed the SESAM and Shrank a $150,000 Laser to a USB-C Brick
+A femtosecond laser used to mean a room.
+Jul 23 • Noah's Digital Jefferies Tube
+
+
+
+
+
+
+Hardware Cost Doesn’t Live in the Design. It Lives in the Feedback Loop.
+There’s a moment every EE student goes through.
+Jun 23 • Noah's Digital Jefferies Tube
+
+
+
+
+
+
+The Sand Contract: Build vs. Buy as a Theory of Where Entropy Lives
+Build vs. Buy as a Theory of Where Entropy Lives
+Jun 18 • Noah's Digital Jefferies Tube
+
+
+
+
+
+
+What Everyone Should Know Before Arguing With Their Electrical Engineer
+Most cross-disciplinary friction on hardware teams isn’t a personality problem, It’s a worldview problem.
+Jul 6 • Noah's Digital Jefferies Tube
+
+
+
+
+
+
+Efinix: The Company Building the Next Generation of FPGAs
+In June 2026, trade press reported that Efinix had lined up capacity at TSMC’s Japan fabs to keep pace with demand from its edge AI business.
+Jul 21 • Noah's Digital Jefferies Tube
+
+
+
+
+
+
+© 2026 Noah Bean · Privacy ∙ Terms ∙ Collection notice
+Start your Substack
+Get the app
+Substack is the home for great culture

@@ -1,0 +1,188 @@
+
+Noah's Digital Jefferies Tube
+
+
+
+
+Why Bypass Capacitors Are Not Optional
+The Physics of Power Delivery Network Impedance
+Noah's Digital Jefferies Tube
+Aug 22, 2026
+
+Decoupling and bypassing capacitors and how to use them in designs -  OnElectronTech
+
+
+If you’ve laid out more than a handful of boards, you’ve followed the ritual without questioning it: put a 100 nF ceramic next to every power pin, add a bulk cap somewhere upstream, move on. Then you look at a densely populated rail (an FPGA, a high-speed ADC, a switching regulator output) and find two, three, sometimes four different capacitor values stacked in parallel on a single supply pin. A 10 µF, a 100 nF, a 10 nF, sometimes a 1 nF, all doing what looks like the same job.
+
+It isn’t. Each value solves a different frequency-domain problem, and understanding why requires abandoning the mental model most engineers carry around: that a capacitor is a capacitor. That holds at low frequency and stops holding once you get past a few megahertz. This article works through the physics from first principles: why bypassing exists at all, why proximity to the pin matters, why a single “big enough” capacitor fails, and why the components you spec have to be treated as impedance elements across a frequency range rather than as capacitance values on a BOM line.
+
+The ideal circuit that doesn’t exist
+Start with the case that makes bypassing pointless. Imagine a power supply with zero output impedance, connected by a trace with zero resistance and zero inductance, to a chip that draws current with zero delay. In that world, the voltage at the chip’s supply pin is identical to the voltage at the source, always, regardless of how abruptly the chip’s internal load changes. No bypass capacitor could improve on that, because there is nothing for a bypass capacitor to compensate for.
+
+That circuit does not exist. Every physical element in the path (the regulator’s output stage, the PCB trace, the package leads, the bond wires connecting the die to the package) has resistance and, more importantly for this discussion, inductance. The regulator has finite bandwidth and can’t respond instantaneously to a load step. The trace, however short, has loop inductance on the order of nanohenries per unit length. The bond wires inside the package add more. None of this is a manufacturing defect. It’s unavoidable given how current-carrying conductors interact with magnetic fields.
+
+What happens when the chip actually switches
+A digital chip is not a static load. Internally it’s full of MOSFETs switching gates and driving capacitive loads, and every transition pulls a burst of current from the supply rail. If the chip is doing nothing, the pin sits at a clean DC level and none of this matters. The moment it starts switching, the current draw becomes a series of sharp pulses rather than a steady draw, and the supply network has to source those pulses through whatever resistance and inductance sits between the chip and the actual voltage source.
+
+This is where an inductor’s defining property becomes the whole story: it resists a change in current. Ohm’s law doesn’t apply cleanly here. What governs the voltage drop across any inductive element is:
+
+V = L × (di/dt)
+A trace with even a few nanohenries of inductance, subjected to a fast current transient (a large di/dt), produces a real, non-negligible voltage sag right at the moment the chip needs current the most. If that sag is large enough, the local supply voltage can dip below the chip’s minimum operating voltage for a few nanoseconds. That’s often enough to cause logic errors, glitches, or subtly corrupted output: the kind of intermittent fault that’s miserable to trace back to its cause, because a slow scope probe or a DC multimeter will show a rock-solid 3.3 V or 5 V rail the entire time.
+
+The same mechanism produces overshoot, undershoot, and ringing on driven output signals. Every rising or falling edge is itself a current transient traveling through inductance (package bond wires, PCB trace, ground return path), and an LC combination with any inductance in the loop will ring at its natural frequency in response to a step. This is why “high frequency” in this context doesn’t mean the chip’s clock rate. A slow 1 kHz square wave with fast edges still contains broadband frequency content (this falls straight out of Fourier analysis of a trapezoidal waveform); the edge rate, not the fundamental frequency, determines how much of this parasitic inductance gets excited.
+
+Why the bypass cap has to sit right at the pin
+A bypass (decoupling) capacitor’s job is to act as a local, low-impedance charge reservoir that can supply that current pulse without routing it through the long, inductive path back to the regulator. Instead of the chip pulling current from three inches away through a trace with meaningful series inductance, it pulls it from a component sitting a few hundred mils away with a much shorter, lower-inductance connection.
+
+The distance matters directly because trace inductance scales with length. Every millimeter of additional trace between the capacitor and the pin adds loop inductance in series with the capacitor’s own parasitics, which (as the next section shows) are already the dominant limitation at high frequency. Placement isn’t a routing nicety. It’s the single biggest lever an engineer has over the effective inductance of the bypass path.
+
+The real capacitor: an RLC circuit, not a pure C
+This is the part that trips people up, because component-level intuition from an intro circuits course treats a capacitor as an ideal element with impedance:
+
+Xc = 1 / (2πfC)
+That’s fine at low frequency. It is not what a physical capacitor does across a wide frequency range. A real capacitor has:
+
+ESR (equivalent series resistance): a roughly constant resistive loss term
+
+ESL (equivalent series inductance): parasitic inductance from the leads, internal construction, and termination geometry
+
+Put those in series with the ideal capacitance and you have an RLC circuit, and RLC circuits resonate. The inductive reactance is:
+
+XL = 2πfL
+At low frequency, capacitive reactance dominates and the total impedance falls with increasing frequency, exactly as the ideal formula predicts. But XL rises with frequency while Xc falls, so at some point they’re equal. That’s the self-resonant frequency (SRF) of the physical part:
+
+f_SRF = 1 / (2π√(LC))
+Below SRF, the capacitor behaves capacitively and impedance decreases with frequency. At SRF, impedance hits a minimum (bounded by ESR). Above SRF, the ESL term takes over and impedance starts climbing again; the capacitor now behaves inductively. Plotted on a log-log impedance-vs-frequency graph, this produces the characteristic V-shape (sometimes called a bathtub curve) that anyone who’s pulled up a capacitor datasheet’s impedance plot will recognize.
+
+This is the crucial fact the ideal-capacitor mental model hides: above its self-resonant frequency, a bypass capacitor stops bypassing. The capacitance is still physically present (a 1 µF cap is still storing the same charge), but it can no longer deliver that charge fast enough to be useful, because the series impedance in the path has become dominated by inductance rather than capacitance. For a modern digital IC with edge rates fast enough to push frequency content into the hundreds of megahertz or beyond (an FPGA is the textbook case), a bypass cap that’s “run out” of usefulness above a few megahertz is doing essentially nothing at the frequencies that matter most.
+
+Why one big capacitor can’t cover the whole range
+Given that picture, the obvious question is why not just spec one capacitor large enough to source any current pulse the design will ever need. The answer is that capacitance value and SRF are inversely related in a way that makes a single part unable to cover a wide bandwidth:
+
+Larger-value capacitors (10 µF, 47 µF) have low SRF, typically in the hundreds of kHz to low MHz range, but excellent low-frequency impedance. They’re good at handling large, relatively slow current demands: startup surges, load steps, low-frequency ripple.
+
+Smaller-value capacitors (10 nF, 1 nF) have much higher SRF, often extending into the tens or hundreds of MHz, because their physical construction and lower capacitance push the LC resonance point higher. They handle the fast, high-frequency edge transients but have comparatively poor low-frequency performance (higher impedance at low f, since Xc = 1/(2πfC) is large when C is small).
+
+Package geometry compounds this. As a general rule, smaller packages (0402 versus 0805 versus 1206) have lower ESL, because there’s simply less physical length in the current path through the part. This is also why specialized low-ESL parts exist: capacitors built with the terminations on the long sides instead of the ends (reverse-geometry or “low-inductance chip capacitor” construction) can cut ESL by an order of magnitude relative to a standard part in the same case size, because the current path through the internal electrode structure is shorter and wider. These show up specifically in high-frequency switching supplies and other performance-critical rails where every picohenry counts.
+
+The engineering conclusion follows directly: to get low impedance across a broad frequency range, from the low-frequency bulk energy storage regime up through the high-frequency edge-rate regime, you need multiple capacitor values (and sometimes multiple package sizes) in parallel, each covering the band where its own SRF sits. A 10 µF handles the low end, a 100 nF covers the middle, a 10 nF or 1 nF extends coverage into tens of MHz, and so on. Overlapping their individual V-shaped impedance curves produces a composite curve that stays low across the full range the design actually needs, rather than one V-shaped curve that’s excellent near its own resonance and useless everywhere else.
+
+The trap: anti-resonance between parallel capacitors
+Here’s the part that a lot of “just add more caps” advice glosses over, and it matters enough to design around explicitly. Two capacitors of different values in parallel don’t just add their individual impedance curves in a simple constructive way. Each capacitor is an LC network, and paralleling two LC networks with different resonant frequencies can produce a new resonant peak, an anti-resonance, between the two individual SRFs, where the combined impedance is locally worse than either capacitor would show on its own at that frequency.
+
+This is a real, measurable effect, not a theoretical curiosity: a 10 µF and 100 nF combination can show a distinct impedance peak in the single-digit-MHz range that sits above what the 10 µF achieves alone at that same frequency. In some cases, for a specific frequency of interest, a single larger capacitor genuinely outperforms a naive multi-value combination, because the combination trades a wider effective bandwidth for a narrow-band degradation at the anti-resonant frequency. Adding a third, higher-frequency value can smooth that peak back out, but the general lesson holds: capacitor selection for a power delivery network is impedance engineering, not a matter of piling on more parallel caps. It benefits from actual measurement (VNA-based impedance sweep, or at minimum a simulated PDN impedance model) rather than pattern-matching to whatever the reference design used.
+
+Practical takeaways
+Bypass capacitors exist because real power delivery paths have nonzero resistance and, critically, nonzero inductance. An ideal circuit would need none.
+
+Place bypass capacitors as physically close to the supply pin as layout allows. Every added millimeter of trace adds loop inductance directly in series with the capacitor’s own ESL.
+
+Treat every physical capacitor as an RLC network with a self-resonant frequency, not as an ideal C. Above SRF, it stops functioning as a low-impedance bypass element.
+
+Cover the frequency range your design actually needs, set by the fastest edge rates and switching events in the circuit rather than just the clock frequency, by combining capacitor values whose individual SRFs span that range, from bulk low-frequency storage up through high-frequency, low-ESL parts.
+
+Smaller packages and specialty low-ESL geometries reduce parasitic inductance directly and matter more as your bandwidth requirements push into tens or hundreds of MHz.
+
+Verify combinations don’t introduce anti-resonant peaks that undermine the coverage you’re trying to build. This is especially worth checking on any rail feeding high-di/dt loads (FPGAs, fast digital I/O, switching converters), where a bad peak can land right in the operating band.
+
+None of this is exotic. It’s the direct consequence of treating a capacitor as the physical component it is, an RLC network with a finite bandwidth of usefulness, rather than the ideal circuit element from a first-semester textbook. Once you’re designing to a target impedance curve across frequency instead of a target capacitance value, the “why does this chip need four different capacitor values” question stops being mysterious.
+
+Discussion about this post
+Write a comment...
+
+
+The Electronics Safety Checklist Nobody Hands You on Day One
+A Working Engineer’s Guide to Shock, Fire, and Thermal Runaway Prevention, From Schematic to Production
+Jul 12 • Noah's Digital Jefferies Tube
+
+1
+
+
+
+
+
+Texas Instruments' Earnings Just Exposed AI's Copper Problem
+Q2 2026 data center revenue doubled, and the reason is a 132-kW rack running out of amps
+Aug 10 • Noah's Digital Jefferies Tube
+
+
+
+
+
+
+The PCB Schematic: Where Good Boards Are Won or Lost
+A schematic does two jobs at once.
+Jul 8 • Noah's Digital Jefferies Tube
+
+
+
+
+
+
+Hot Chips 2026: Architectures for the Agentic Computing Era
+Architectures for the Agentic Computing Era
+Aug 24 • Noah's Digital Jefferies Tube
+
+
+
+
+
+
+NVIDIA’s $3.5 Billion MediaTek Bet: Owning the Wire After Giving Up the Chip
+On August 31, 2026, NVIDIA put $3.5 billion into MediaTek convertible bonds and converted what had been a components relationship into a shared…
+Aug 31 • Noah's Digital Jefferies Tube
+
+
+
+
+
+
+How Oscillate Photonics Killed the SESAM and Shrank a $150,000 Laser to a USB-C Brick
+A femtosecond laser used to mean a room.
+Jul 23 • Noah's Digital Jefferies Tube
+
+
+
+
+
+
+Hardware Cost Doesn’t Live in the Design. It Lives in the Feedback Loop.
+There’s a moment every EE student goes through.
+Jun 23 • Noah's Digital Jefferies Tube
+
+
+
+
+
+
+The Sand Contract: Build vs. Buy as a Theory of Where Entropy Lives
+Build vs. Buy as a Theory of Where Entropy Lives
+Jun 18 • Noah's Digital Jefferies Tube
+
+
+
+
+
+
+What Everyone Should Know Before Arguing With Their Electrical Engineer
+Most cross-disciplinary friction on hardware teams isn’t a personality problem, It’s a worldview problem.
+Jul 6 • Noah's Digital Jefferies Tube
+
+
+
+
+
+
+Efinix: The Company Building the Next Generation of FPGAs
+In June 2026, trade press reported that Efinix had lined up capacity at TSMC’s Japan fabs to keep pace with demand from its edge AI business.
+Jul 21 • Noah's Digital Jefferies Tube
+
+
+
+
+
+
+© 2026 Noah Bean · Privacy ∙ Terms ∙ Collection notice
+Start your Substack
+Get the app
+Substack is the home for great culture

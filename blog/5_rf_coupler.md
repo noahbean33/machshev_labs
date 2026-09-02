@@ -1,50 +1,70 @@
-**RF and Microwave PCB Couplers: Design Principles and Practical Considerations**
+**RF and Microwave PCB Design, Part 5: Couplers** — Ben Jordan, OnTrack Whiteboard series (Altium Academy), ~1 hour, whiteboard-style.
 
-In RF and microwave PCB design, couplers are fundamental passive structures used to split, combine, or sample signals with high efficiency. Unlike discrete components that introduce insertion loss and parasitics, these structures are realized entirely with microstrip or stripline traces over a continuous ground plane. They are nearly lossless when properly designed and require no active semiconductor devices. The three most common printed coupler topologies—90-degree hybrids, rat-race hybrids, and directional (backward-wave) couplers—each exploit controlled electromagnetic coupling and precise electrical lengths to achieve specific amplitude and phase relationships.
+Framing: episode 4 covered power dividers (Wilkinson) as a way to split a signal and keep everything matched. Couplers do that too, but also recombine, and every one of them has an isolated port.
 
-### The 90-Degree Hybrid
+## 90° hybrid (branch-line), 1:00–16:00
 
-The 90-degree hybrid (also called a branch-line coupler) is a four-port network constructed from interconnected quarter-wavelength transmission-line segments. A signal applied at port 1 divides equally between ports 2 and 3, with a 90° phase difference between the two outputs. Port 4 is isolated and is normally terminated in a matched 50 Ω load so that any residual energy is absorbed rather than reflected.
+Four-port structure: a box of quarter-wave microstrip segments with Z0 feed lines at each corner. Reminder that all of these shapes are drawn as top copper only, but there is always dielectric plus a continuous ground plane underneath.
 
-In a standard single-section design the branch impedances are not uniform. Two of the lines are set to the system impedance \(Z_0\) (typically 50 Ω) while the remaining two are set to
-\[
-\frac{Z_0}{\sqrt{2}} \approx 0.707\,Z_0.
-\]
-This impedance profile produces equal power division and the required quadrature phase shift at the design frequency.
+Ports numbered around the ring. Injecting at port 1:
+- Port 2 is λ/4 away, so 90° lag
+- Port 3 is another λ/4, so 180°
+- Port 4 sees two paths, λ/4 one way and 3λ/4 the other. 270° minus 90° is 180°, so the two contributions cancel. Port 4 is the isolated port, normally terminated in 50Ω to ground.
 
-Bandwidth can be extended by cascading additional quarter-wave sections, producing a multi-section “ladder” hybrid. In a two-section realization the middle section is set to \(\sqrt{2}\,Z_0\) while the outer sections use \((1+\sqrt{2})\,Z_0\). The added sections flatten the amplitude and phase response over a wider fractional bandwidth at the cost of increased board area and a more complex impedance schedule.
+Branch impedances: the two branches set to Z0/√2 (0.707 × 50, about 35Ω), the other two left at Z0. Result is both outputs at 0.707·Vin, so 3 dB down each, one at 90° and one at 180°. He calls port 3 the "slave" output.
 
-A frequent system-level use of 90-degree hybrids is power combining for amplifiers. The input signal is split, each path is amplified by a separate, lower-power device, and the amplified signals are recombined by a second hybrid. When the two amplifier paths are well matched, the hybrid recovers nearly the full combined power while preserving good input and output match and improving overall noise performance and VSWR.
+Port numbering depends on which direction you drive it, and the device is reciprocal. Consequences he draws out:
+- Signal entering port 2 appears at port 4, 3 dB down and 180° shifted, isolated from port 3. So two sources can be combined while staying isolated from each other.
+- The same signal into ports 2 and 3 with 90° of relative shift fully combines at port 1 and fully cancels at port 4.
 
-### The Rat-Race Coupler
+Main application: the balanced amplifier. Split with a hybrid, amplify each leg separately, recombine with a second hybrid. Motivation is that a single device with the required gain, noise figure, and VSWR may be prohibitively expensive, while the hybrid itself is nearly lossless on good low-loss laminate (also applies inside a MMIC). These cascade into trees for larger splits, with every unused port terminated.
 
-The rat-race (or hybrid-ring) coupler replaces the rectangular branch geometry with a closed annular ring whose circumference is \(1.5\lambda\). The ring is partitioned into one \(3/4\lambda\) arc and three \(1/4\lambda\) arcs. When a signal is injected at one port, equal-amplitude outputs appear at the two adjacent ports with a precise 180° phase difference; the remaining port is isolated.
+## Broadband multi-section hybrid, 16:00–21:00
 
-Because the two outputs are inherently out of phase, the rat-race coupler is an excellent choice for baluns that drive differential antennas or balanced mixers. The structure is relatively tolerant of moderate substrate variations and can be realized on standard FR-4 at lower microwave frequencies, although the large physical size of the ring becomes a practical limitation above a few gigahertz.
+Adding sections turns the single box into a ladder and widens bandwidth. The ratios of the quarter-wave segments set center frequency, bandwidth, and power split. He points at microwaves101.com repeatedly as the reference and calculator source.
 
-### Directional (Backward-Wave) Couplers
+Two-section worked case: outer legs (1+√2)·Z0, middle leg √2·Z0, side segments all Z0. Outputs are 1/√2·Vin at 180° and 270°, so still 3 dB down and still 90° apart, but over a much broader band.
 
-Directional couplers rely on distributed electromagnetic coupling between two parallel traces that run side-by-side for a quarter-wavelength. A signal traveling from port 1 to port 2 induces a coupled wave that propagates in the opposite direction and exits at port 4 (the coupled port). Port 3 is the isolated port.
+## Rat race (ring hybrid), 21:00–28:00
 
-Design begins with a target coupling coefficient \(k\) obtained from the desired coupling in decibels:
-\[
-k = 10^{-C_{\mathrm{dB}}/20}.
-\]
-A 6 dB coupler corresponds to \(k \approx 0.5\); a 12 dB coupler yields \(k \approx 0.25\). Once \(k\) is known, the even- and odd-mode impedances of the coupled-line pair are calculated:
-\[
-Z_{\mathrm{even}} = Z_0\sqrt{\frac{1+k}{1-k}},\qquad
-Z_{\mathrm{odd}} = Z_0\sqrt{\frac{1-k}{1+k}}.
-\]
-These two modal impedances uniquely determine the required trace width and edge-to-edge gap for a given substrate height and dielectric constant.
+Same idea, different topology: the split happens onto a ring instead of at right angles. Distances around the ring: port 1 to port 4 is λ/4, port 4 to port 3 another λ/4, and port 1 to port 2 is 3λ/4. 
 
-On ordinary FR-4 the geometry needed for tight coupling quickly becomes impractical. A 6 dB design demands a gap on the order of 0.042 mm—below the reliable resolution of most commercial PCB processes. Relaxing the specification to 12 dB opens the gap to approximately 0.53 mm, a spacing that is readily manufactured.
+- Port 2: 3λ/4 lag, so 270°
+- Port 4: λ/4 lag, so 90°
+- Port 3: one path totals a full wavelength, the other a half wavelength, 180° apart, cancels. Isolated, terminated.
 
-Even-mode impedance is controlled primarily by the substrate thickness (thinner substrates lower \(Z_{\mathrm{even}}\)), while odd-mode impedance is dominated by the inter-trace gap (smaller gaps lower \(Z_{\mathrm{odd}}\)). Because the two modes experience different effective dielectric constants, the phase velocities are unequal; this dispersion produces a small deviation between the theoretical coupling calculated from the modal impedances and the coupling observed in a full-wave field solver. The discrepancy grows with frequency and is one of the principal reasons that microstrip directional couplers are usually verified and fine-tuned in EM simulation rather than fabricated from closed-form equations alone.
+Ring sections can carry different impedances; the power split follows the same impedance-ratio logic as the Wilkinson, with the input kept matched for 1:1 VSWR. He skips the math and points to the microwaves101 calculator that takes a desired port 2 / port 4 power ratio and returns the Z0a, Z0b values around the ring.
 
-### Design Resources and Practical Notes
+Primary use: generating a signal and its complement from a single-ended input with no reflection back to the source. Simplest case is a balun driving a twin-wire line to an antenna, plus various active circuits he declares out of scope.
 
-A free and continually updated reference for branch-line ratios, bandwidth estimates, and power-division calculations is microwaves101.com. The site’s calculators implement the classic analytic expressions and serve as a convenient starting point before electromagnetic verification.
+## Coupled-line (backward) directional coupler, 28:00–end
 
-When selecting a substrate, remember that both the absolute dielectric constant and its uniformity across the board affect electrical length and modal impedance. Higher-frequency designs generally migrate from FR-4 to lower-loss materials (Rogers, Isola, or Taconic laminates) to reduce dispersion and conductor loss. Regardless of material, the final layout should be simulated with a full-wave solver that accounts for the mixed air/dielectric fields of microstrip, finite ground-plane effects, and the actual copper thickness and surface roughness of the chosen process.
+Background first: two traces over a plane, with *s* the gap, *w* the width, *t* the substrate thickness, and copper thickness of 35 µm for 1 oz. Tighter spacing raises both the mutual capacitance and the mutual inductance, so odd-mode impedance drops. Thinner dielectric lowers the even-mode (common-mode) impedance. In digital design this coupling is crosstalk and unwanted; in microwave it is the device.
 
-By mastering the impedance schedules of the 90-degree hybrid, the ring geometry of the rat-race, and the even-/odd-mode design equations of the directional coupler, an engineer can synthesize compact, high-performance passive networks directly in copper. These printed structures remain among the most efficient and cost-effective tools available for signal distribution and sampling on RF and microwave printed-circuit boards.
+Structure: one through trace, a second trace running closely alongside for a coupled section that is almost always λ/4 (can be longer), DC isolated and AC coupled, and fairly broadband.
+- Port 1 input, port 2 through
+- Port 4 is the coupled output, which he flags as the counterintuitive part, hence "backward coupler"
+- Port 3 is isolated and terminated
+
+He notes that "directional coupler" is really the superset covering everything in the episode, since they all have an isolated port and a phase-shifted output, but that most people saying the phrase mean this one. Coupled power subtracts from the through port. Dielectric losses are small next to the coupled output. This is the basis for test instruments that need to sample a high-power signal without disturbing it.
+
+### Design procedure and two worked examples
+
+Start from coupling in dB, convert to coefficient k = 10^(−dB/20), a 0 to 1 ratio where 1 would mean the coppers are joined (unrealizable, and if you want an even 3 dB split you use a power divider or hybrid instead). Then:
+
+- Z_even = Z0·√((1+k)/(1−k))
+- Z_odd = Z0·√((1−k)/(1+k))
+
+He writes these backwards on the board at first and corrects himself around 44:50. From there it is just a differential impedance-control problem, one quarter wavelength long.
+
+**Example 1, 6 dB coupler.** k ≈ 0.501187 → Z_even ≈ 86.74Ω, Z_odd ≈ 28.82Ω. Substrate FR4, 62 mil (~1.53 mm), Dk 4.2, 1 oz copper, fc = 2.4 GHz. Calculator output: w = 1.96 mm (77.1 mil), λ/4 length = 18.07 mm (711.33 mil), and s = 0.042 mm, which is 1.66 mil. His point: no fab or CNC mill does that gap consistently. A 2 mil gap is achievable on good material at high cost, but not on a 1 oz external layer, and this has to be top-layer microstrip. So 6 dB coupling is past the practical limit for this stackup. Simulated S-parameters showed the through port down around 1 to 2 dB and the coupled port at −6 dB at center as predicted.
+
+**Example 2, 12 dB coupler.** k = 0.251189 → Z_even ≈ 64.63Ω, Z_odd ≈ 38.68Ω. Result: w = 2.784 mm (109.769 mil), s = 0.532 mm (20.95 mil), λ/4 = 17.68 mm (696.057 mil). Manufacturable, though still accuracy-sensitive. He notes the quarter-wave length shifted slightly from the first example even at the same center frequency, because the odd and even mode impedances changed, and because microstrip carries part of the wave in air and part in substrate, so there are two velocities. Field solvers show that as dispersion, covered in an earlier episode. Simulated response: through port nearly flat, coupled port at −12 dB, isolated port not perfect but 20 dB down at center, and broadband overall.
+
+Closes by reiterating that backward couplers are the right choice for broadband test-instrument sampling, and teases episode 6.
+
+## Two things worth flagging
+
+At 55:00 he says −12 dB is "half the power" of −6 dB. It is half the *voltage* ratio and a quarter of the power, which is consistent with the k values he actually uses (0.501 → 0.251), so the arithmetic is right and only the narration is wrong.
+
+His variable naming drifts. Early on *t* is substrate thickness and *h* is copper thickness; in the second cross-section he labels *t* as substrate thickness and *h* as trace height, then reads the values back in mixed units and acknowledges it himself.

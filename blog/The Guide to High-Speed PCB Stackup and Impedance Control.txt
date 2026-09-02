@@ -1,0 +1,263 @@
+
+Noah's Digital Jefferies Tube
+
+
+
+
+The Guide to High-Speed PCB Stackup and Impedance Control
+Noah's Digital Jefferies Tube
+Aug 30, 2026
+
+High-Speed PCB Design; Magic or Art? - Arshon Inc. Blog
+
+
+For most of the history of digital hardware, a PCB trace was treated as a piece of wire: you drew a line from pin A to pin B, checked that the copper could carry the current, and moved on, and that assumption held as long as signal rise times stayed slow relative to trace length. Once you’re pushing 56 Gbps to 100 Gbps PAM-4 signaling, that stops being true. Every trace on the board is now a transmission line, and the line between “digital design” and “RF design” has effectively closed, which means the stackup you choose before you route a single net determines whether the channel works at all.
+
+This guide walks through that stackup decision from the physics up: return paths, material selection, controlled impedance, conductor roughness, the fiber weave effect, and the measurement discipline needed to confirm any of it actually happened on the fabricated board.
+
+The board is a distributed system now
+At multi-gigabit edge rates, the relevant wavelength drops into the same order of magnitude as your trace lengths, and the trace has to be treated as a distributed transmission line with a characteristic impedance, a propagation delay, and loss that varies with frequency.
+
+That single fact cascades into everything else. Signal integrity, power integrity, and EMC stop being three separate checklist items and become three views of the same electromagnetic problem, all of it set by the physical geometry of the stackup: layer count, layer order, dielectric thickness, copper roughness, and material selection.
+
+Four layers: the return path decides everything
+Two-layer boards are not viable for controlled-impedance, high-speed work. There’s no way to guarantee a continuous reference plane, and without one you have no way to control crosstalk or impedance. Four layers is the practical floor, and even there, the order you stack signal, ground, and power layers determines whether the board radiates.
+
+The physics is simple: high-frequency return current takes the path of least inductance, which means it flows on the reference plane directly beneath the signal trace, mirroring the trace’s route. The moment a signal via transitions the trace from one layer to another, the return current has to find a new plane to follow. If the two planes involved aren’t the same net, or aren’t tightly coupled to each other, the return current has to jump between them, and that jump creates a loop. A large return loop is, electromagnetically, a small radiating antenna.
+
+This is why the default stackup most fab houses will hand you, SIG / PWR / GND / SIG, tends to fail EMC on anything fast. A signal transitioning from the top layer to the bottom layer has its return current jumping from the ground plane to the power plane, and unless those planes are stitched together with a dense field of decoupling capacitors near every transition via, you get exactly the large loop described above.
+
+Two stackups fix this in different ways:
+
+Two stackups fix this in different ways. GND / SIG+PWR / SIG+PWR / GND puts ground planes on both outer layers, turning them into a Faraday shield and giving you an immediate, low-impedance path for ESD straight to chassis, which makes it the right call in noisy environments or wherever you’re chasing a strict emissions requirement. The tradeoff is that the two internal signal layers sit close enough together that crosstalk gets severe unless you enforce orthogonal routing between them. SIG+PWR / GND / GND / SIG+PWR takes the opposite approach: signal and power route on both outer surfaces, each one sitting directly adjacent to a clean internal ground plane, which gives you a direct, capacitively-coupled return path and lets you hit clean 50-ohm single-ended geometry without resorting to absurdly wide traces. That topology fits designs that need high-speed routing and component placement on both outer surfaces, though it gives up the outer shielding the inverted stackup provides. Set against either of these, the default SIG / PWR / GND / SIG stackup mostly buys you manufacturing simplicity and easy component placement, at the cost of severing the return path on every layer transition and offering weak shielding, which is why it holds up fine for low-speed logic or high-speed signals confined to a single layer but rarely for anything more demanding.
+
+Which one to pick comes down to placement and EMC requirements rather than preference. If your design needs parts on both sides of the board, the third option gives you controlled impedance without a shielding layer in the way. If you’re fighting an EMC requirement and can live with single-sided placement, the inverted stackup earns its keep. Neither one is universally correct, but SIG / PWR / GND / SIG is very rarely the right answer once you’re routing anything above a few hundred Mbps.
+
+Beyond four layers: HDI and where the vias go
+Once you’re routing an FPGA or CPU with a dense BGA, four layers isn’t enough breakout room, and you’re forced into High-Density Interconnect construction just to escape the pin field within a reasonable board thickness. Three lamination strategies cover most of this space:
+
+Sub-lamination bonds thick sub-stacks together with mechanically drilled blind and buried vias. It’s the right call when you have surface-mount parts competing for the same vertical routing channel on opposite sides of the board and need deep internal layer access without drilling all the way through.
+
+Sequential lamination builds the stackup up layer by layer over a core, using laser-drilled microvias. This becomes mandatory once you’re dealing with fine-pitch BGAs or QFNs at 0.5 mm pitch or below, because mechanical drilling can’t hit the aspect ratio and capture-pad tolerance those pitches demand, and only a laser can put a via that small into that tight a space.
+
+Mixed lamination combines mechanical sub-stacks with stacked or staggered microvias, and it’s what you reach for on the highest-density boards where neither approach alone gets you deep enough into a high-layer-count stack.
+
+The signal integrity payoff of HDI construction, beyond routing density, is stub elimination. In a standard through-hole via, the portion of the barrel that extends past the active signal layer is an unterminated stub, and at the frequencies you’re dealing with on a PCIe or 10G+ Ethernet channel, that stub acts like a quarter-wave antenna, reflecting energy back toward the source and carving deep nulls into your insertion loss curve. Blind and buried vias avoid the stub by construction. Where you’re stuck with a through-hole via, backdrilling, mechanically removing the unused copper barrel after the fact, restores the bandwidth you’d otherwise lose.
+
+The dielectric paradox: SI and PI want opposite materials
+Here’s where a lot of stackup designs go wrong even when the topology is right. There’s a persistent assumption that low-Dk, low-loss laminate is simply the better material, full stop, and you should use it everywhere you can afford to. That’s true for signal layers and false for power layers, and treating the whole stackup as one material decision leaves real performance on the table.
+
+For signal routing, low dielectric constant and low dissipation factor genuinely are what you want: they minimize dielectric loss and maximize propagation velocity. There’s a second, more practical reason too. As layer counts climb and individual dielectric thicknesses shrink to keep overall board thickness in check, your trace width has to shrink along with it to hold a 50-ohm target. If the dielectric is thin and the Dk is high, the required trace width can drop below what your fab house can reliably etch. A low-Dk material on a thin layer lets you keep a wider, more manufacturable trace while still hitting your impedance target.
+
+Power and ground plane pairs want the opposite. High-Dk, high-Df laminate is the better choice there, and this is the entire premise behind Embedded Capacitance Materials: ultra-thin laminates, typically 5 to 20 microns, with Dk values from 3 up to 22 and loss tangents between 0.001 and 0.01. Plane capacitance scales directly with Dk and inversely with dielectric thickness, so a thin, high-Dk ECM maximizes the distributed capacitance between your power and ground planes, in the range of 0.87 to 25 nF per square inch, which meaningfully offsets or replaces discrete decoupling capacitors. The high loss tangent works in the ECM’s favor too, damping structural plane resonances, particularly in the 100 MHz to 1 GHz band where the transition from on-package capacitance to board-level capacitance tends to create the worst PDN impedance peaks.
+
+The conclusion is a hybrid material strategy, not a single laminate choice: low-Dk, low-loss material on the routing layers, and thin, high-Dk, deliberately lossy ECM interleaved between the power and ground pairs.
+
+Controlled Dielectric vs. Controlled Impedance: choosing who owns the risk
+There are two ways to hand a stackup off to a fab house, and they push the risk of missing your target impedance onto different parties.
+
+Under Controlled Dielectric, you do the full analysis yourself: pull Dk values off a laminate datasheet, calculate trace widths and spacings by hand or in a solver, and instruct the fab to build to those exact physical dimensions. The failure mode is that datasheet Dk values are nominal. Resin content, glass weave style, and the pressing cycle during lamination all shift the actual in-situ Dk of the finished board, and your calculated impedance drifts away from target with no one catching it before the boards ship.
+
+Under Controlled Impedance, you specify the target (50 ohms single-ended, 100 ohms differential, whatever your channel needs) along with nominal geometry, and the fab uses its own 2D or 3D field solvers to adjust trace width, prepreg thickness, and material selection to hit that target, usually within ±5% to ±10%. They validate the result by TDR-testing impedance coupons built into the panel edge before the boards ship.
+
+For anything running multi-gigabit, specify Controlled Impedance. The fab has better visibility into their own process variation than you do, and shifting the geometric adjustment to the party that can actually measure and correct for it is the more reliable path to hitting your target on the first spin.
+
+Why IPC-2141A alone isn’t enough anymore
+IPC-2141A gives you the standard empirical equations for estimating characteristic impedance from trace width-to-height ratio and substrate permittivity, for basic microstrip and stripline geometries, and it’s a reasonable starting point for a first-order estimate. Where it falls short is everything that matters once you’re past a few gigabits per second: fringing field effects, etch factor (the trapezoidal cross-section that real etching produces, as opposed to the rectangular cross-section the formula assumes), and frequency-dependent material behavior.
+
+Modern high-speed design leans on electromagnetic field solvers, boundary element or finite element methods, that go past static capacitance and inductance and incorporate broadband dielectric dispersion. The model that shows up most often in these solvers is the Djordjevic-Svensson model. It exists because of a causality constraint from the Kramers-Kronig relations: a material whose dielectric constant varies with frequency is mathematically required to also exhibit loss, and vice versa. You can’t have one without the other and still have a physically valid material response. The Djordjevic-Svensson model enforces that link directly, tying the frequency-dependent dielectric constant to the loss tangent so that phase velocity and attenuation stay consistent with each other across a spectrum that can run from 1 kHz to 1 THz. If your solver’s dispersion model doesn’t enforce causality, don’t trust its time-domain output.
+
+Conductor loss and surface roughness
+Below roughly 1 GHz, your interconnect loss is dominated by the bulk DC resistance of the copper and the dielectric’s dissipation factor. Past that, the skin effect takes over: rapidly changing magnetic fields inside the conductor induce eddy currents that push the current distribution outward, concentrating it at the conductor’s perimeter. The thickness of that outer layer, the skin depth, is:
+
+δ = 1 / √(π · f · µ₀ · σ)
+
+where f is frequency in Hz, µ₀ is the permeability of free space (1.256 × 10⁻⁶ Wb/A·m), and σ is copper’s conductivity (about 5.80 × 10⁷ S/m for annealed copper).
+
+At 10 GHz and above, that skin depth is sub-micron, which means the current is flowing entirely within the microscopic peaks and valleys of the copper foil’s surface texture. Electro-deposited copper is intentionally roughened during manufacturing, giving it a “tooth” profile that improves mechanical adhesion to the dielectric resin and prevents delamination. That roughness is good for peel strength and bad for insertion loss, because it forces the skin-effect current down a longer, more tortuous path than a smooth conductor would present, which increases the effective series resistance.
+
+Predicting how much loss that roughness actually adds requires a correction factor, K, applied to the smooth-conductor attenuation, and the models for computing K have gone through three real generations:
+
+Hammerstad-Jensen is a curve fit to older empirical roughness data, and it’s been the industry default for years. The problem is that it saturates too early: above roughly 15 GHz, especially on heavily roughened foils, it loses correlation with measured results and starts under-predicting your loss.
+
+The Huray model replaces curve fitting with actual physical geometry. It treats the rough copper surface as a non-uniform distribution of stacked spheres, arranged in a pyramidal pattern, and derives total structural loss from the superposition of each sphere’s individual electromagnetic response. It’s accurate to 50 GHz, which is what you want, but the sphere radius and sphere count parameters it needs come from Scanning Electron Microscope characterization of a physical cross-section, which is expensive and slow, and not something you can do during the architecture phase of a design before boards exist.
+
+The Simonovich-Cannonball model solves that practicality problem. It’s a heuristic that assumes exactly 14 uniform spheres arranged in cubic close-packing on a square base (9 on the bottom layer, 4 in the middle, 1 on top), which fixes the area ratio in the Huray equation to 1 and collapses it down to:
+
+K_SR(f) = 1 + 14 · (3/2) · (4πr² / A_flat) · (1 + δ(f)/r + δ(f)²/(2r²))⁻¹
+
+The genuinely useful part is that the two parameters this needs, the uniform sphere radius r and the flat base area A_flat, come straight off the 10-point mean roughness (Rz) values that copper foil vendors already publish on their standard datasheets, with no SEM work required. The practical workflow is:
+
+Pull the RMS heights for both the drum side and the matte side of the foil from the published Rz values.
+
+Compute the sphere radius: r = H_RMS / (2√6/3 + 1)
+
+Compute the flat base area: A_flat = 36 · r²
+
+Run the Cannonball-Huray equation for both sides, then average the two results, since most commercial field solvers only accept a single roughness input per trace.
+
+There’s a pitfall worth calling out explicitly because it’s easy to miss: engineers routinely spec low-profile foil (RTF or VLP) for the signal layers and leave the adjacent reference planes at standard roughness. That’s a mistake, because the electromagnetic field of a propagating microstrip or stripline signal lives in the dielectric space between the trace and its reference plane, and the return current on that plane is subject to the exact same skin effect as the signal trace. A rough reference plane adds loss you didn’t budget for. If loss is a real constraint, match the reference plane roughness to the signal layer roughness.
+
+One more mitigation worth knowing: full-wave simulations using the Huray model show that fabricating traces with rounded corners instead of sharp trapezoidal edges reduces current crowding at the trace’s periphery, which reduces conductor loss by roughly 20% and total insertion loss by up to 11% at 20 GHz, and it’s a cheap change if your fab process supports it.
+
+The fiber weave effect
+Standard PCB substrate is a composite: woven fiberglass yarn (E-glass, Dk around 6.0) impregnated with epoxy resin (Dk around 3.0). That’s a genuinely inhomogeneous material at the scale of your differential pair, and it causes the fiber weave effect.
+
+When a differential pair crosses the board, the D+ and D- traces can land differently relative to the underlying weave pattern purely by chance of routing angle and position. If one trace happens to track mostly over glass knuckles while its partner tracks mostly over resin windows, the two halves of the pair see different effective dielectric constants. Since propagation velocity is inversely proportional to the square root of the dielectric constant, the two signals travel at different speeds, and you get intra-pair skew. At the timing margins multi-gigabit systems actually have, that skew is enough to collapse the eye and drive bit errors on its own. It also has a second effect: any timing asymmetry between the two halves of a differential pair means they no longer cancel each other perfectly, and a portion of the differential signal energy converts to common-mode energy. Common-mode energy isn’t rejected by a differential receiver, has to find its own return path through the reference planes, and shows up as both radiated EMI and degraded SNR.
+
+Three mitigations are in common use:
+
+Spread glass laminate (styles like 1067 or 1086) mechanically flattens the fiberglass yarn so it covers the resin windows completely, homogenizing the effective Dk the traces see regardless of position.
+
+Unreinforced substrate, pure PTFE with no glass weave at all, eliminates the effect entirely by removing the inhomogeneity. The cost is mechanical: you lose rigidity and may need stiffeners, and it’s often a poor fit for boards carrying large or heavy components.
+
+Angle routing the differential pair at 10 to 15 degrees relative to the weave’s primary axis, when you’re stuck with standard unspread weave for cost reasons, forces both traces to alternate identically between knuckles and windows along their length, averaging out the Dk disparity instead of eliminating it outright.
+
+Pick based on your skew budget and mechanical constraints. Angle routing is the cheapest fix and often good enough; unreinforced substrate is the only option that removes the mechanism entirely.
+
+Measurement: IEEE 370-2020 and fixture de-embedding
+None of the modeling above means anything until you’ve confirmed it on a real board, and that’s where the measurement gets genuinely difficult. VNAs and TDRs are the right instruments, but they connect through precision coaxial interfaces, and your DUT is a planar structure buried inside the board. The path between the two runs through a test fixture: coax connector, launch pad, transitional via, and lead-in trace, all of which act as a parasitic network that distorts what you’re trying to measure. At the frequencies and data rates in question, the fixture’s own reflections and loss can completely bury the signature of the actual interconnect.
+
+IEEE 370-2020 standardizes both the fixture design rules and the de-embedding math needed to pull the DUT’s true response out of that mess. The dominant technique is 2x-Thru: you fabricate a calibration structure on the same panel as your DUT, consisting of two identical fixtures connected back to back by a uniform through-line. You take two VNA measurements, the Total Structure (fixture, DUT, fixture) and the 2x-Thru Structure (fixture, fixture, no DUT), then mathematically bisect the 2x-Thru S-parameter matrix to extract a single fixture’s parameters. Those extracted parameters get cascaded and inverted, effectively peeled off the Total Structure measurement, which shifts your reference plane from the coax connector to the actual physical boundary of the DUT.
+
+The whole method rests on one assumption: that the fixture attached to your DUT is electromagnetically identical to the bisected half of the 2x-Thru structure. When that symmetry breaks, whether from fabrication variance or a flawed fixture layout, the extraction fails, sometimes subtly, and here are the specific failure signatures to catch it early:
+
+Impedance mismatch between the 2x-Thru structure and the actual DUT fixture (a couple of ohms off 50 is enough) shows up as periodic ripple and standing waves in your de-embedded S-parameters. Hold fabrication tolerances tight and make sure the two match.
+
+Non-causal phase error, often from a poorly torqued or misaligned connector launch, shows up as “ghost” energy appearing in the TDR profile before t = 0, which is physically impossible for a causal system and a clear sign something’s wrong with the launch.
+
+Poor return loss and insertion loss headroom in the fixture itself amplifies noise and can violate passivity in the extracted result. The extraction algorithm needs adequate RL/IL margin to work with; without it, it’s trying to see through a wall.
+
+Differential trace length asymmetry in the fixture, even half a millimeter, drives mode conversion, visible as a rise in the cross-mode S-parameters (Scd, Sdc). Enforce strict physical symmetry in any differential fixture layout.
+
+Bandwidth truncation, measuring only up to 28 GHz for a channel running 25 Gbps, produces time-domain ringing and breaks causality in the extracted result. Capture VNA data to at least 10% beyond the Nyquist frequency of your target data rate.
+
+Thermal drift between your calibration and your DUT measurement degrades system directivity and adds measurement noise. Recalibrate frequently during a test session, especially anything running long.
+
+Before trusting the DUT data at all, run a self-de-embedding check: apply the extracted fixture matrices back onto the original 2x-Thru measurement they came from. A clean extraction gives you a flat magnitude response and a linear phase response, the signature of a zero-length, lossless residual. Any ripple left over after that check means something above is wrong, fixture symmetry, fabrication variance, or an implementation bug, and it needs to be resolved before you trust anything the setup tells you about the actual DUT.
+
+Where the field is heading
+The number of interacting variables here (roughness, dispersion, plane geometry, material selection, fiber weave) has pushed a meaningful chunk of recent work toward computational optimization and machine learning. Instead of running a full 3D field solve for every minor stackup iteration, surrogate models trained on large pre-computed datasets of impedance and topology data can evaluate the nonlinear interactions between roughness, dispersion, and geometric constraints almost instantly, which lets a team search the stackup design space in a fraction of the time a full-wave solve would take. These models still assume you understand the physics above going in; what changes is how fast you can search within it once you do.
+
+What actually needs to be right before you send the board out
+If you distill all of the above into a working checklist:
+
+Plan return path continuity across every layer transition before you place a single via.
+
+Size your HDI and via-stub strategy to your actual pin pitch, not a generic default.
+
+Split your material selection: low-Dk, low-loss laminate for signal layers, thin high-Dk ECM for power/ground pairs.
+
+Specify Controlled Impedance with TDR coupon verification for anything multi-gigabit, not Controlled Dielectric guesswork.
+
+Model impedance with a field solver that includes broadband dispersion (Djordjevic-Svensson), not IPC-2141A alone, past a few Gbps.
+
+Apply roughness correction (Simonovich-Cannonball, from foil datasheet Rz values) to both signal traces and reference planes.
+
+Use rounded trace corners where your loss budget is tight.
+
+Size your fiber weave mitigation, spread glass, unreinforced substrate, or angle routing, to your actual skew budget.
+
+Design IEEE 370 2x-Thru fixtures in from the start, and run the self-de-embedding check before you trust any DUT measurement.
+
+None of these are independent decisions: the stackup topology sets your return paths, the return paths set your material options, the material options set your roughness and dispersion behavior, and all of it only means what you think it means once you’ve measured it correctly. Treat the stackup as the foundational architecture decision it actually is, and the rest of the channel design gets a lot more predictable.
+
+Discussion about this post
+Write a comment...
+
+
+The Electronics Safety Checklist Nobody Hands You on Day One
+A Working Engineer’s Guide to Shock, Fire, and Thermal Runaway Prevention, From Schematic to Production
+Jul 12 • Noah's Digital Jefferies Tube
+
+1
+
+
+
+
+
+Texas Instruments' Earnings Just Exposed AI's Copper Problem
+Q2 2026 data center revenue doubled, and the reason is a 132-kW rack running out of amps
+Aug 10 • Noah's Digital Jefferies Tube
+
+
+
+
+
+
+The PCB Schematic: Where Good Boards Are Won or Lost
+A schematic does two jobs at once.
+Jul 8 • Noah's Digital Jefferies Tube
+
+
+
+
+
+
+Hot Chips 2026: Architectures for the Agentic Computing Era
+Architectures for the Agentic Computing Era
+Aug 24 • Noah's Digital Jefferies Tube
+
+
+
+
+
+
+NVIDIA’s $3.5 Billion MediaTek Bet: Owning the Wire After Giving Up the Chip
+On August 31, 2026, NVIDIA put $3.5 billion into MediaTek convertible bonds and converted what had been a components relationship into a shared…
+Aug 31 • Noah's Digital Jefferies Tube
+
+
+
+
+
+
+How Oscillate Photonics Killed the SESAM and Shrank a $150,000 Laser to a USB-C Brick
+A femtosecond laser used to mean a room.
+Jul 23 • Noah's Digital Jefferies Tube
+
+
+
+
+
+
+Hardware Cost Doesn’t Live in the Design. It Lives in the Feedback Loop.
+There’s a moment every EE student goes through.
+Jun 23 • Noah's Digital Jefferies Tube
+
+
+
+
+
+
+The Sand Contract: Build vs. Buy as a Theory of Where Entropy Lives
+Build vs. Buy as a Theory of Where Entropy Lives
+Jun 18 • Noah's Digital Jefferies Tube
+
+
+
+
+
+
+What Everyone Should Know Before Arguing With Their Electrical Engineer
+Most cross-disciplinary friction on hardware teams isn’t a personality problem, It’s a worldview problem.
+Jul 6 • Noah's Digital Jefferies Tube
+
+
+
+
+
+
+Efinix: The Company Building the Next Generation of FPGAs
+In June 2026, trade press reported that Efinix had lined up capacity at TSMC’s Japan fabs to keep pace with demand from its edge AI business.
+Jul 21 • Noah's Digital Jefferies Tube
+
+
+
+
+
+
+© 2026 Noah Bean · Privacy ∙ Terms ∙ Collection notice
+Start your Substack
+Get the app
+Substack is the home for great culture

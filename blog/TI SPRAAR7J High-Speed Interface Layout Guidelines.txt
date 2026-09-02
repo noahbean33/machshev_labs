@@ -1,0 +1,87 @@
+TI SPRAAR7J, "High-Speed Interface Layout Guidelines" (Nov 2018, revision J Feb 2023). Layout rules for high-speed interfaces on boards built around TI SoCs, plus a per-device parameter appendix.
+
+Scope and critical signals
+
+Aimed at people who already know PCB layout. The premise is that high-speed nets must be placed and routed first, before anything else claims the good real estate, because they both radiate into and are victimized by everything else.
+
+The signal list it treats as critical: USB2 (DP/DM), SuperSpeed USB (SSTX/SSRX pairs), SATA RX/TX, PCIe RX/TX, HDMI clock plus data lanes 0–2, SGMII RX/TX, and MIPI CSI (receive clock plus four receive lanes).
+
+Fiber weave
+
+Glass has εr near 6, epoxy near 3. If one leg of a pair happens to sit over more glass than the other, it propagates slower, producing intra-pair skew that closes the eye, generates AC common-mode noise, and creates an EMI problem. Severity depends on bit rate, length, geometry, weave style, and how the traces happen to land on the weave. Because that alignment varies board to board within a panel, symptoms are intermittent and hard to attribute.
+
+Three mitigations offered, all aimed at making both legs see the same average εr:
+
+Rotate the entire signal image 10–35° relative to the weave. The fab does this; the layout database is untouched.
+Route only the high-speed pairs at 10–35° to the weave.
+Zig-zag the pairs across the board.
+
+Separately, specify glass style at fab-out: 1080 is called poor, 2116 better, 7628 best, on the logic that a tighter weave with less epoxy gives more uniform εr over length.
+
+Lengths, matching, and reference planes
+
+Keep total pair length minimal; hard limits are per-device in the appendix. Match intra-pair etch length only. Pair groups do not need to match each other (TX length is independent of RX length). Put serpentine compensation as close as possible to the end where the mismatch originates, not at the already-matched end.
+
+Reference planes:
+
+Route over solid GND. TI explicitly does not recommend referencing high-speed signals to power planes.
+Do not cross plane splits or voids. Crossing forces return current around the discontinuity, which buys you radiated emissions from unbalanced return, added series inductance and propagation delay, coupling into neighbors, and degraded eye (jitter, reduced amplitude).
+Where a void must be skirted, keep at least 1.5× trace width clearance from it.
+If crossing a split is truly unavoidable, bridge it with stitching caps of 1 µF or less placed right at the crossing to close the return loop.
+Do not overlap planes that do not reference each other; the resulting interplane capacitance couples RF from one to the other.
+Hold the same GND reference from driver to receiver. Where a layer change breaks that, stitch the two GND planes with vias placed symmetrically within 200 mils center-to-center of the signal via, closer being better.
+Differential routing rules
+
+Spacing follows 5W: pair-to-pair separation at least five times trace width, so a 6 mil trace implies 30 mils between pairs. Also hold a 30 mil keep-out to any other signal along the whole run, widened to 50 mils where the pair runs alongside a clock or other periodic signal.
+
+The rule list:
+
+No probe or test points on any high-speed differential net.
+No routing under or near crystals, oscillators, clock buffers, switching regulators, mounting holes, magnetics, or anything that handles or replicates a clock.
+After BGA breakout, get away from the SoC. Core switching transients are hard to filter out once coupled.
+Prefer top or bottom layer with an adjacent GND plane (microstrip). TI does not recommend stripline for these nets.
+Stay 90 mils or more from the reference plane edge.
+Stay 1.5W from plane voids, except the intentional voids under SMD pads described below.
+Constant trace width after BGA escape, to avoid impedance steps.
+Maximize pair-to-pair spacing wherever the routing channel allows.
+
+Symmetry: route both legs parallel and symmetric. The only sanctioned deviations are package escape and the fan-in to connector pins, and breakout must complete within 0.25 in of the package. Crosstalk: no pair within 30 mils of another pair between escape and connector.
+
+Connectors: for a through-hole receptacle such as USB Standard-A, land the pair on the bottom layer so the barrel is part of the transmission path rather than a stub hanging off it. For SMT receptacles (Micro-B, Micro-AB), land on top so no via is needed at all.
+
+Vias and discontinuities
+
+A via is a geometry change that looks capacitive, inductive, or both, and reflects. Key numbers:
+
+Stub length under 15 mils. Longer stubs resonate lower in frequency and raise insertion loss, and the stub usually hurts more than the through portion. Anything longer gets back-drilled with a bit slightly larger than the original drill.
+Anti-pad as large as practical; 30 mils is called out as most of the benefit for little pain. The clearance applies on every layer the via passes through, planes included, and non-functional or unconnected pads are not allowed.
+Equal via count on both legs of a pair, equally spaced, placed as close to the SoC as possible.
+
+Surface-mount parts on high-speed traces: avoid them where possible. Where required (USB SuperSpeed TX AC coupling caps, for instance), 0603 is the ceiling and 0402 or smaller is strongly preferred. Place them symmetrically across the pair, and void the reference plane 100% under the mounting pads, at least two layers deep.
+
+Bends: avoid them. Where unavoidable, keep the included angle above 135° so the turn is loose, with the associated 1.5× and 5× trace-width geometry constraints in the figure.
+
+Stackup and ESD/EMI
+
+Six layers minimum. The example stacks (6, 8, 10 layer) put signal outermost with GND directly beneath. Two notes attach: adjacent signal layers should route at 90° to each other, and where a power/ground layer is split, traces on adjacent layers must not cross the split.
+
+ESD/EMI part selection favors flow-through pinouts so the pair passes straight through with no bends. The worked example combines TPD4EUSB30 with TPD2EUSB30 to cover both USB2 and USB3 in an 8 mm connector footprint. Layout rules for that section:
+
+Protection devices as close to the connector as possible.
+Keep unprotected traces away from protected ones so ESD energy doesn't couple back around the device.
+60% void under the ESD/EMI signal pads to cut loss.
+Use 0402 0 Ω resistors for common-mode filter no-stuff positions; larger parts lose more than the CMF itself.
+AC coupling caps on the protected side of the CMF and close to it; any vias needed to reach the CMF layer go right at the CMF.
+Keep the entire AC cap plus CMF plus ESD chain short and near the connector.
+Appendix A: per-device numbers
+
+Eight tables: AM335x/AM437x/AMIC1xx, AM57xx/DRA7xx, KeyStone II (K2K/K2H/K2L/K2E), K2G, AM65xx/DRA80xM, AM64x, AM62x, AM62Ax. Recurring values:
+
+USB2 is constant across every part: 4000 mils typical and 12000 max total length, 50 mils intra-pair skew, 90 Ω differential (81–99), 4 vias allowed per trace.
+USB3/SuperSpeed and PCIe impedance targets shift by generation. Older parts (AM57xx, KeyStone II) use 90 Ω SuperSpeed (83.7–96.3) and 100 Ω PCIe (90–110). Newer parts (AM65xx, AM64x) use 95 Ω for both (90.25–99.75), as does SGMII on AM65xx. SATA is 100 Ω (85–115); HDMI TMDS is 100 Ω (90–110).
+Max total lengths vary a lot: AM57xx allows 3500 mils for USB3 and SATA and 4700 for PCIe; KeyStone II allows 5500 across USB3/SATA/PCIe; AM65xx drops to 4000 for USB3 and PCIe but allows 7500 for SGMII; AM64x is 5500 for USB3 and PCIe.
+Via budgets are tight: 2 vias on USB3/PCIe/SGMII traces on the newer parts, 0 on PCIe/SATA and 0 on HDMI TMDS for AM57xx and KeyStone II, 2 on CSI. Zero stubs and zero test points everywhere.
+Skew: 5 mils intra-pair for USB3/SATA/PCIe/HDMI/SGMII. PCIe inter-pair skew is expressed in length on the older parts (550 mils for RX and for TX) and in time on the newer ones (6 ns RX, 1.5 ns TX).
+CSI on AM62x and AM62Ax: 10 in max, 100 Ω differential (85–115) with the pairs deliberately loosely coupled because MIPI also runs single-ended low-power signaling on them, 50 Ω single-ended, 40 ps lane-to-lane skew (0.1 UI), and intra-pair skew specified not as a length but as a mode-conversion S-parameter requirement from D-PHY, with UI/50 as a rough estimate at a 400 ps UI.
+
+Revision J's only changes were dropping the preliminary label from AM64x and adding the AM62Ax table.

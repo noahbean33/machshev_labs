@@ -1,0 +1,243 @@
+
+Noah's Digital Jefferies Tube
+
+
+
+
+The PCB Layout Playbook: From Blank Grid to Manufactured Board
+Noah's Digital Jefferies Tube
+Jul 08, 2026
+
+3 PCB Design Guidelines
+
+
+Every board failure traces back to a decision made earlier in the process than anyone wants to admit. A tombstoned capacitor on the assembly line was actually decided during footprint placement. A field failure from arcing across a high-voltage gap was decided during the design rules setup, weeks before a single trace was drawn. This guide walks the full PCB layout workflow in the order decisions actually compound: setup, mechanical definition, placement, routing, silkscreen, verification, and export. At each stage, the goal is the same: catch the failure mode before it becomes physical copper.
+
+1. Setup: The Decisions That Propagate
+Grid and Units
+Millimeters dominate mechanical outlines and enclosure work, but mils (thousandths of an inch) remain the working unit for trace widths, pad geometry, and clearances across the industry. Fighting that convention mid-project just adds unit-conversion errors to your list of problems.
+
+Set a coarse placement grid, 50 mils or 1 mm, and stick to it. Symmetry from grid discipline isn’t cosmetic: it evens out thermal distribution during reflow and makes spacing-rule compliance almost automatic. The routing grid needs to be much finer, fine enough that traces land dead center on a pad every time. A trace that clips the edge of a pad instead of passing through its center can leave your EDA software unsure whether a connection actually exists, and you’ll be chasing phantom unrouted nets an hour later.
+
+Design Rules
+IPC-2221 is the baseline standard here, covering conductor spacing, materials, thermal behavior, and via dimensions. It also defines three product classes that should drive every clearance decision downstream:
+
+Class 1: general consumer electronics, function is the only requirement
+
+Class 2: dedicated-service products needing extended, uninterrupted operation
+
+Class 3: aerospace and life-support equipment, where performance on demand is non-negotiable
+
+Manufacturers love to advertise their absolute limits (3-mil trace and spacing), but designing to a fab’s ceiling is how you end up with a board that’s expensive to make and unreliable in the field. Build in margin instead:
+
+Parameter Manufacturer Minimum Recommended DFM Value What Happens If You Ignore It Signal trace width 4 mils (0.10 mm) 6 mils (0.15 mm) Etch breakage, opens Trace spacing 4 mils (0.10 mm) 6 mils (0.15 mm) Acid traps, bridging, crosstalk Via drill size 8 mils (0.20 mm) 10 mils (0.25 mm) Drill bit breakage, plating failure Via annular ring 2 mils (0.05 mm) 4–6 mils (0.10–0.15 mm) Breakout, severed connections Solder mask clearance 2 mils (0.05 mm) 3 mils (0.075 mm) Mask overlapping the pad
+
+Current-carrying capacity has to be built into the rule set too, not eyeballed later. IPC-2221’s power-law formula for external traces uses a constant of 0.048; internal traces (buried under FR-4, with nowhere for heat to escape) drop that constant to 0.024. Load these values into your constraint manager up front, and it becomes physically impossible to route a high-current power rail with a trace width sized for a logic signal.
+
+2. Outline and Mechanical Constraints
+Board Size and Shape
+Draw the outline as a single closed contour on the mechanical/keep-out layer. CNC routers can’t cut sharp interior corners, so give every internal corner a radius of 0.5 to 1.0 mm to match standard router bit geometry. Skip this and the fabricator either rejects the file or silently reshapes your board to fit their tooling, neither of which you want to discover after the order ships.
+
+Standard CNC routing tolerances run around ±0.2 mm; precision routing tightens that further. Keep components and copper at least 0.25 to 0.5 mm from the routed edge. If the panel will be V-scored for depanelization, push that clearance to 1.27 mm (50 mils), the snapping stress is enough to hairline-fracture a ceramic capacitor sitting too close to the break line.
+
+Mounting Holes
+Corner-anchored mounting holes, roughly 5 mm from each edge, give a rectangular board balanced structural support. Anything over 200 mm in a dimension needs additional holes toward the center, or you’ll get warp under thermal cycling.
+
+Plated mounting holes tied to the ground plane double as chassis grounding points, which matters for EMI in anything running at real frequencies. Non-plated tooling holes (1.0 to 1.5 mm, arranged asymmetrically) give pick-and-place equipment a fixed reference. Either way, keep a 3 to 5 mm keep-out around all hardware so a screw head or standoff can’t bridge to a nearby pad. Standardizing on common hardware sizes (3.2 mm drill for M3) is one of the cheapest manufacturing simplifications available.
+
+Cutouts
+Routed slots need at least 0.5 to 0.78 mm of width. Go narrower and you’re risking router bit breakage plus fiberglass debris the fabricator can’t fully clean out. Same copper-to-edge clearance rules apply here as on the outer contour.
+
+3. Footprints and Placement
+Assembly-Driven Orientation
+If any part of the board goes through wave soldering, component orientation isn’t optional. Through-hole parts and larger SMDs need their long axis parallel to the solder wave direction. Place a tall component upstream of a shorter one and you create a shadow effect: the tall body blocks the wave, the smaller component downstream gets starved of solder, and you end up with cold or open joints that won’t show up until test. Cluster similarly sized components together, keep the tall ones trailing, and leave at least 2.54 mm between through-hole leads to prevent bridging.
+
+Fixed Points First
+Place anything anchored to the enclosure, USB connectors, switches, potentiometers, LEDs, displays, before touching anything else. These are the constraints you can’t negotiate with later. Build the functional circuitry around them, not the other way around.
+
+Functional Blocks and Isolation
+Group the schematic into physical zones: power supply, digital core, analog front end. Analog and digital need at least 20 mils of separation, and digital traces should never cut through analog territory. Heat sources (MOSFETs, linear regulators) need 3 to 5 mm of separation from anything temperature-sensitive, like crystals or precision ADCs. If the enclosure has known airflow, orient hot components to use it.
+
+Killing Tombstoning
+Tombstoning happens when a small two-terminal part (0402, 0201) lifts off one pad and stands on end during reflow. The cause is almost always thermal imbalance: one pad ties into a big copper pour that acts as a heat sink, the other pad reaches solder liquidus first, and surface tension yanks the part upright before the second pad melts. Four things prevent it:
+
+Symmetrical pads: identical size and shape on both terminals
+
+Thermal reliefs: 2 to 4 narrow spokes connecting to any large copper pour, never a solid tie-in
+
+Solder mask dams: keep the web between pads intact so paste can’t migrate
+
+Even paste volume: matched stencil apertures on both terminals
+
+Decoupling Capacitors
+Get them within 1 to 2 mm of the IC’s power and ground pins. The physical distance sets the loop inductance of the connection, and at high frequency, that inductance is what actually determines the power delivery network’s effective impedance, not the capacitor’s rated value. Minimize the loop area formed by capacitor, IC, and reference plane, and the PDN gets dramatically more stable. In fine-pitch BGA work, via-in-pad lets you drop decoupling caps directly underneath the package on the far side of the board, which shortens that loop about as much as physically possible. (Tightly spaced power/ground plane pairs under 10 mils apart relax this requirement somewhat, but treat that as a bonus, not a substitute.)
+
+4. Routing
+Controlled Impedance and Length Matching
+High-speed interfaces (USB, HDMI, PCIe, DDR) need controlled impedance: 50 ohms single-ended, 90 to 100 ohms differential. Length matching tolerances vary by interface: USB pairs to within 5 mils, HDMI to within 3 mm, Ethernet to within 50 mils. These aren’t arbitrary; they’re set by the timing budget of the protocol.
+
+The 90-Degree Angle Myth
+This one refuses to die. The acid trap concern is a relic of old etching chemistry: alkaline etching with high-pressure agitation, standard practice now, eliminated the pooling problem decades ago. The EMI and impedance discontinuity concern doesn’t hold up either. S-parameter measurements and field simulations show the impedance deviation from a right-angle bend is negligible until you’re pushing 100 GHz, a frequency range where the geometric feature causing the “problem” is orders of magnitude smaller than the signal wavelength. The real reasons designers still route at 45 degrees are routing density, marginally shorter trace length, and avoiding field concentration (corona discharge) in high-voltage work. Electrically, at any frequency you’re likely working at, a 90-degree corner is a non-issue.
+
+Power Distribution and Return Paths
+Size power traces to the current they’ll carry. A 40-mil (1.0 mm) trace is a reasonable default for moderate loads; anything past 5 amps should move to a plane or wide pour. Return current doesn’t take the path of least resistance, it takes the path of least inductance, which means it runs directly beneath the signal trace on the nearest reference plane. Route a critical signal over a split or voided plane and the return current has to detour around the gap, creating a loop that radiates noise and couples into whatever’s nearby.
+
+Copper Pours and Starved Thermals
+Thermal reliefs on pads inside a large pour are mandatory, but dense layouts can choke them off. A starved thermal happens when nearby vias or traces crowd out the spoke geometry during polygon generation, leaving a pad with one connective spoke instead of four. That’s not just a current-capacity problem, it produces unpredictable thermal behavior during assembly and shows up later as cold joints or overheating in the field. Visually check pour generation and run DRC specifically for isolated or under-connected copper.
+
+Vias and High-Voltage Spacing
+Standard vias use a 10-mil drill. The annular ring around it has to survive drill wander during fabrication; undersized rings break out and sever the connection. IPC-2221’s pad-sizing formula accounts for finished hole diameter, minimum annular ring, and fabrication tolerance together. For Class 2 work, aim for a pad diameter at least 8 mils larger than the drill.
+
+Above 50V (or 30VAC), spacing rules change entirely. Two separate metrics matter:
+
+Clearance: shortest through-air distance between conductors, governs arcing
+
+Creepage: shortest surface-path distance across the substrate, governs tracking (the slow formation of conductive paths from contamination and prolonged voltage stress)
+
+Past 500V, add roughly 0.005 mm of spacing per volt above that threshold. Humidity, dust, and altitude all degrade the breakdown threshold of both air and FR-4, so pollution degree and altitude derating aren’t optional in a real design. Standard FR-4 sits in CTI Material Group IIIa (175–400V); genuinely high-voltage designs need a higher-CTI laminate. If board space is tight, milled slots between high-voltage nodes buy creepage distance without growing the footprint.
+
+5. Silkscreen
+Silkscreen is the visual interface for assembly, AOI, debugging, and field repair, and it’s the layer most likely to get treated as an afterthought. Don’t.
+
+Typography: 40-mil minimum font height, 6-mil stroke width. Below 32 mils, ink bleed during printing turns text into unreadable blobs. Use sans-serif vector fonts (Arial, Helvetica) at roughly a 1:6 width-to-height ratio, and keep every label oriented the same direction so nobody’s rotating the board mid-inspection.
+
+Reference designators (U1, R12, C4) go close to their components, always.
+
+Polarity and Pin 1 markers: never place these underneath the component body. Once the part is mounted, the marker is invisible, and post-reflow inspection loses its reference point entirely. Keep markers just outside the footprint outline.
+
+Clearance from copper: maintain at least 6 mils between silkscreen ink and any exposed copper, mask opening, or untented via. Ink over a pad insulates part of the solder joint. Ink that falls into an open via barrel breaks the text and can contaminate the hole.
+
+6. Design Rules Check
+A clean DRC run is the gate before export, not a formality to click through.
+
+Solder mask clearance: too tight and misregistration causes the mask to creep onto the pad, shrinking solderable area. Too loose and adjacent copper gets exposed, inviting bridges. Fine-pitch parts (QFPs) typically need 2 to 3 mils of expansion; larger through-hole components need 4 to 8 mils.
+
+Solder mask slivers: the dam between fine-pitch pads has to stay above the fabricator’s minimum width, typically 3 to 4 mils. Go below that and the CAM software strips the dam entirely, or it flakes off during development, leaving pads exposed and inviting bridging during reflow.
+
+Fixing what DRC flags requires judgment the tool doesn’t have:
+
+Via tenting: fully tent vias near SMD pads, or they’ll wick solder away from the joint by capillary action. Via-in-pad needs epoxy fill and copper capping per IPC-4761.
+
+Unrouted nets: confirm every ratsnest connection became actual copper. Broken planes and isolated islands hide here.
+
+Acute angles: modern etching killed true acid traps, but sharp copper slivers can still detach in the plating bath and cause random shorts. Chamfer or reroute them.
+
+Fix, then rerun. Every fix has the potential to introduce a new violation elsewhere (a trace nudged to fix clearance now sits too close to the board edge), so this loop repeats until the DRC comes back clean, not mostly clean.
+
+7. Export and Manufacturing Data
+File Formats
+Gerber (RS-274X) has been the default handoff format for decades: a separate 2D file per layer, no netlist, no stackup data, no BOM. Splitting a design across 15+ disconnected files is exactly the kind of setup where version mismatches and mislabeling creep in.
+
+Two intelligent alternatives have been gaining ground:
+
+Feature Gerber (RS-274X) ODB++ IPC-2581 Structure Multiple separate files Single compressed archive Single unified XML file Standard type Open (Ucamco) Proprietary (Siemens) Open (IPC consortium) Drill data included No, separate Excellon file Yes Yes BOM/netlist included No Yes Yes Industry support Universal Strong at tier-1 fabs Growing, especially aerospace/defense
+
+ODB++ dominates in aerospace, automotive, and high-volume production because of its DFM tooling integration. IPC-2581 gets you the same all-in-one convenience without vendor lock-in.
+
+Verification Before Submission
+If you’re still on the Gerber workflow, run an independent viewer over the exported package before it goes anywhere. The failure mode to watch for is a coordinate mismatch between the Gerber artwork and the Excellon drill file, different units (mm vs. inches) or different origin points between the two exports will offset every drill hit from its pad. That’s not a fixable defect once it’s fabricated; it’s a dead board. Overlay the drill data on the copper layers and confirm concentric alignment visually. Also confirm you’re exporting an actual machine-readable drill file (.drl or .xln), not a visual drill map that no CNC equipment can read.
+
+The Submission Package
+A complete Gerber package includes top and bottom copper, all inner layers, top and bottom solder mask, top and bottom silkscreen, the board outline, and Excellon drill files with plated and non-plated holes clearly separated. Don’t rely on file naming alone to convey layer order. Include a fabrication drawing or README specifying layer stackup, controlled impedance requirements, surface finish (ENIG, HASL), and material specs (FR-4 with a specific Tg and dielectric constant). That documentation is what turns “we think this is what we meant” into a board that comes back correct on the first run.
+
+The thread running through all of this: every stage exists to prevent a specific, well-documented failure mode discovered the hard way by someone before you. Grid discipline prevents phantom unrouted nets. Corner radii prevent rejected outlines. Thermal reliefs prevent tombstoning. Length matching prevents timing failures nobody can debug after the fact. Treating each rule as arbitrary tradition is how boards fail in ways that were entirely predictable in advance.
+
+Discussion about this post
+Write a comment...
+
+
+The Electronics Safety Checklist Nobody Hands You on Day One
+A Working Engineer’s Guide to Shock, Fire, and Thermal Runaway Prevention, From Schematic to Production
+Jul 12 • Noah's Digital Jefferies Tube
+
+1
+
+
+
+
+
+Texas Instruments' Earnings Just Exposed AI's Copper Problem
+Q2 2026 data center revenue doubled, and the reason is a 132-kW rack running out of amps
+Aug 10 • Noah's Digital Jefferies Tube
+
+
+
+
+
+
+The PCB Schematic: Where Good Boards Are Won or Lost
+A schematic does two jobs at once.
+Jul 8 • Noah's Digital Jefferies Tube
+
+
+
+
+
+
+Hot Chips 2026: Architectures for the Agentic Computing Era
+Architectures for the Agentic Computing Era
+Aug 24 • Noah's Digital Jefferies Tube
+
+
+
+
+
+
+NVIDIA’s $3.5 Billion MediaTek Bet: Owning the Wire After Giving Up the Chip
+On August 31, 2026, NVIDIA put $3.5 billion into MediaTek convertible bonds and converted what had been a components relationship into a shared…
+Aug 31 • Noah's Digital Jefferies Tube
+
+
+
+
+
+
+How Oscillate Photonics Killed the SESAM and Shrank a $150,000 Laser to a USB-C Brick
+A femtosecond laser used to mean a room.
+Jul 23 • Noah's Digital Jefferies Tube
+
+
+
+
+
+
+Hardware Cost Doesn’t Live in the Design. It Lives in the Feedback Loop.
+There’s a moment every EE student goes through.
+Jun 23 • Noah's Digital Jefferies Tube
+
+
+
+
+
+
+The Sand Contract: Build vs. Buy as a Theory of Where Entropy Lives
+Build vs. Buy as a Theory of Where Entropy Lives
+Jun 18 • Noah's Digital Jefferies Tube
+
+
+
+
+
+
+What Everyone Should Know Before Arguing With Their Electrical Engineer
+Most cross-disciplinary friction on hardware teams isn’t a personality problem, It’s a worldview problem.
+Jul 6 • Noah's Digital Jefferies Tube
+
+
+
+
+
+
+Efinix: The Company Building the Next Generation of FPGAs
+In June 2026, trade press reported that Efinix had lined up capacity at TSMC’s Japan fabs to keep pace with demand from its edge AI business.
+Jul 21 • Noah's Digital Jefferies Tube
+
+
+
+
+
+
+© 2026 Noah Bean · Privacy ∙ Terms ∙ Collection notice
+Start your Substack
+Get the app
+Substack is the home for great culture
