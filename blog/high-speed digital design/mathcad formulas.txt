@@ -1,0 +1,61 @@
+constants.mcd
+electric permittivity of free space metric
+e0_meters = 8.854*1-^-12 c^2/n*m^2
+
+e0_inches = e0_meters * .0254
+
+magnetic permeability of free space metric u0 = 4*pi*10^-7 wb/a * m
+u0_inches = u0_meters * .0254
+speed of light metric c_meters = 2.998*10^8 m/s
+c_inches = c_meters / .0254
+
+propogation delay at light speed ps/in = 10^12/c_in = 84.723
+
+resist.mcd
+diameter to awg awg()
+awg to diameter diameter()
+thickness to copper plating weight cpw()
+copper plating weight to thickness thickness()
+
+dc resistance of round wires
+from diameter rround()
+from awg wire size rround_awg()
+at room temperature only rround_rt()
+
+dc resistance of printed circuit board traces
+from trace thickness and width rtrace()
+using copper plating weight rtrace_cpw()
+at room temperature only rtrace_rt()
+
+dc resistance of power or ground planes
+using thickness and via diameter rplane()
+using copper plating weight rplane_cpw()
+
+bulk resistivity of copper p = 6.787*10^-7
+thermal coefficient of resistance delta_p = .0039
+over a temperature range of 0 to 70 c, the resistance of copper wires varies 28%
+
+x length of wire inches or separation between contace points on ground plane
+d diameter of wire inches or diameter of contact point on ground plane
+awg American wire gauge English units
+temp temperature c
+w width of printed circuit board trace inches
+t thickness of printed circuit boar trace inches
+cpw thickness of printed circuit board traces in units of copper plating weight oz/ft^2
+
+conversion between awg and diameter inches
+awg(d) = -10 - 20*log(d) diameter(awg) = 10^-((awg + 10)/20)
+
+general formula for resistance of a round wire (ohms)
+rround(d, x, temp) 4* p * x/pi * d^2 (1 + (temp - 20) * delta_p)
+
+resistance of a round wire specificed by awg size instead of diameter (ohms)
+rround_awg(avg, x, temp) = rround(diameter(awg), x, temp)
+
+resistance of a round wire at room temperature (ohms)
+rround_rt(d, x) = rround(d,x, 20)
+
+conversion between thickness,
+t inches and copper plating
+weight, cpw(oz)
+thickness(cpw) = .00137 * cpw cpw(t) = t/.00137

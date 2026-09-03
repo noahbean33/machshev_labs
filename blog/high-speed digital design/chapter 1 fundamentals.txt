@@ -1,0 +1,55 @@
+these are lecture notes for the book high speed digital design by johnson and graham
+
+chapter 1: fundamentals
+
+
+frequency, time, and distance
+
+f_knee = 0.5/t_r where f_knee is the frequencye below which most energy in the digital pulses concenctraes
+t_r = pulse rise time
+
+x_c = 1/ 2* pi * f_knee * c = t_r / pi * c 
+
+the response of a circuit at high frequencies affects its processing of short time events
+the response of circuits at low frequencies affects its process of long term events
+most energy in digital pulses concentrates below the knee frequency f_knee = 0.5/t_r
+the behavior of a circuit at the knee frequency determines its processing of a step edge
+the behavior of a circuit at frequencies above f_knee hardly affects digital performance
+
+time and distance
+table of propogration delay of em fields in various media
+
+lumped version distributed
+L = t_r/d where l is the length of the rising edge in inches, t_r is the rise time in ps and D is the delay in ps/in
+
+circuits smaller than l/6 are lumped circuits
+
+f_3db = K/t_r where k is a costant of proportionality of .338 for gaussian pulses and .350 for single pole exponential decay
+
+four kinds of reactance
+
+ordinary capacitance - two conducting bodies charged to different electric potentials
+lab experiment for measuring capacitance
+a capacitance test jig is easy to build using a pulse source and an oscilloscope
+xc = t_r / pi * c
+ordinary inductance
+- arises where there is an electric current that creates a magnetic field and current takes a finite time to build to a steady state and the relucatance of current to build up or decay quickly is inductance
+xl = pi * l / t_r
+the area under an exponential l/r decay provides an accurate measure of the decay time constant
+a slow pulse generator rise time or a slw scope does not change the area measured with our inducatnece test jig
+
+mutual capacitance 
+wherever there are two circuits voltage in one circuit creates electric fields and these fields effect the other circuit the coefficient of interaction decaying rapidly with increasing distance the coefficient of electrical interaction is called mutual capacitance
+I_m - c_m dV_a /dt
+
+mutual inducatance
+two loops of current and current in one creates a magnetic field that effects second loop and the interaction decaying rapidly with increasing distance of which Henries or vold secnd/ amps
+Y = L_m dI_a/dt
+
+crosstalk
+defubutuin
+crosstalk = l_m/R_a * t_f
+anmong high speed digital circuits, mutual inducatance is often a worse problem than mutual capacitance
+
+
+
