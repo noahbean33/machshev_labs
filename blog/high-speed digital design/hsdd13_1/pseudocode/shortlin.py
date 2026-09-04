@@ -92,23 +92,29 @@ def S3(t, cl):
 
 
 # Driving waveform: a rectangular waveform N/2 points long.
+# np.where evaluates both branches eagerly, so the false branch is fed a
+# safe stand-in denominator at k == 0 (where it is 0/0) purely to keep numpy
+# from warning about a value that gets discarded anyway.
+_denom = np.where(k == 0, 1, 1 - np.exp(-s * DT))
 S1 = np.where(
     k == 0,
     N / 2,
-    (1 - np.exp(-s * N / 2 * DT)) / (1 - np.exp(-s * DT)),
+    (1 - np.exp(-s * N / 2 * DT)) / _denom,
 ) * (1 / FSAMPLE)
 
 
 def linear(mu, r):
     """Linear rise/fall slopes; 0-100% risetime = r."""
+    denom = np.where(mu == 0, 1, 1 - np.exp(-mu * DT))
     return np.where(mu == 0, 1,
-                    (1 - np.exp(-mu * r)) / (1 - np.exp(-mu * DT)) * DT / r)
+                    (1 - np.exp(-mu * r)) / denom * DT / r)
 
 
 def gaussian(mu, r):
     """Gaussian rise/fall slopes; 10-90% risetime = r."""
+    safe = np.where(np.abs(mu * r) < 10, mu, 0)
     return np.where(np.abs(mu * r) < 10,
-                    np.exp((mu ** 2 * (r / 2.56) ** 2) / 2),
+                    np.exp((safe ** 2 * (r / 2.56) ** 2) / 2),
                     0) * np.exp(-mu * r / 2)
 
 

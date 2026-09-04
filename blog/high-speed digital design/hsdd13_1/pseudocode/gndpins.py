@@ -153,11 +153,23 @@ XTLK = V.sum(axis=0)
 
 
 if __name__ == '__main__':
+    # Sanity check: row N-1 of A*G = -B forces every column of G to sum to
+    # exactly -1 (all current leaving on a signal wire must return along the
+    # grounds). This is a hard constraint of the solve, independent of wire
+    # geometry, so it is a good check that the linear system was assembled
+    # correctly.
+    col_sums = G.sum(axis=0)
+    assert np.allclose(col_sums, -1.0), "ground currents do not balance the signal current"
+    print("ground-current balance OK: every column of G sums to -1")
+    print("XTLK range: %.4g to %.4g" % (XTLK.min(), XTLK.max()))
+
     # The worksheet pre-computed and stored two configurations, documented
     # in gndpins.doc, and plots them against each other:
-    #   straight.prn  all grounds on one row
-    #   scatter.prn   ground positions scattered through the field
+    #   straight.prn  all grounds on one row (the layout wired up above)
+    #   scatter.prn   ground positions scattered through the field -- left
+    #                 as an exercise in the original ("change the equations
+    #                 to scatter the ground positions"); no scattered layout
+    #                 is transcribed here, so only the straight case is
+    #                 written out.
     np.savetxt('straight.prn', XTLK)
-
     XSTRAIGHT = np.loadtxt('straight.prn')
-    XSCATTER = np.loadtxt('scatter.prn')
